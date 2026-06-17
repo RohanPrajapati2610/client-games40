@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Right and Left · LY3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', 'Trebuchet MS', Arial, sans-serif;
+      background: linear-gradient(135deg, #fce4ec 0%, #e8f5e9 50%, #e3f2fd 100%);
+      height: 100vh; height: 100dvh;
+      display: flex; align-items: stretch; justify-content: center;
+      overflow: hidden; user-select: none; -webkit-user-select: none;
+    }
+
+    /* ── INTRO ── */
+    #intro-screen {
+      position: fixed; inset: 0;
+      background: linear-gradient(160deg, #4a148c, #7b1fa2, #ab47bc);
+      display: flex; align-items: center; justify-content: center;
+      border: 5px solid #FFD700; z-index: 200; cursor: pointer;
+    }
+    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; }
+    @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+    /* ── GAME SCREEN ── */
+    #game-screen {
+      display: none; flex-direction: column;
+      width: 100%; max-width: 860px;
+      height: 100%; padding: 14px 14px 80px; overflow-y: auto;
+    }
+
+    /* Header */
+    .hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      background: white; border-radius: 18px; padding: 10px 18px;
+      margin-bottom: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); flex-shrink: 0;
+    }
+    .hdr-score { font-size: 1.2em; font-weight: bold; color: #4CAF50; min-width: 70px; }
+    .hdr-title { font-size: clamp(0.75em,2.5vw,1em); color: #6a0dad; font-weight: bold; text-align: center; }
+    .mute-btn { width: 38px; height: 38px; border: 2px solid #ddd; border-radius: 50%; background: white; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .mute-btn:hover { border-color: #aaa; }
+
+    /* Progress */
+    .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-shrink: 0; }
+    .progress-label { font-size: 0.9em; color: #777; white-space: nowrap; }
+    .progress-bar-wrap { flex: 1; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, #4CAF50, #8BC34A); transition: width 0.5s ease; }
+
+    /* Instruction */
+    .instruction {
+      text-align: center; font-size: clamp(0.95em,3vw,1.15em);
+      color: #333; font-weight: 700; margin-bottom: 10px;
+      padding: 0 4px; flex-shrink: 0; line-height: 1.4;
+    }
+
+    /* Card */
+    .q-card {
+      background: white; border-radius: 24px; padding: 24px 16px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+      display: flex; flex-direction: column; align-items: center; gap: 24px;
+      margin-top: auto; margin-bottom: auto; flex-shrink: 0;
+    }
+
+    /* ── DIRECTION SCENE ── */
+    .dir-scene {
+      width: 100%;
+      background: linear-gradient(180deg, #e3f2fd 60%, #c8e6c9 100%);
+      border-radius: 18px;
+      border: 3px solid #e0e0e0;
+      display: flex; align-items: center;
+      height: 170px; position: relative; overflow: hidden;
+      padding: 0 12px;
+    }
+    /* ground strip */
+    .dir-scene::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 42px;
+      background: linear-gradient(180deg, #a5d6a7, #81c784);
+      border-radius: 0 0 15px 15px;
+    }
+
+    /* left / right side labels inside scene */
+    .side-label {
+      position: absolute; bottom: 10px; z-index: 2;
+      font-size: 0.72em; font-weight: 800; color: rgba(255,255,255,0.85);
+      letter-spacing: 0.08em;
+    }
+    .side-label.l { left: 16px; }
+    .side-label.r { right: 16px; }
+
+    /* Arrow indicators */
+    .arrow-indicator {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      font-size: 2em; color: rgba(0,0,0,0.08); z-index: 1;
+      pointer-events: none;
+    }
+    .arrow-indicator.l { left: 10px; }
+    .arrow-indicator.r { right: 10px; }
+
+    /* Animal image inside scene */
+    .dir-animal {
+      position: absolute; bottom: 30px; z-index: 3;
+      height: 110px; width: auto; max-width: 130px;
+      object-fit: contain;
+      transition: opacity 0.3s;
+    }
+    .dir-animal.on-left  { left: 20px; }
+    .dir-animal.on-right { right: 20px; }
+
+    /* correct flash on scene */
+    .dir-scene.correct { border-color: #4CAF50; box-shadow: 0 0 0 4px #4CAF5040; }
+    .dir-scene.wrong   { border-color: #f44336; }
+
+    /* ── DIRECTION BUTTONS ── */
+    .dir-choices {
+      display: flex; gap: 20px; width: 100%; justify-content: center;
+    }
+    .dir-btn {
+      flex: 1; max-width: 180px; height: 76px;
+      border: 4px solid transparent; border-radius: 20px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-size: 1.5em; font-weight: 800; color: white; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+      transition: transform 0.1s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .dir-btn:active { transform: scale(0.93); }
+    #btn-left  { background: linear-gradient(135deg, #f093fb, #f5576c); }
+    #btn-right { background: linear-gradient(135deg, #4facfe, #00f2fe); color: #004080; }
+    .dir-btn.correct {
+      border-color: #4CAF50; box-shadow: 0 0 0 5px #4CAF5040;
+      animation: popCorrect 0.35s ease;
+    }
+    .dir-btn.wrong {
+      border-color: #f44336;
+      animation: shakeWrong 0.4s ease;
+    }
+    .dir-btn.hint {
+      border-color: #FFD700; border-width: 4px;
+      animation: pulseHint 1s ease-in-out infinite;
+    }
+    @keyframes popCorrect  { 0%{transform:scale(1)} 50%{transform:scale(1.08)} 100%{transform:scale(1)} }
+    @keyframes shakeWrong  { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+    @keyframes pulseHint   { 0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.6)} 50%{box-shadow:0 0 0 12px rgba(255,215,0,0)} }
+
+    /* Restart */
+    .btn-restart {
+      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg,#FF9800,#F44336);
+      color: white; border: none; border-radius: 50px;
+      padding: 14px 36px; font-size: 1.05em; font-family: inherit;
+      font-weight: 800; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(244,67,54,0.4); z-index: 50; white-space: nowrap;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed; top: 20%; left: 50%;
+      transform: translateX(-50%) scale(0);
+      color: white; padding: 14px 28px; border-radius: 50px;
+      font-size: 1.4em; font-weight: 800;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.25); z-index: 100;
+      transition: transform 0.2s, opacity 0.2s;
+      opacity: 0; pointer-events: none; white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) scale(1); opacity: 1; }
+
+    /* Confetti */
+    .confetti-piece {
+      position: fixed; top: -10px; pointer-events: none; z-index: 999;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+
+    /* End screen */
+    #end-screen {
+      display: none; position: fixed; inset: 0;
+      background: linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 18px; z-index: 150; padding: 30px;
+    }
+    .end-trophy { font-size: 4.5em; animation: trophySpin 1.5s ease-out; }
+    @keyframes trophySpin { from{transform:rotate(-20deg) scale(0)} 60%{transform:rotate(10deg) scale(1.1)} to{transform:rotate(0deg) scale(1)} }
+    .end-title { color: #FFD700; font-size: clamp(1.5em,5vw,2.2em); font-weight: bold; text-shadow: 0 3px 10px rgba(0,0,0,0.3); text-align: center; }
+    .end-sub { color: rgba(255,255,255,0.9); font-size: 1.1em; text-align: center; }
+    .end-score-box { background: rgba(255,255,255,0.15); border-radius: 16px; padding: 12px 28px; color: white; font-size: 1.4em; font-weight: bold; }
+    .end-stars { font-size: 2.2em; letter-spacing: 4px; }
+    .btn-play-again { background: #FFD700; color: #333; border: none; border-radius: 50px; padding: 14px 36px; font-size: 1.1em; font-weight: 800; font-family: inherit; cursor: pointer; box-shadow: 0 4px 16px rgba(255,215,0,0.5); }
+    .btn-play-again:hover { transform: scale(1.05); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      #game-screen { padding: 10px 10px 76px; }
+      .q-card { padding: 16px 10px; gap: 16px; }
+      .dir-scene { height: 150px; }
+      .dir-animal { height: 90px; }
+      .dir-btn { height: 68px; font-size: 1.35em; }
+      .hdr-title { display: none; }
+    }
+    @media (max-width: 480px) {
+      #game-screen { padding: 8px 8px 76px; }
+      .q-card { padding: 12px 8px; gap: 14px; border-radius: 18px; }
+      .dir-scene { height: 130px; }
+      .dir-animal { height: 76px; max-width: 100px; }
+      .dir-animal.on-left  { left: 12px; }
+      .dir-animal.on-right { right: 12px; }
+      .dir-btn { height: 62px; font-size: 1.2em; border-radius: 16px; }
+      .dir-choices { gap: 12px; }
+      .hdr-score { font-size: 1em; }
+      .instruction { font-size: clamp(0.85em,3.5vw,1em); margin-bottom: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── INTRO ── -->
+<div id="intro-screen" onclick="startGame()">
+  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine">
+</div>
+
+<div id="toast"></div>
+
+<!-- ── GAME ── -->
+<div id="game-screen">
+  <div class="hdr">
+    <div class="hdr-score">⭐ <span id="score-val">0</span> / 8</div>
+    <div class="hdr-title">Right and Left</div>
+    <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
+  </div>
+
+  <div class="progress-row">
+    <span class="progress-label">Q <span id="q-num">1</span> / 8</span>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="prog-bar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="instruction" id="instruction-txt"></div>
+
+  <div class="q-card">
+    <!-- Scene -->
+    <div class="dir-scene" id="dir-scene">
+      <span class="arrow-indicator l">←</span>
+      <span class="arrow-indicator r">→</span>
+      <span class="side-label l">LEFT</span>
+      <span class="side-label r">RIGHT</span>
+      <img class="dir-animal" id="dir-animal" src="" alt="">
+    </div>
+
+    <!-- Buttons -->
+    <div class="dir-choices">
+      <button class="dir-btn" id="btn-left"  onclick="selectDir('left')">← LEFT</button>
+      <button class="dir-btn" id="btn-right" onclick="selectDir('right')">RIGHT →</button>
+    </div>
+  </div>
+
+  <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
+</div>
+
+<!-- ── END ── -->
+<div id="end-screen">
+  <div class="end-trophy">🏆</div>
+  <div class="end-title">You have done a great job!</div>
+  <div class="end-sub">You completed all 8 questions!</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 8</div>
+  <div class="end-stars" id="end-stars"></div>
+  <button class="btn-play-again" onclick="restartGame()">▶ &nbsp;Play Again</button>
+</div>
+
+<script>
+const QUESTIONS = [
+  { image: 'Assets/cat.png',       name: 'cat',       side: 'right' },
+  { image: 'Assets/dog.png',       name: 'dog',       side: 'left'  },
+  { image: 'Assets/duck.png',      name: 'duck',      side: 'right' },
+  { image: 'Assets/butterfly.jpg', name: 'butterfly', side: 'left'  },
+  { image: 'Assets/bee.png',       name: 'bee',       side: 'right' },
+  { image: 'Assets/fish.png',      name: 'fish',      side: 'left'  },
+  { image: 'Assets/monkey.png',    name: 'monkey',    side: 'right' },
+  { image: 'Assets/boy.png',       name: 'boy',       side: 'left'  },
+];
+
+const sndWrong = new Audio('Assets/wrong.mp3');
+const sndClaps = new Audio('Assets/free_claps.mp3');
+
+let curQ = 0, score = 0, muted = false, answered = false, attempts = 0;
+
+/* ── AUDIO ── */
+function speak(text) {
+  sndClaps.pause(); sndClaps.currentTime = 0;
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  if (muted) return;
+  setTimeout(() => {
+    if (muted) return;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = 0.8; u.pitch = 1.0;
+    const voices = window.speechSynthesis.getVoices();
+    const v = voices.find(v => v.lang.startsWith('en') && !v.name.includes('Google'))
+           || voices.find(v => v.lang.startsWith('en')) || voices[0];
+    if (v) u.voice = v;
+    window.speechSynthesis.speak(u);
+  }, 150);
+}
+window.speechSynthesis.getVoices();
+window.speechSynthesis.addEventListener('voiceschanged', () => window.speechSynthesis.getVoices());
+
+function playClaps() {
+  if (muted) return;
+  sndClaps.currentTime = 0; sndClaps.play().catch(() => {});
+  setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 3000);
+}
+
+/* ── LOAD QUESTION ── */
+function loadQuestion() {
+  if (curQ >= 8) { showEnd(); return; }
+  answered = false; attempts = 0;
+
+  const q = QUESTIONS[curQ];
+  document.getElementById('q-num').textContent     = curQ + 1;
+  document.getElementById('score-val').textContent = score;
+  document.getElementById('prog-bar').style.width  = (curQ / 8 * 100) + '%';
+
+  const text = `Is the ${q.name} on the left or the right?`;
+  document.getElementById('instruction-txt').textContent = text.toUpperCase();
+
+  /* Position animal */
+  const animal = document.getElementById('dir-animal');
+  animal.src = q.image;
+  animal.alt = q.name;
+  animal.className = 'dir-animal on-' + q.side;
+
+  /* Reset scene + buttons */
+  document.getElementById('dir-scene').className = 'dir-scene';
+  clearBtnStates();
+
+  speak(text);
+}
+
+/* ── SELECT ── */
+function selectDir(dir) {
+  if (answered) return;
+  const q = QUESTIONS[curQ];
+  if (dir === q.side) registerCorrect(dir);
+  else registerWrong(dir);
+}
+
+function registerCorrect(dir) {
+  if (answered) return;
+  answered = true; score++;
+  document.getElementById('score-val').textContent = score;
+
+  document.getElementById('dir-scene').classList.add('correct');
+  document.getElementById('btn-' + dir).classList.add('correct');
+
+  window.speechSynthesis?.cancel();
+  playClaps();
+  showToast('⭐ Correct!', '#4CAF50');
+  spawnConfetti();
+  setTimeout(nextQuestion, 3200);
+}
+
+function registerWrong(dir) {
+  if (answered) return;
+  attempts++;
+
+  if (attempts === 1) {
+    sndWrong.currentTime = 0; if (!muted) sndWrong.play().catch(() => {});
+    showToast('❌ Try again!', '#f44336');
+    const wrongBtn = document.getElementById('btn-' + dir);
+    wrongBtn.classList.add('wrong');
+    const correctDir = QUESTIONS[curQ].side;
+    document.getElementById('btn-' + correctDir).classList.add('hint');
+    setTimeout(() => { wrongBtn.classList.remove('wrong'); hideToast(); }, 900);
+  } else {
+    answered = true;
+    sndWrong.currentTime = 0; if (!muted) sndWrong.play().catch(() => {});
+    const wrongBtn = document.getElementById('btn-' + dir);
+    wrongBtn.classList.add('wrong');
+    const correctDir = QUESTIONS[curQ].side;
+    setTimeout(() => {
+      showToast('💡 Correct answer!', '#FF9800');
+      wrongBtn.classList.remove('wrong');
+      clearBtnStates();
+      document.getElementById('btn-' + correctDir).classList.add('correct');
+      document.getElementById('dir-scene').classList.add('correct');
+      setTimeout(nextQuestion, 3000);
+    }, 1000);
+  }
+}
+
+function nextQuestion() { clearBtnStates(); curQ++; loadQuestion(); }
+
+function clearBtnStates() {
+  document.getElementById('btn-left').classList.remove('correct','wrong','hint');
+  document.getElementById('btn-right').classList.remove('correct','wrong','hint');
+}
+
+/* ── GAME FLOW ── */
+function startGame() {
+  document.getElementById('intro-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display  = 'flex';
+  curQ = 0; score = 0;
+  loadQuestion();
+}
+
+function restartGame() {
+  clearBtnStates();
+  window.speechSynthesis?.cancel();
+  document.getElementById('end-screen').style.display  = 'none';
+  document.getElementById('game-screen').style.display = 'flex';
+  curQ = 0; score = 0; attempts = 0; answered = false;
+  loadQuestion();
+}
+
+/* ── TOAST ── */
+function showToast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.background = color;
+  t.classList.add('show');
+  setTimeout(hideToast, 1800);
+}
+function hideToast() { document.getElementById('toast').classList.remove('show'); }
+
+/* ── CONFETTI ── */
+function spawnConfetti() {
+  const colors = ['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF922B','#cc5de8','#ff6b81'];
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.cssText = `
+      left:${Math.random()*100}vw;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${6+Math.random()*8}px; height:${6+Math.random()*8}px;
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      animation-duration:${1.5+Math.random()*2}s;
+      animation-delay:${Math.random()*0.8}s;
+    `;
+    document.body.appendChild(p);
+    p.addEventListener('animationend', () => p.remove());
+  }
+}
+
+/* ── MUTE ── */
+function toggleMute() {
+  muted = !muted;
+  document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+  if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
+  else if (curQ < 8) {
+    const q = QUESTIONS[curQ];
+    speak(`Is the ${q.name} on the left or the right?`);
+  }
+}
+
+/* ── END ── */
+function showEnd() {
+  document.getElementById('game-screen').style.display = 'none';
+  document.getElementById('end-screen').style.display  = 'flex';
+  document.getElementById('final-score').textContent   = score;
+  document.getElementById('end-stars').textContent = score >= 7 ? '⭐⭐⭐' : score >= 5 ? '⭐⭐' : '⭐';
+  window.speechSynthesis?.cancel();
+  playClaps(); spawnConfetti();
+  setTimeout(spawnConfetti, 800);
+}
+</script>
+</body>
+</html>
