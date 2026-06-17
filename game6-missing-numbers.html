@@ -68,86 +68,89 @@
       margin-top: auto; margin-bottom: auto; flex-shrink: 0;
     }
 
-    /* ── TRAIN ── */
-    .train-wrap {
-      display: flex; align-items: flex-end; gap: 0;
+    /* ── TRAIN SCENE ── */
+    .train-scene {
       width: 100%; overflow-x: auto; padding-bottom: 4px;
-      justify-content: center;
+    }
+    .train-row {
+      display: flex; align-items: flex-end;
+      min-width: max-content; padding: 0 6px;
+      gap: 0;
     }
 
-    /* Engine */
-    .train-engine {
-      flex-shrink: 0;
-      display: flex; flex-direction: column; align-items: center;
-    }
-    .engine-body {
-      width: 72px; height: 56px;
-      background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-      border-radius: 10px 10px 0 0;
-      position: relative; display: flex; align-items: center; justify-content: center;
-    }
-    .engine-body::before {
-      content: '';
-      position: absolute; top: -10px; left: 10px;
-      width: 20px; height: 12px;
-      background: #2d3436; border-radius: 4px 4px 0 0;
-    }
-    .engine-window {
-      width: 28px; height: 20px;
-      background: #74b9ff; border-radius: 4px;
-      border: 2px solid #dfe6e9;
-    }
-    .engine-base {
-      width: 80px; height: 14px;
-      background: #636e72; border-radius: 0 0 4px 4px;
-    }
-    .wheels { display: flex; gap: 14px; margin-top: 3px; }
-    .wheel {
-      width: 20px; height: 20px;
-      background: radial-gradient(circle at 35% 35%, #b2bec3, #2d3436);
-      border-radius: 50%; border: 2px solid #2d3436;
-    }
+    /* Locomotive SVG */
+    .loco-svg { width: 130px; height: 105px; flex-shrink: 0; display: block; }
 
-    /* Connector */
-    .connector {
-      width: 10px; height: 8px;
-      background: #636e72; align-self: center; margin-bottom: 20px; flex-shrink: 0;
+    /* Coupling hook between cars */
+    .hook {
+      width: 14px; height: 6px;
+      background: #555; border-radius: 2px;
+      align-self: center; margin-bottom: 26px; flex-shrink: 0;
     }
 
     /* Carriage */
-    .carriage {
-      flex-shrink: 0; display: flex; flex-direction: column; align-items: center;
+    .carriage { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; }
+    .car-roof {
+      width: 90px; height: 8px;
+      background: linear-gradient(90deg, #c0392b, #e74c3c, #c0392b);
+      border-radius: 5px 5px 0 0;
     }
     .car-body {
-      width: 72px; height: 56px;
-      background: linear-gradient(135deg, #fd9644, #e67e22);
-      border-radius: 8px; border: 3px solid #d35400;
+      width: 90px; height: 62px;
+      background: linear-gradient(180deg, #fd9644 0%, #e67e22 100%);
+      border-left: 3px solid #c0392b; border-right: 3px solid #c0392b;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.6em; font-weight: 800; color: white;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-      position: relative;
+      position: relative; transition: background 0.3s;
     }
-    .car-body.missing {
-      background: linear-gradient(135deg, #dfe6e9, #b2bec3);
-      border: 3px dashed #636e72; color: #636e72;
-      animation: missingPulse 1.5s ease-in-out infinite;
+    .car-num {
+      width: 58px; height: 42px;
+      background: white; border-radius: 6px;
+      border: 2px solid rgba(0,0,0,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6em; font-weight: 800; color: #2d3436;
+      transition: background 0.3s, color 0.3s;
     }
-    @keyframes missingPulse { 0%,100%{box-shadow:0 0 0 0 rgba(108,92,231,0.3)} 50%{box-shadow:0 0 0 8px rgba(108,92,231,0)} }
-    .car-body.correct { background: linear-gradient(135deg,#55efc4,#00b894); border-color:#00b894; }
-    .car-base { width: 80px; height: 10px; background: #636e72; border-radius: 0 0 4px 4px; }
-    .car-wheels { display: flex; gap: 22px; margin-top: 3px; }
+    .car-body.missing { background: linear-gradient(180deg, #dfe6e9, #b2bec3); }
+    .car-body.missing .car-num {
+      background: #f0f0f0; color: #999; border: 2px dashed #999;
+      animation: missingPulse 1.4s ease-in-out infinite;
+    }
+    .car-body.correct { background: linear-gradient(180deg,#55efc4,#00b894); }
+    .car-body.correct .car-num { background: #e8fff6; color: #00b894; }
+    @keyframes missingPulse { 0%,100%{box-shadow:0 0 0 0 rgba(108,92,231,0.35)} 50%{box-shadow:0 0 0 8px rgba(108,92,231,0)} }
+    .car-floor {
+      width: 96px; height: 10px;
+      background: #7f5500;
+      border-radius: 0 0 4px 4px;
+    }
+    .car-truck {
+      width: 86px; height: 12px;
+      background: #444; border-radius: 3px; margin-top: 1px;
+      display: flex; align-items: center; justify-content: space-around; padding: 0 10px;
+    }
+    .wheel {
+      width: 20px; height: 20px;
+      background: radial-gradient(circle at 35% 35%, #aaa, #1a1a1a);
+      border-radius: 50%; border: 2px solid #111; margin-top: 5px;
+    }
 
     /* Track */
-    .track-wrap { width: 100%; position: relative; height: 12px; margin-top: 2px; }
-    .track-line {
-      position: absolute; top: 4px; left: 0; right: 0; height: 4px;
-      background: #795548;
+    .track-strip {
+      width: 100%; min-width: max-content;
+      position: relative; height: 18px; padding: 0 6px;
     }
-    .track-ties {
-      display: flex; gap: 0; width: 100%;
+    .rail {
+      position: absolute; left: 6px; right: 6px; height: 5px;
+      background: linear-gradient(90deg,#8B6914,#D4AC0D,#8B6914);
+      border-radius: 2px;
     }
-    .tie { flex: 1; height: 12px; background: #8D6E63; margin: 0 2px; border-radius: 2px; }
+    .rail.top { top: 0; }
+    .rail.bot { bottom: 0; }
+    .sleepers {
+      display: flex; gap: 9px; position: absolute;
+      top: -1px; bottom: -1px; left: 6px; right: 6px;
+    }
+    .sleeper { flex: 1; background: #6D4C41; border-radius: 2px; min-width: 14px; }
 
     /* ── CHOICES ── */
     .choices-label {
@@ -231,28 +234,31 @@
     /* Responsive */
     @media (max-width: 768px) {
       #game-screen { padding: 10px 10px 76px; }
-      .q-card { padding: 18px 12px; gap: 18px; }
-      .car-body { width: 60px; height: 48px; font-size: 1.4em; }
-      .car-base, .engine-base { width: 68px; }
-      .engine-body { width: 60px; height: 48px; }
+      .q-card { padding: 16px 10px; gap: 16px; }
+      .loco-svg { width: 100px; height: 80px; }
+      .car-roof { width: 72px; }
+      .car-body { width: 72px; height: 52px; }
+      .car-num { width: 46px; height: 34px; font-size: 1.3em; }
+      .car-floor { width: 78px; }
+      .car-truck { width: 68px; }
       .choice-btn { width: 70px; height: 70px; font-size: 1.6em; }
       .hdr-title { display: none; }
     }
     @media (max-width: 480px) {
       #game-screen { padding: 8px 8px 76px; }
-      .q-card { padding: 14px 8px; gap: 14px; border-radius: 18px; }
-      .car-body { width: 52px; height: 42px; font-size: 1.2em; border-radius: 6px; }
-      .car-base, .engine-base { width: 60px; }
-      .engine-body { width: 52px; height: 42px; }
-      .engine-body::before { left: 6px; }
-      .connector { width: 7px; }
+      .q-card { padding: 12px 8px; gap: 12px; border-radius: 18px; }
+      .loco-svg { width: 80px; height: 65px; }
+      .car-roof { width: 60px; }
+      .car-body { width: 60px; height: 44px; }
+      .car-num { width: 38px; height: 28px; font-size: 1.1em; border-radius: 4px; }
+      .car-floor { width: 66px; }
+      .car-truck { width: 56px; }
+      .wheel { width: 16px; height: 16px; }
+      .hook { width: 10px; margin-bottom: 20px; }
       .choice-btn { width: 64px; height: 64px; font-size: 1.5em; border-radius: 14px; }
       .choices-row { gap: 12px; }
       .hdr-score { font-size: 1em; }
-      .instruction { font-size: clamp(0.85em,3.5vw,1em); margin-bottom: 8px; }
-      .wheel { width: 16px; height: 16px; }
-      .car-wheels { gap: 16px; }
-      .wheels { gap: 10px; }
+      .instruction { font-size: clamp(0.85em,3.5vw,1em); margin-bottom: 6px; }
     }
   </style>
 </head>
@@ -284,7 +290,7 @@
 
   <div class="q-card">
     <!-- Train -->
-    <div class="train-wrap" id="train-wrap"></div>
+    <div class="train-scene" id="train-scene"></div>
 
     <!-- Number choices -->
     <div class="choices-label">Pick the missing number</div>
@@ -323,20 +329,30 @@ const sndClaps = new Audio('Assets/free_claps.mp3');
 let curQ = 0, score = 0, muted = false, answered = false, attempts = 0;
 
 /* ── AUDIO ── */
-function speak(text) {
+function getVoice() {
+  const voices = window.speechSynthesis.getVoices();
+  return voices.find(v => v.lang.startsWith('en') && !v.name.includes('Google'))
+      || voices.find(v => v.lang.startsWith('en')) || voices[0];
+}
+
+function speakSequence(q) {
   sndClaps.pause(); sndClaps.currentTime = 0;
   if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
   if (muted) return;
   setTimeout(() => {
     if (muted) return;
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.0;
-    const voices = window.speechSynthesis.getVoices();
-    const v = voices.find(v => v.lang.startsWith('en') && !v.name.includes('Google'))
-           || voices.find(v => v.lang.startsWith('en')) || voices[0];
-    if (v) u.voice = v;
-    window.speechSynthesis.speak(u);
+    const v = getVoice();
+    const texts = [
+      'What is the missing number',
+      ...q.sequence.map((n, i) => i === q.missingIdx ? 'blank' : String(n))
+    ];
+    texts.forEach(text => {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.0;
+      if (v) u.voice = v;
+      window.speechSynthesis.speak(u);
+    });
   }, 150);
 }
 window.speechSynthesis.getVoices();
@@ -350,28 +366,86 @@ function playClaps() {
 
 /* ── BUILD TRAIN ── */
 function buildTrain(sequence, missingIdx) {
-  const wrap = document.getElementById('train-wrap');
-  wrap.innerHTML = '';
+  const scene = document.getElementById('train-scene');
+  scene.innerHTML = '';
 
-  /* Engine */
-  wrap.innerHTML += `
-    <div class="train-engine">
-      <div class="engine-body"><div class="engine-window"></div></div>
-      <div class="engine-base"></div>
-      <div class="wheels"><div class="wheel"></div><div class="wheel"></div><div class="wheel"></div></div>
-    </div>`;
+  const row = document.createElement('div');
+  row.className = 'train-row';
 
+  /* SVG Locomotive */
+  const loco = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  loco.setAttribute('viewBox', '0 0 130 105');
+  loco.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  loco.classList.add('loco-svg');
+  loco.innerHTML = `
+    <rect x="14" y="22" width="16" height="26" rx="3" fill="#4a148c"/>
+    <rect x="10" y="17" width="24" height="9" rx="4" fill="#6a1b9a"/>
+    <circle cx="22" cy="11" r="5" fill="rgba(255,255,255,0.75)"/>
+    <circle cx="29" cy="7" r="4" fill="rgba(255,255,255,0.55)"/>
+    <circle cx="18" cy="6" r="3.5" fill="rgba(255,255,255,0.4)"/>
+    <rect x="6" y="44" width="104" height="34" rx="10" fill="#7b1fa2"/>
+    <rect x="12" y="50" width="88" height="10" rx="5" fill="rgba(255,255,255,0.22)"/>
+    <ellipse cx="50" cy="44" rx="14" ry="7" fill="#9c27b0"/>
+    <rect x="84" y="26" width="36" height="52" rx="6" fill="#6a1b9a"/>
+    <rect x="80" y="21" width="42" height="9" rx="4" fill="#4a148c"/>
+    <rect x="90" y="33" width="20" height="15" rx="4" fill="#B3E5FC"/>
+    <line x1="100" y1="33" x2="100" y2="48" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+    <rect x="0" y="73" width="8" height="6" rx="1" fill="#444"/>
+    <circle cx="7" cy="62" r="5" fill="#FFD700"/>
+    <circle cx="7" cy="62" r="3" fill="#FFFDE7"/>
+    <rect x="6" y="75" width="102" height="6" rx="3" fill="#4a148c"/>
+    <circle cx="32" cy="86" r="15" fill="#1a1a1a" stroke="#555" stroke-width="1.5"/>
+    <circle cx="32" cy="86" r="10" fill="#2d2d2d"/>
+    <circle cx="32" cy="86" r="4" fill="#888"/>
+    <line x1="32" y1="75" x2="32" y2="97" stroke="#555" stroke-width="2"/>
+    <line x1="21" y1="86" x2="43" y2="86" stroke="#555" stroke-width="2"/>
+    <line x1="24" y1="78" x2="40" y2="94" stroke="#555" stroke-width="1.5"/>
+    <line x1="40" y1="78" x2="24" y2="94" stroke="#555" stroke-width="1.5"/>
+    <circle cx="14" cy="90" r="9" fill="#1a1a1a" stroke="#555" stroke-width="1"/>
+    <circle cx="14" cy="90" r="5" fill="#2d2d2d"/>
+    <circle cx="14" cy="90" r="2" fill="#888"/>
+    <circle cx="98" cy="88" r="11" fill="#1a1a1a" stroke="#555" stroke-width="1"/>
+    <circle cx="98" cy="88" r="7" fill="#2d2d2d"/>
+    <circle cx="98" cy="88" r="3" fill="#888"/>
+    <rect x="32" y="82" width="66" height="4" rx="2" fill="#555"/>
+    <rect x="6" y="44" width="104" height="3" rx="1.5" fill="rgba(255,215,0,0.5)"/>
+  `;
+  row.appendChild(loco);
+
+  /* Carriages */
   sequence.forEach((num, i) => {
+    const hook = document.createElement('div');
+    hook.className = 'hook';
+    row.appendChild(hook);
+
     const isMissing = (i === missingIdx);
-    wrap.innerHTML += `<div class="connector"></div>
-      <div class="carriage">
-        <div class="car-body${isMissing ? ' missing' : ''}" id="car-${i}">
-          ${isMissing ? '?' : num}
-        </div>
-        <div class="car-base"></div>
-        <div class="car-wheels"><div class="wheel"></div><div class="wheel"></div></div>
-      </div>`;
+    const carriage = document.createElement('div');
+    carriage.className = 'carriage';
+    carriage.innerHTML = `
+      <div class="car-roof"></div>
+      <div class="car-body${isMissing ? ' missing' : ''}" id="car-${i}">
+        <div class="car-num">${isMissing ? '?' : num}</div>
+      </div>
+      <div class="car-floor"></div>
+      <div class="car-truck">
+        <div class="wheel"></div>
+        <div class="wheel"></div>
+      </div>
+    `;
+    row.appendChild(carriage);
   });
+
+  scene.appendChild(row);
+
+  /* Track */
+  const track = document.createElement('div');
+  track.className = 'track-strip';
+  track.innerHTML = `
+    <div class="sleepers">${Array(22).fill('<div class="sleeper"></div>').join('')}</div>
+    <div class="rail top"></div>
+    <div class="rail bot"></div>
+  `;
+  scene.appendChild(track);
 }
 
 /* ── BUILD CHOICES ── */
@@ -413,7 +487,7 @@ function loadQuestion() {
 
   buildTrain(q.sequence, q.missingIdx);
   buildChoices(q.choices);
-  speak(q.text.replace(/\?/g, 'blank'));
+  speakSequence(q);
 }
 
 function selectChoice(val) {
@@ -435,7 +509,7 @@ function registerCorrect() {
 
   /* Fill the missing car with the correct number */
   const car = document.getElementById('car-' + q.missingIdx);
-  car.textContent = correct;
+  car.querySelector('.car-num').textContent = correct;
   car.classList.remove('missing');
   car.classList.add('correct');
 
@@ -476,7 +550,7 @@ function registerWrong(val) {
       getChoiceBtn(correctVal).classList.add('correct');
       /* Also fill the train car */
       const car = document.getElementById('car-' + q.missingIdx);
-      car.textContent = correctVal;
+      car.querySelector('.car-num').textContent = correctVal;
       car.classList.remove('missing');
       car.classList.add('correct');
       setTimeout(nextQuestion, 3000);
@@ -519,7 +593,7 @@ function toggleMute() {
   muted = !muted;
   document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
   if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
-  else { const txt = document.getElementById('instruction-txt').textContent; if (txt) speak(txt); }
+  else if (curQ < 8) { speakSequence(QUESTIONS[curQ]); }
 }
 
 /* ── END ── */
