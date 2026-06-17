@@ -70,11 +70,15 @@
 
     /* ── TRAIN SCENE ── */
     .train-scene {
-      width: 100%; overflow-x: auto; padding-bottom: 4px;
+      width: 100%; overflow: hidden; padding-bottom: 4px;
+    }
+    .train-inner {
+      display: flex; flex-direction: column; width: max-content;
+      transform-origin: top left;
     }
     .train-row {
       display: flex; align-items: flex-end;
-      min-width: max-content; padding: 0 6px;
+      width: max-content; padding: 0 6px;
       gap: 0;
     }
 
@@ -134,25 +138,7 @@
       border-radius: 50%; border: 2px solid #111; margin-top: 5px;
     }
 
-    /* Track */
-    .track-strip {
-      width: 100%; min-width: max-content;
-      position: relative; height: 18px; padding: 0 6px;
-    }
-    .rail {
-      position: absolute; left: 6px; right: 6px; height: 5px;
-      background: linear-gradient(90deg,#8B6914,#D4AC0D,#8B6914);
-      border-radius: 2px;
-    }
-    .rail.top { top: 0; }
-    .rail.bot { bottom: 0; }
-    .sleepers {
-      display: flex; gap: 9px; position: absolute;
-      top: -1px; bottom: -1px; left: 6px; right: 6px;
-    }
-    .sleeper { flex: 1; background: #6D4C41; border-radius: 2px; min-width: 14px; }
-
-    /* ── CHOICES ── */
+/* ── CHOICES ── */
     .choices-label {
       font-size: 0.9em; color: #999; font-weight: 700; letter-spacing: 0.05em;
     }
@@ -365,9 +351,24 @@ function playClaps() {
 }
 
 /* ── BUILD TRAIN ── */
+function fitTrain() {
+  const scene = document.getElementById('train-scene');
+  const inner = scene.querySelector('.train-inner');
+  if (!inner) return;
+  inner.style.zoom = '1';
+  setTimeout(() => {
+    const avail = scene.clientWidth;
+    const nat = inner.scrollWidth;
+    if (nat > avail && avail > 0) inner.style.zoom = String((avail / nat).toFixed(4));
+  }, 0);
+}
+
 function buildTrain(sequence, missingIdx) {
   const scene = document.getElementById('train-scene');
   scene.innerHTML = '';
+
+  const inner = document.createElement('div');
+  inner.className = 'train-inner';
 
   const row = document.createElement('div');
   row.className = 'train-row';
@@ -435,17 +436,9 @@ function buildTrain(sequence, missingIdx) {
     row.appendChild(carriage);
   });
 
-  scene.appendChild(row);
-
-  /* Track */
-  const track = document.createElement('div');
-  track.className = 'track-strip';
-  track.innerHTML = `
-    <div class="sleepers">${Array(22).fill('<div class="sleeper"></div>').join('')}</div>
-    <div class="rail top"></div>
-    <div class="rail bot"></div>
-  `;
-  scene.appendChild(track);
+  inner.appendChild(row);
+  scene.appendChild(inner);
+  fitTrain();
 }
 
 /* ── BUILD CHOICES ── */
