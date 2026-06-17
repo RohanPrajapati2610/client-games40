@@ -817,9 +817,13 @@ function showEnd() {
 /* ─── RESTART ─── */
 function restartGame() {
   clearCanvas();
+  hideHint();
+  setFrame('src-frame', '');
+  setFrame('tgt-frame', '');
+  window.speechSynthesis?.cancel();
   document.getElementById('end-screen').style.display  = 'none';
   document.getElementById('game-screen').style.display = 'flex';
-  curQ = 0; score = 0;
+  curQ = 0; score = 0; attempts = 0; answered = false;
   loadQuestion();
 }
 
