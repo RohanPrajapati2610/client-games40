@@ -32,7 +32,7 @@
     /* ── GAME ── */
     #game-screen {
       display: none; flex-direction: column;
-      width: 100%; max-width: 860px; min-height: 100vh; padding: 14px 14px 10px;
+      width: 100%; max-width: 860px; min-height: 100vh; padding: 14px 14px 70px;
     }
 
     /* Header */
@@ -112,8 +112,9 @@
     #hint-label.show { display: block; }
     @keyframes arrowBounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
 
-    /* Bottom */
-    .bottom-row { display:flex; justify-content:center; padding:10px 0 12px; }
+    /* Bottom — fixed to viewport bottom so always visible */
+    .bottom-row { display:flex; justify-content:center; position:fixed; bottom:16px; left:0; right:0; z-index:50; pointer-events:none; }
+    .btn-restart { pointer-events:all; }
     .btn-restart { background:linear-gradient(135deg,#FF9800,#F57C00); color:white; border:none; padding:12px 32px; border-radius:40px; font-size:1em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 5px 14px rgba(255,152,0,0.4); transition:transform 0.1s; }
     .btn-restart:hover { transform:translateY(-2px); }
 
