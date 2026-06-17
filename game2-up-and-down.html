@@ -120,7 +120,7 @@
     @keyframes arrowBounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
 
     /* Bottom */
-    .bottom-row { display:flex; justify-content:center; margin-top:14px; }
+    .bottom-row { display:flex; justify-content:center; margin-top:14px; position:sticky; bottom:10px; z-index:10; }
     .btn-restart { background:linear-gradient(135deg,#FF9800,#F57C00); color:white; border:none; padding:12px 32px; border-radius:40px; font-size:1em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 5px 14px rgba(255,152,0,0.4); transition:transform 0.1s; }
     .btn-restart:hover { transform:translateY(-2px); }
 
@@ -534,13 +534,21 @@ function loadQuestion() {
   document.getElementById('question-txt').textContent = q.text;
 
   const img = document.getElementById('scene-img');
-  img.src = q.img;
-  img.onload = () => {
+
+  function syncCanvasToImg() {
     const cv = canvas();
-    cv.width  = img.offsetWidth;
-    cv.height = img.offsetHeight;
+    cv.width  = img.offsetWidth  || img.naturalWidth  || 300;
+    cv.height = img.offsetHeight || img.naturalHeight || 300;
     clearCanvas();
-  };
+  }
+
+  img.onload  = syncCanvasToImg;
+  img.onerror = () => { console.warn('Image failed:', q.img); };
+  img.src = q.img;
+
+  // If browser served from cache, onload won't fire — sync immediately
+  if (img.complete && img.naturalWidth > 0) syncCanvasToImg();
+
   clearCanvas();
   hideHint();
 }
