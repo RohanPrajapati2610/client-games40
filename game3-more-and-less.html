@@ -363,7 +363,7 @@ const sndCorrect = new Audio('Assets/correct.mp3');
 const sndWrong   = new Audio('Assets/wrong.mp3');
 const sndClaps   = new Audio('Assets/free_claps.mp3');
 
-let curQ = 0, score = 0, muted = false, answered = false, wrongCount = 0;
+let curQ = 0, score = 0, muted = false, answered = false, attempts = 0;
 
 /* ── AUDIO ── */
 function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(() => {}); }
@@ -404,7 +404,7 @@ function startGame() {
 
 function loadQuestion() {
   if (curQ >= 8) { showEnd(); return; }
-  answered = false; wrongCount = 0;
+  answered = false; attempts = 0;
 
   const q = QUESTIONS[curQ];
   document.getElementById('q-num').textContent      = curQ + 1;
@@ -444,37 +444,55 @@ function selectChoice(side) {
 }
 
 function registerCorrect() {
+  if (answered) return;
   answered = true;
-  document.getElementById('choice-' + QUESTIONS[curQ].correctSide).classList.add('correct');
   score++;
   document.getElementById('score-val').textContent = score;
+  clearHint();
+  document.getElementById('choice-' + QUESTIONS[curQ].correctSide).classList.add('correct');
   window.speechSynthesis?.cancel();
   playClaps();
   showToast('⭐ Correct!', '#4CAF50');
   spawnConfetti();
-  setTimeout(() => { curQ++; loadQuestion(); }, 3200);
+  setTimeout(nextQuestion, 3200);
 }
 
 function registerWrong(side) {
-  wrongCount++;
-  document.getElementById('choice-' + side).classList.add('wrong');
-  play(sndWrong);
-  showToast('❌ Try again!', '#f44336');
-  setTimeout(() => {
-    document.getElementById('choice-' + side).classList.remove('wrong');
-    hideToast();
-    if (wrongCount >= 2) {
-      /* 2nd wrong: show correct and advance */
-      answered = true;
-      document.getElementById('choice-' + QUESTIONS[curQ].correctSide).classList.remove('hint');
+  if (answered) return;
+  attempts++;
+
+  if (attempts === 1) {
+    /* 1st wrong: shake wrong box, hint glow on correct box */
+    play(sndWrong);
+    showToast('❌ Try again!', '#f44336');
+    const wrongEl = document.getElementById('choice-' + side);
+    wrongEl.classList.add('wrong');
+    document.getElementById('choice-' + QUESTIONS[curQ].correctSide).classList.add('hint');
+    setTimeout(() => { wrongEl.classList.remove('wrong'); hideToast(); }, 900);
+  } else {
+    /* 2nd wrong: flash both red, then reveal correct */
+    answered = true;
+    clearHint();
+    play(sndWrong);
+    showToast('❌ Wrong!', '#f44336');
+    document.getElementById('choice-left').classList.add('wrong');
+    document.getElementById('choice-right').classList.add('wrong');
+    setTimeout(() => {
+      showToast('💡 Correct answer!', '#FF9800');
+      document.getElementById('choice-left').classList.remove('wrong');
+      document.getElementById('choice-right').classList.remove('wrong');
       document.getElementById('choice-' + QUESTIONS[curQ].correctSide).classList.add('correct');
-      setTimeout(() => { curQ++; loadQuestion(); }, 1500);
-    } else {
-      /* 1st wrong: show gold hint pulse on correct box */
-      document.getElementById('choice-' + QUESTIONS[curQ].correctSide).classList.add('hint');
-    }
-  }, 900);
+      setTimeout(nextQuestion, 3000);
+    }, 1000);
+  }
 }
+
+function clearHint() {
+  document.getElementById('choice-left').classList.remove('hint');
+  document.getElementById('choice-right').classList.remove('hint');
+}
+
+function nextQuestion() { clearHint(); curQ++; loadQuestion(); }
 
 /* ── TOAST ── */
 function showToast(msg, color) {
@@ -534,9 +552,11 @@ function showEnd() {
 }
 
 function restartGame() {
+  clearHint();
+  window.speechSynthesis?.cancel();
   document.getElementById('end-screen').style.display  = 'none';
   document.getElementById('game-screen').style.display = 'flex';
-  curQ = 0; score = 0;
+  curQ = 0; score = 0; attempts = 0; answered = false;
   loadQuestion();
 }
 </script>
