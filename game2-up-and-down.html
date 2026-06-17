@@ -256,9 +256,10 @@ function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(()=>{});
 function speak(text) {
   sndClaps.pause(); sndClaps.currentTime = 0;
   if (!('speechSynthesis' in window)) return;
-  if (muted) { window.speechSynthesis.cancel(); return; }
   window.speechSynthesis.cancel();
+  if (muted) return;
   setTimeout(() => {
+    if (muted) return;
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.0;
     const voices = window.speechSynthesis.getVoices();
