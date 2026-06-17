@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Missing Numbers · LY3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', 'Trebuchet MS', Arial, sans-serif;
+      background: linear-gradient(135deg, #fce4ec 0%, #e8f5e9 50%, #e3f2fd 100%);
+      height: 100vh; height: 100dvh;
+      display: flex; align-items: stretch; justify-content: center;
+      overflow: hidden; user-select: none; -webkit-user-select: none;
+    }
+
+    /* ── INTRO ── */
+    #intro-screen {
+      position: fixed; inset: 0;
+      background: linear-gradient(160deg, #4a148c, #7b1fa2, #ab47bc);
+      display: flex; align-items: center; justify-content: center;
+      border: 5px solid #FFD700; z-index: 200; cursor: pointer;
+    }
+    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; }
+    @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+    /* ── GAME SCREEN ── */
+    #game-screen {
+      display: none; flex-direction: column;
+      width: 100%; max-width: 860px;
+      height: 100%; padding: 14px 14px 80px; overflow-y: auto;
+    }
+
+    /* Header */
+    .hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      background: white; border-radius: 18px; padding: 10px 18px;
+      margin-bottom: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); flex-shrink: 0;
+    }
+    .hdr-score { font-size: 1.2em; font-weight: bold; color: #4CAF50; min-width: 70px; }
+    .hdr-title { font-size: clamp(0.75em,2.5vw,1em); color: #6a0dad; font-weight: bold; text-align: center; }
+    .mute-btn { width: 38px; height: 38px; border: 2px solid #ddd; border-radius: 50%; background: white; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .mute-btn:hover { border-color: #aaa; }
+
+    /* Progress */
+    .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-shrink: 0; }
+    .progress-label { font-size: 0.9em; color: #777; white-space: nowrap; }
+    .progress-bar-wrap { flex: 1; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg,#4CAF50,#8BC34A); transition: width 0.5s ease; }
+
+    /* Instruction */
+    .instruction {
+      text-align: center; font-size: clamp(0.95em,3vw,1.15em);
+      color: #333; font-weight: 700; margin-bottom: 10px;
+      padding: 0 4px; flex-shrink: 0; line-height: 1.4;
+    }
+
+    /* Card */
+    .q-card {
+      background: white; border-radius: 24px; padding: 24px 16px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+      display: flex; flex-direction: column; align-items: center; gap: 24px;
+      margin-top: auto; margin-bottom: auto; flex-shrink: 0;
+    }
+
+    /* ── TRAIN ── */
+    .train-wrap {
+      display: flex; align-items: flex-end; gap: 0;
+      width: 100%; overflow-x: auto; padding-bottom: 4px;
+      justify-content: center;
+    }
+
+    /* Engine */
+    .train-engine {
+      flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .engine-body {
+      width: 72px; height: 56px;
+      background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+      border-radius: 10px 10px 0 0;
+      position: relative; display: flex; align-items: center; justify-content: center;
+    }
+    .engine-body::before {
+      content: '';
+      position: absolute; top: -10px; left: 10px;
+      width: 20px; height: 12px;
+      background: #2d3436; border-radius: 4px 4px 0 0;
+    }
+    .engine-window {
+      width: 28px; height: 20px;
+      background: #74b9ff; border-radius: 4px;
+      border: 2px solid #dfe6e9;
+    }
+    .engine-base {
+      width: 80px; height: 14px;
+      background: #636e72; border-radius: 0 0 4px 4px;
+    }
+    .wheels { display: flex; gap: 14px; margin-top: 3px; }
+    .wheel {
+      width: 20px; height: 20px;
+      background: radial-gradient(circle at 35% 35%, #b2bec3, #2d3436);
+      border-radius: 50%; border: 2px solid #2d3436;
+    }
+
+    /* Connector */
+    .connector {
+      width: 10px; height: 8px;
+      background: #636e72; align-self: center; margin-bottom: 20px; flex-shrink: 0;
+    }
+
+    /* Carriage */
+    .carriage {
+      flex-shrink: 0; display: flex; flex-direction: column; align-items: center;
+    }
+    .car-body {
+      width: 72px; height: 56px;
+      background: linear-gradient(135deg, #fd9644, #e67e22);
+      border-radius: 8px; border: 3px solid #d35400;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6em; font-weight: 800; color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .car-body.missing {
+      background: linear-gradient(135deg, #dfe6e9, #b2bec3);
+      border: 3px dashed #636e72; color: #636e72;
+      animation: missingPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes missingPulse { 0%,100%{box-shadow:0 0 0 0 rgba(108,92,231,0.3)} 50%{box-shadow:0 0 0 8px rgba(108,92,231,0)} }
+    .car-body.correct { background: linear-gradient(135deg,#55efc4,#00b894); border-color:#00b894; }
+    .car-base { width: 80px; height: 10px; background: #636e72; border-radius: 0 0 4px 4px; }
+    .car-wheels { display: flex; gap: 22px; margin-top: 3px; }
+
+    /* Track */
+    .track-wrap { width: 100%; position: relative; height: 12px; margin-top: 2px; }
+    .track-line {
+      position: absolute; top: 4px; left: 0; right: 0; height: 4px;
+      background: #795548;
+    }
+    .track-ties {
+      display: flex; gap: 0; width: 100%;
+    }
+    .tie { flex: 1; height: 12px; background: #8D6E63; margin: 0 2px; border-radius: 2px; }
+
+    /* ── CHOICES ── */
+    .choices-label {
+      font-size: 0.9em; color: #999; font-weight: 700; letter-spacing: 0.05em;
+    }
+    .choices-row {
+      display: flex; gap: 16px; justify-content: center; width: 100%;
+    }
+    .choice-btn {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+      border: 4px solid transparent; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8em; font-weight: 800; color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(108,92,231,0.35);
+      transition: transform 0.1s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .choice-btn:active { transform: scale(0.92); }
+    .choice-btn.correct {
+      border-color: #4CAF50; background: linear-gradient(135deg,#55efc4,#00b894);
+      box-shadow: 0 0 0 5px #4CAF5040; animation: popCorrect 0.35s ease;
+    }
+    .choice-btn.wrong {
+      border-color: #f44336; background: linear-gradient(135deg,#ff7675,#d63031);
+      animation: shakeWrong 0.4s ease;
+    }
+    .choice-btn.hint {
+      border-color: #FFD700; border-width: 4px;
+      animation: pulseHint 1s ease-in-out infinite;
+    }
+    @keyframes popCorrect  { 0%{transform:scale(1)} 50%{transform:scale(1.1)} 100%{transform:scale(1)} }
+    @keyframes shakeWrong  { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+    @keyframes pulseHint   { 0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.6)} 50%{box-shadow:0 0 0 12px rgba(255,215,0,0)} }
+
+    /* Restart */
+    .btn-restart {
+      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg,#FF9800,#F44336);
+      color: white; border: none; border-radius: 50px;
+      padding: 14px 36px; font-size: 1.05em; font-family: inherit;
+      font-weight: 800; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(244,67,54,0.4); z-index: 50; white-space: nowrap;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed; top: 20%; left: 50%;
+      transform: translateX(-50%) scale(0);
+      color: white; padding: 14px 28px; border-radius: 50px;
+      font-size: 1.4em; font-weight: 800;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.25); z-index: 100;
+      transition: transform 0.2s, opacity 0.2s;
+      opacity: 0; pointer-events: none; white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) scale(1); opacity: 1; }
+
+    /* Confetti */
+    .confetti-piece {
+      position: fixed; top: -10px; pointer-events: none; z-index: 999;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+
+    /* End screen */
+    #end-screen {
+      display: none; position: fixed; inset: 0;
+      background: linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 18px; z-index: 150; padding: 30px;
+    }
+    .end-trophy { font-size: 4.5em; animation: trophySpin 1.5s ease-out; }
+    @keyframes trophySpin { from{transform:rotate(-20deg) scale(0)} 60%{transform:rotate(10deg) scale(1.1)} to{transform:rotate(0deg) scale(1)} }
+    .end-title { color: #FFD700; font-size: clamp(1.5em,5vw,2.2em); font-weight: bold; text-shadow: 0 3px 10px rgba(0,0,0,0.3); text-align: center; }
+    .end-sub { color: rgba(255,255,255,0.9); font-size: 1.1em; text-align: center; }
+    .end-score-box { background: rgba(255,255,255,0.15); border-radius: 16px; padding: 12px 28px; color: white; font-size: 1.4em; font-weight: bold; }
+    .end-stars { font-size: 2.2em; letter-spacing: 4px; }
+    .btn-play-again { background: #FFD700; color: #333; border: none; border-radius: 50px; padding: 14px 36px; font-size: 1.1em; font-weight: 800; font-family: inherit; cursor: pointer; box-shadow: 0 4px 16px rgba(255,215,0,0.5); }
+    .btn-play-again:hover { transform: scale(1.05); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      #game-screen { padding: 10px 10px 76px; }
+      .q-card { padding: 18px 12px; gap: 18px; }
+      .car-body { width: 60px; height: 48px; font-size: 1.4em; }
+      .car-base, .engine-base { width: 68px; }
+      .engine-body { width: 60px; height: 48px; }
+      .choice-btn { width: 70px; height: 70px; font-size: 1.6em; }
+      .hdr-title { display: none; }
+    }
+    @media (max-width: 480px) {
+      #game-screen { padding: 8px 8px 76px; }
+      .q-card { padding: 14px 8px; gap: 14px; border-radius: 18px; }
+      .car-body { width: 52px; height: 42px; font-size: 1.2em; border-radius: 6px; }
+      .car-base, .engine-base { width: 60px; }
+      .engine-body { width: 52px; height: 42px; }
+      .engine-body::before { left: 6px; }
+      .connector { width: 7px; }
+      .choice-btn { width: 64px; height: 64px; font-size: 1.5em; border-radius: 14px; }
+      .choices-row { gap: 12px; }
+      .hdr-score { font-size: 1em; }
+      .instruction { font-size: clamp(0.85em,3.5vw,1em); margin-bottom: 8px; }
+      .wheel { width: 16px; height: 16px; }
+      .car-wheels { gap: 16px; }
+      .wheels { gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── INTRO ── -->
+<div id="intro-screen" onclick="startGame()">
+  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine">
+</div>
+
+<div id="toast"></div>
+
+<!-- ── GAME ── -->
+<div id="game-screen">
+  <div class="hdr">
+    <div class="hdr-score">⭐ <span id="score-val">0</span> / 8</div>
+    <div class="hdr-title">Missing Numbers</div>
+    <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
+  </div>
+
+  <div class="progress-row">
+    <span class="progress-label">Q <span id="q-num">1</span> / 8</span>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="prog-bar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="instruction" id="instruction-txt"></div>
+
+  <div class="q-card">
+    <!-- Train -->
+    <div class="train-wrap" id="train-wrap"></div>
+
+    <!-- Number choices -->
+    <div class="choices-label">Pick the missing number</div>
+    <div class="choices-row" id="choices-row"></div>
+  </div>
+
+  <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
+</div>
+
+<!-- ── END ── -->
+<div id="end-screen">
+  <div class="end-trophy">🏆</div>
+  <div class="end-title">You have done a great job!</div>
+  <div class="end-sub">You completed all 8 questions!</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 8</div>
+  <div class="end-stars" id="end-stars"></div>
+  <button class="btn-play-again" onclick="restartGame()">▶ &nbsp;Play Again</button>
+</div>
+
+<script>
+/* sequence: full list of 4 numbers; missingIdx: which position is hidden (0-based) */
+const QUESTIONS = [
+  { sequence: [1,  2,  3,  4],  missingIdx: 1, choices: [2,  5,  7],  text: 'What is the missing number? 1, ?, 3, 4' },
+  { sequence: [4,  5,  6,  7],  missingIdx: 2, choices: [3,  6,  9],  text: 'What is the missing number? 4, 5, ?, 7' },
+  { sequence: [8,  9,  10, 11], missingIdx: 3, choices: [4,  11, 13], text: 'What is the missing number? 8, 9, 10, ?' },
+  { sequence: [2,  3,  4,  5],  missingIdx: 1, choices: [3,  6,  8],  text: 'What is the missing number? 2, ?, 4, 5' },
+  { sequence: [6,  7,  8,  9],  missingIdx: 2, choices: [1,  5,  8],  text: 'What is the missing number? 6, 7, ?, 9' },
+  { sequence: [10, 11, 12, 13], missingIdx: 0, choices: [7,  10, 14], text: 'What is the missing number? ?, 11, 12, 13' },
+  { sequence: [3,  4,  5,  6],  missingIdx: 3, choices: [2,  6,  9],  text: 'What is the missing number? 3, 4, 5, ?' },
+  { sequence: [7,  8,  9,  10], missingIdx: 1, choices: [4,  8,  12], text: 'What is the missing number? 7, ?, 9, 10' },
+];
+
+const sndWrong = new Audio('Assets/wrong.mp3');
+const sndClaps = new Audio('Assets/free_claps.mp3');
+
+let curQ = 0, score = 0, muted = false, answered = false, attempts = 0;
+
+/* ── AUDIO ── */
+function speak(text) {
+  sndClaps.pause(); sndClaps.currentTime = 0;
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  if (muted) return;
+  setTimeout(() => {
+    if (muted) return;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.0;
+    const voices = window.speechSynthesis.getVoices();
+    const v = voices.find(v => v.lang.startsWith('en') && !v.name.includes('Google'))
+           || voices.find(v => v.lang.startsWith('en')) || voices[0];
+    if (v) u.voice = v;
+    window.speechSynthesis.speak(u);
+  }, 150);
+}
+window.speechSynthesis.getVoices();
+window.speechSynthesis.addEventListener('voiceschanged', () => window.speechSynthesis.getVoices());
+
+function playClaps() {
+  if (muted) return;
+  sndClaps.currentTime = 0; sndClaps.play().catch(() => {});
+  setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 3000);
+}
+
+/* ── BUILD TRAIN ── */
+function buildTrain(sequence, missingIdx) {
+  const wrap = document.getElementById('train-wrap');
+  wrap.innerHTML = '';
+
+  /* Engine */
+  wrap.innerHTML += `
+    <div class="train-engine">
+      <div class="engine-body"><div class="engine-window"></div></div>
+      <div class="engine-base"></div>
+      <div class="wheels"><div class="wheel"></div><div class="wheel"></div><div class="wheel"></div></div>
+    </div>`;
+
+  sequence.forEach((num, i) => {
+    const isMissing = (i === missingIdx);
+    wrap.innerHTML += `<div class="connector"></div>
+      <div class="carriage">
+        <div class="car-body${isMissing ? ' missing' : ''}" id="car-${i}">
+          ${isMissing ? '?' : num}
+        </div>
+        <div class="car-base"></div>
+        <div class="car-wheels"><div class="wheel"></div><div class="wheel"></div></div>
+      </div>`;
+  });
+}
+
+/* ── BUILD CHOICES ── */
+function buildChoices(choices) {
+  const row = document.getElementById('choices-row');
+  row.innerHTML = '';
+  /* Shuffle choices */
+  const shuffled = [...choices].sort(() => Math.random() - 0.5);
+  shuffled.forEach(n => {
+    const btn = document.createElement('div');
+    btn.className = 'choice-btn';
+    btn.dataset.val = n;
+    btn.textContent = n;
+    btn.onclick = () => selectChoice(n);
+    row.appendChild(btn);
+  });
+}
+
+function getChoiceBtn(val) { return document.querySelector('.choice-btn[data-val="' + val + '"]'); }
+function clearChoiceStates() { document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('correct','wrong','hint')); }
+
+/* ── GAME FLOW ── */
+function startGame() {
+  document.getElementById('intro-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display  = 'flex';
+  curQ = 0; score = 0;
+  loadQuestion();
+}
+
+function loadQuestion() {
+  if (curQ >= 8) { showEnd(); return; }
+  answered = false; attempts = 0;
+
+  const q = QUESTIONS[curQ];
+  document.getElementById('q-num').textContent     = curQ + 1;
+  document.getElementById('score-val').textContent = score;
+  document.getElementById('prog-bar').style.width  = (curQ / 8 * 100) + '%';
+  document.getElementById('instruction-txt').textContent = q.text;
+
+  buildTrain(q.sequence, q.missingIdx);
+  buildChoices(q.choices);
+  speak(q.text);
+}
+
+function selectChoice(val) {
+  if (answered) return;
+  const q = QUESTIONS[curQ];
+  const correct = q.sequence[q.missingIdx];
+  if (val === correct) registerCorrect();
+  else registerWrong(val);
+}
+
+function registerCorrect() {
+  if (answered) return;
+  answered = true;
+  score++;
+  document.getElementById('score-val').textContent = score;
+
+  const q = QUESTIONS[curQ];
+  const correct = q.sequence[q.missingIdx];
+
+  /* Fill the missing car with the correct number */
+  const car = document.getElementById('car-' + q.missingIdx);
+  car.textContent = correct;
+  car.classList.remove('missing');
+  car.classList.add('correct');
+
+  clearChoiceStates();
+  getChoiceBtn(correct).classList.add('correct');
+
+  window.speechSynthesis?.cancel();
+  playClaps();
+  showToast('⭐ Correct!', '#4CAF50');
+  spawnConfetti();
+  setTimeout(nextQuestion, 3200);
+}
+
+function registerWrong(val) {
+  if (answered) return;
+  attempts++;
+
+  if (attempts === 1) {
+    sndWrong.currentTime = 0; if (!muted) sndWrong.play().catch(() => {});
+    showToast('❌ Try again!', '#f44336');
+    const wrongBtn = getChoiceBtn(val);
+    wrongBtn.classList.add('wrong');
+    const correctVal = QUESTIONS[curQ].sequence[QUESTIONS[curQ].missingIdx];
+    getChoiceBtn(correctVal).classList.add('hint');
+    setTimeout(() => { wrongBtn.classList.remove('wrong'); hideToast(); }, 900);
+  } else {
+    answered = true;
+    sndWrong.currentTime = 0; if (!muted) sndWrong.play().catch(() => {});
+    showToast('❌ Wrong!', '#f44336');
+    clearChoiceStates();
+    getChoiceBtn(val).classList.add('wrong');
+
+    const q = QUESTIONS[curQ];
+    const correctVal = q.sequence[q.missingIdx];
+    setTimeout(() => {
+      showToast('💡 Correct answer!', '#FF9800');
+      getChoiceBtn(val).classList.remove('wrong');
+      getChoiceBtn(correctVal).classList.add('correct');
+      /* Also fill the train car */
+      const car = document.getElementById('car-' + q.missingIdx);
+      car.textContent = correctVal;
+      car.classList.remove('missing');
+      car.classList.add('correct');
+      setTimeout(nextQuestion, 3000);
+    }, 1000);
+  }
+}
+
+function nextQuestion() { clearChoiceStates(); curQ++; loadQuestion(); }
+
+/* ── TOAST ── */
+function showToast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.background = color;
+  t.classList.add('show');
+  setTimeout(hideToast, 1800);
+}
+function hideToast() { document.getElementById('toast').classList.remove('show'); }
+
+/* ── CONFETTI ── */
+function spawnConfetti() {
+  const colors = ['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF922B','#cc5de8','#ff6b81'];
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.cssText = `
+      left:${Math.random()*100}vw;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${6+Math.random()*8}px; height:${6+Math.random()*8}px;
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      animation-duration:${1.5+Math.random()*2}s;
+      animation-delay:${Math.random()*0.8}s;
+    `;
+    document.body.appendChild(p);
+    p.addEventListener('animationend', () => p.remove());
+  }
+}
+
+/* ── MUTE ── */
+function toggleMute() {
+  muted = !muted;
+  document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+  if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
+  else { const txt = document.getElementById('instruction-txt').textContent; if (txt) speak(txt); }
+}
+
+/* ── END ── */
+function showEnd() {
+  document.getElementById('game-screen').style.display = 'none';
+  document.getElementById('end-screen').style.display  = 'flex';
+  document.getElementById('final-score').textContent   = score;
+  document.getElementById('end-stars').textContent = score >= 7 ? '⭐⭐⭐' : score >= 5 ? '⭐⭐' : '⭐';
+  window.speechSynthesis?.cancel();
+  playClaps(); spawnConfetti();
+  setTimeout(spawnConfetti, 800);
+}
+
+function restartGame() {
+  clearChoiceStates();
+  window.speechSynthesis?.cancel();
+  document.getElementById('end-screen').style.display  = 'none';
+  document.getElementById('game-screen').style.display = 'flex';
+  curQ = 0; score = 0; attempts = 0; answered = false;
+  loadQuestion();
+}
+</script>
+</body>
+</html>
