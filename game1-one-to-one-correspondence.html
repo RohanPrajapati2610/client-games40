@@ -37,6 +37,7 @@
       max-width: 860px;
       min-height: 100vh;
       padding: 14px 14px 10px;
+      overflow-y: auto;
     }
 
     /* Header */
@@ -144,14 +145,14 @@
     /* ── Tablet ── */
     @media (max-width: 768px) {
       #game-screen { padding: 10px; max-width: 100%; }
-      .q-card { padding: 20px 30px; min-height: 0; flex: 1; }
+      .q-card { padding: 20px 30px; min-height: 0; flex: none; }
       .img-frame { width: min(140px, 28vw); height: min(140px, 28vw); }
       .hdr-title { display: none; }
     }
     /* ── Phone ── */
     @media (max-width: 480px) {
-      #game-screen { padding: 8px 8px 6px; min-height: 100dvh; }
-      .q-card { padding: 16px 12px; border-radius: 18px; flex: 1; min-height: 0; }
+      #game-screen { padding: 8px 8px 6px; }
+      .q-card { padding: 16px 12px; border-radius: 18px; flex: none; min-height: 0; }
       .img-frame { width: min(120px, 32vw); height: min(120px, 32vw); border-radius: 14px; }
       .img-col { gap: 6px; }
       .hdr-score { font-size: 1em; }
@@ -269,7 +270,7 @@
     .bottom-row {
       display: flex;
       justify-content: center;
-      margin-top: 14px;
+      padding: 10px 0 12px;
     }
     .btn-restart {
       background: linear-gradient(135deg, #FF9800, #F57C00);
