@@ -14,9 +14,10 @@
     body {
       font-family: 'Nunito', 'Trebuchet MS', Arial, sans-serif;
       background: linear-gradient(135deg, #fce4ec 0%, #e8f5e9 50%, #e3f2fd 100%);
-      min-height: 100vh;
+      height: 100vh;
+      height: 100dvh;
       display: flex;
-      align-items: center;
+      align-items: stretch;
       justify-content: center;
       overflow: hidden;
       user-select: none;
@@ -36,7 +37,8 @@
     /* ── GAME ── */
     #game-screen {
       display: none; flex-direction: column;
-      width: 100%; max-width: 860px; min-height: 100vh; padding: 14px 14px 70px;
+      width: 100%; max-width: 860px; height: 100%; padding: 14px 14px 70px;
+      overflow-y: auto;
     }
 
     /* Header */
