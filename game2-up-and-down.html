@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -253,6 +253,7 @@ document.addEventListener('pointerdown', unlockAudio);
 function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(()=>{}); }
 
 function speak(text) {
+  sndClaps.pause(); sndClaps.currentTime = 0;
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
@@ -410,11 +411,11 @@ function registerCorrect() {
 
   score++;
   document.getElementById('score-val').textContent = score;
-  play(sndCorrect);
+  playClaps();
   showToast('⭐ Correct!', '#4CAF50');
   spawnConfetti();
 
-  setTimeout(() => { curQ++; loadQuestion(); }, 1900);
+  setTimeout(() => { curQ++; loadQuestion(); }, 3200);
 }
 
 /* ─── WRONG ─── */

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -453,6 +453,7 @@ function play(snd) {
 }
 
 function speak(text) {
+  sndClaps.pause(); sndClaps.currentTime = 0;
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
@@ -592,12 +593,12 @@ function registerCorrect() {
   document.getElementById('src-frame').classList.add('frame-dim');
 
   hideHint();
-  play(sndCorrect);
+  playClaps();
   showToast('⭐ Correct!', '#4CAF50');
   animateLine('src-frame', 'tgt-frame', '#4CAF50', () => {});
   spawnConfetti();
 
-  setTimeout(nextQuestion, 1900);
+  setTimeout(nextQuestion, 3200);
 }
 
 function registerWrong(fromTimer) {
