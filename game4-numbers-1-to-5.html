@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Numbers 1–5 · LY2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', 'Trebuchet MS', Arial, sans-serif;
+      background: linear-gradient(135deg, #fce4ec 0%, #e8f5e9 50%, #e3f2fd 100%);
+      height: 100vh; height: 100dvh;
+      display: flex; align-items: stretch; justify-content: center;
+      overflow: hidden; user-select: none; -webkit-user-select: none;
+    }
+
+    /* ── INTRO ── */
+    #intro-screen {
+      position: fixed; inset: 0;
+      background: linear-gradient(160deg, #4a148c, #7b1fa2, #ab47bc);
+      display: flex; align-items: center; justify-content: center;
+      border: 5px solid #FFD700; z-index: 200; cursor: pointer;
+    }
+    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; }
+    @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+    /* ── GAME SCREEN ── */
+    #game-screen {
+      display: none; flex-direction: column;
+      width: 100%; max-width: 860px;
+      height: 100%; padding: 14px 14px 80px; overflow-y: auto;
+    }
+
+    /* Header */
+    .hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      background: white; border-radius: 18px; padding: 10px 18px;
+      margin-bottom: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); flex-shrink: 0;
+    }
+    .hdr-score { font-size: 1.2em; font-weight: bold; color: #4CAF50; min-width: 70px; }
+    .hdr-title { font-size: clamp(0.75em,2.5vw,1em); color: #6a0dad; font-weight: bold; text-align: center; }
+    .mute-btn { width: 38px; height: 38px; border: 2px solid #ddd; border-radius: 50%; background: white; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.2s; }
+    .mute-btn:hover { border-color: #aaa; }
+
+    /* Progress */
+    .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-shrink: 0; }
+    .progress-label { font-size: 0.9em; color: #777; white-space: nowrap; }
+    .progress-bar-wrap { flex: 1; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, #4CAF50, #8BC34A); transition: width 0.5s ease; }
+
+    /* Instruction */
+    .instruction {
+      text-align: center; font-size: clamp(0.95em,3vw,1.15em);
+      color: #333; font-weight: 700; margin-bottom: 10px;
+      padding: 0 4px; flex-shrink: 0; line-height: 1.4;
+    }
+
+    /* Card */
+    .q-card {
+      background: white; border-radius: 24px; padding: 28px 20px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+      display: flex; align-items: center; justify-content: center;
+      margin-top: auto; margin-bottom: auto; flex-shrink: 0;
+    }
+
+    /* Number grid */
+    .numbers-grid {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; gap: 16px;
+      width: 100%;
+    }
+
+    .num-btn {
+      width: 120px; height: 120px;
+      border-radius: 24px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3em; font-weight: 800;
+      cursor: pointer;
+      border: 4px solid transparent;
+      transition: transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      color: white;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .num-btn:active { transform: scale(0.93); }
+
+    /* Each number gets its own colour */
+    .num-btn[data-num="1"] { background: linear-gradient(135deg, #FF6B6B, #ee5a24); }
+    .num-btn[data-num="2"] { background: linear-gradient(135deg, #FF9F43, #ee5a24); }
+    .num-btn[data-num="3"] { background: linear-gradient(135deg, #1dd1a1, #10ac84); }
+    .num-btn[data-num="4"] { background: linear-gradient(135deg, #54a0ff, #2e86de); }
+    .num-btn[data-num="5"] { background: linear-gradient(135deg, #a29bfe, #6c5ce7); }
+
+    .num-btn.correct {
+      border-color: #4CAF50; border-width: 5px;
+      box-shadow: 0 0 0 6px #4CAF5040;
+      animation: popCorrect 0.35s ease;
+    }
+    .num-btn.wrong {
+      border-color: #f44336; border-width: 5px;
+      animation: shakeWrong 0.4s ease;
+    }
+    .num-btn.hint {
+      border-color: #FFD700; border-width: 5px;
+      animation: pulseHint 1s ease-in-out infinite;
+    }
+    @keyframes popCorrect  { 0%{transform:scale(1)} 50%{transform:scale(1.1)} 100%{transform:scale(1)} }
+    @keyframes shakeWrong  { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+    @keyframes pulseHint   { 0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.5)} 50%{box-shadow:0 0 0 12px rgba(255,215,0,0)} }
+
+    /* Restart */
+    .btn-restart {
+      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, #FF9800, #F44336);
+      color: white; border: none; border-radius: 50px;
+      padding: 14px 36px; font-size: 1.05em; font-family: inherit;
+      font-weight: 800; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(244,67,54,0.4); z-index: 50; white-space: nowrap;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed; top: 20%; left: 50%;
+      transform: translateX(-50%) scale(0);
+      color: white; padding: 14px 28px; border-radius: 50px;
+      font-size: 1.4em; font-weight: 800;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.25); z-index: 100;
+      transition: transform 0.2s, opacity 0.2s;
+      opacity: 0; pointer-events: none; white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) scale(1); opacity: 1; }
+
+    /* Confetti */
+    .confetti-piece {
+      position: fixed; top: -10px; width: 10px; height: 10px;
+      border-radius: 2px; pointer-events: none; z-index: 999;
+      animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+      0%   { transform: translateY(0) rotate(0deg);     opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* End screen */
+    #end-screen {
+      display: none; position: fixed; inset: 0;
+      background: linear-gradient(160deg, #4a148c, #7b1fa2, #ab47bc);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 18px; z-index: 150; padding: 30px;
+    }
+    .end-trophy { font-size: 4.5em; animation: trophySpin 1.5s ease-out; }
+    @keyframes trophySpin { from{transform:rotate(-20deg) scale(0)} 60%{transform:rotate(10deg) scale(1.1)} to{transform:rotate(0deg) scale(1)} }
+    .end-title { color: #FFD700; font-size: clamp(1.5em,5vw,2.2em); font-weight: bold; text-shadow: 0 3px 10px rgba(0,0,0,0.3); text-align: center; }
+    .end-sub { color: rgba(255,255,255,0.9); font-size: 1.1em; text-align: center; }
+    .end-score-box { background: rgba(255,255,255,0.15); border-radius: 16px; padding: 12px 28px; color: white; font-size: 1.4em; font-weight: bold; }
+    .end-stars { font-size: 2.2em; letter-spacing: 4px; }
+    .btn-play-again {
+      background: #FFD700; color: #333; border: none; border-radius: 50px;
+      padding: 14px 36px; font-size: 1.1em; font-weight: 800;
+      font-family: inherit; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(255,215,0,0.5);
+    }
+    .btn-play-again:hover { transform: scale(1.05); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      #game-screen { padding: 10px 10px 76px; }
+      .q-card { padding: 20px 14px; }
+      .num-btn { width: 100px; height: 100px; font-size: 2.6em; border-radius: 20px; }
+      .numbers-grid { gap: 12px; }
+      .hdr-title { display: none; }
+    }
+    @media (max-width: 480px) {
+      #game-screen { padding: 8px 8px 76px; }
+      .q-card { padding: 16px 10px; border-radius: 18px; }
+      .num-btn { width: 80px; height: 80px; font-size: 2.2em; border-radius: 16px; }
+      .numbers-grid { gap: 10px; }
+      .hdr-score { font-size: 1em; }
+      .instruction { font-size: clamp(0.85em,3.5vw,1em); margin-bottom: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── INTRO ── -->
+<div id="intro-screen" onclick="startGame()">
+  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine">
+</div>
+
+<div id="toast"></div>
+
+<!-- ── GAME ── -->
+<div id="game-screen">
+
+  <div class="hdr">
+    <div class="hdr-score">⭐ <span id="score-val">0</span> / 8</div>
+    <div class="hdr-title">Numbers 1–5</div>
+    <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
+  </div>
+
+  <div class="progress-row">
+    <span class="progress-label">Q <span id="q-num">1</span> / 8</span>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="prog-bar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="instruction" id="instruction-txt"></div>
+
+  <div class="q-card">
+    <div class="numbers-grid">
+      <div class="num-btn" data-num="1" onclick="selectNum(1)">1</div>
+      <div class="num-btn" data-num="2" onclick="selectNum(2)">2</div>
+      <div class="num-btn" data-num="3" onclick="selectNum(3)">3</div>
+      <div class="num-btn" data-num="4" onclick="selectNum(4)">4</div>
+      <div class="num-btn" data-num="5" onclick="selectNum(5)">5</div>
+    </div>
+  </div>
+
+  <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
+</div>
+
+<!-- ── END ── -->
+<div id="end-screen">
+  <div class="end-trophy">🏆</div>
+  <div class="end-title">You have done a great job!</div>
+  <div class="end-sub">You completed all 8 questions!</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 8</div>
+  <div class="end-stars" id="end-stars"></div>
+  <button class="btn-play-again" onclick="restartGame()">▶ &nbsp;Play Again</button>
+</div>
+
+<script>
+const QUESTIONS = [
+  { correct: 1, text: 'Click on the number 1' },
+  { correct: 3, text: 'Click on the number 3' },
+  { correct: 5, text: 'Click on the number 5' },
+  { correct: 2, text: 'Click on the number 2' },
+  { correct: 4, text: 'Click on the number 4' },
+  { correct: 3, text: 'Click on the number 3' },
+  { correct: 1, text: 'Click on the number 1' },
+  { correct: 5, text: 'Click on the number 5' },
+];
+
+const sndCorrect = new Audio('Assets/correct.mp3');
+const sndWrong   = new Audio('Assets/wrong.mp3');
+const sndClaps   = new Audio('Assets/free_claps.mp3');
+
+let curQ = 0, score = 0, muted = false, answered = false, attempts = 0;
+
+/* ── AUDIO ── */
+function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(() => {}); }
+
+function speak(text) {
+  sndClaps.pause(); sndClaps.currentTime = 0;
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  if (muted) return;
+  setTimeout(() => {
+    if (muted) return;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.0;
+    const voices = window.speechSynthesis.getVoices();
+    const v = voices.find(v => v.lang.startsWith('en') && !v.name.includes('Google'))
+           || voices.find(v => v.lang.startsWith('en')) || voices[0];
+    if (v) u.voice = v;
+    window.speechSynthesis.speak(u);
+  }, 150);
+}
+window.speechSynthesis.getVoices();
+window.speechSynthesis.addEventListener('voiceschanged', () => window.speechSynthesis.getVoices());
+
+function playClaps() {
+  if (muted) return;
+  sndClaps.currentTime = 0; sndClaps.play().catch(() => {});
+  setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 3000);
+}
+
+/* ── HELPERS ── */
+function numBtn(n) { return document.querySelector('.num-btn[data-num="' + n + '"]'); }
+
+function clearAllStates() {
+  document.querySelectorAll('.num-btn').forEach(b => {
+    b.classList.remove('correct', 'wrong', 'hint');
+  });
+}
+
+/* ── GAME FLOW ── */
+function startGame() {
+  document.getElementById('intro-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display  = 'flex';
+  curQ = 0; score = 0;
+  loadQuestion();
+}
+
+function loadQuestion() {
+  if (curQ >= 8) { showEnd(); return; }
+  answered = false; attempts = 0;
+  clearAllStates();
+
+  const q = QUESTIONS[curQ];
+  document.getElementById('q-num').textContent     = curQ + 1;
+  document.getElementById('score-val').textContent = score;
+  document.getElementById('prog-bar').style.width  = (curQ / 8 * 100) + '%';
+  document.getElementById('instruction-txt').textContent = q.text;
+  speak(q.text);
+}
+
+function selectNum(n) {
+  if (answered) return;
+  if (n === QUESTIONS[curQ].correct) {
+    registerCorrect();
+  } else {
+    registerWrong(n);
+  }
+}
+
+function registerCorrect() {
+  if (answered) return;
+  answered = true;
+  score++;
+  document.getElementById('score-val').textContent = score;
+  clearAllStates();
+  numBtn(QUESTIONS[curQ].correct).classList.add('correct');
+  window.speechSynthesis?.cancel();
+  playClaps();
+  showToast('⭐ Correct!', '#4CAF50');
+  spawnConfetti();
+  setTimeout(nextQuestion, 3200);
+}
+
+function registerWrong(n) {
+  if (answered) return;
+  attempts++;
+
+  if (attempts === 1) {
+    /* 1st wrong: shake wrong, hint glow on correct */
+    play(sndWrong);
+    showToast('❌ Try again!', '#f44336');
+    const wrongEl = numBtn(n);
+    wrongEl.classList.add('wrong');
+    numBtn(QUESTIONS[curQ].correct).classList.add('hint');
+    setTimeout(() => { wrongEl.classList.remove('wrong'); hideToast(); }, 900);
+  } else {
+    /* 2nd wrong: only wrong flashes red, then reveal correct */
+    answered = true;
+    play(sndWrong);
+    showToast('❌ Wrong!', '#f44336');
+    clearAllStates();
+    numBtn(n).classList.add('wrong');
+    setTimeout(() => {
+      showToast('💡 Correct answer!', '#FF9800');
+      numBtn(n).classList.remove('wrong');
+      numBtn(QUESTIONS[curQ].correct).classList.add('correct');
+      setTimeout(nextQuestion, 3000);
+    }, 1000);
+  }
+}
+
+function nextQuestion() { clearAllStates(); curQ++; loadQuestion(); }
+
+/* ── TOAST ── */
+function showToast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.background = color;
+  t.classList.add('show');
+  setTimeout(hideToast, 1800);
+}
+function hideToast() { document.getElementById('toast').classList.remove('show'); }
+
+/* ── CONFETTI ── */
+function spawnConfetti() {
+  const colors = ['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF922B','#cc5de8','#ff6b81'];
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.cssText = `
+      left:${Math.random()*100}vw;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${6+Math.random()*8}px; height:${6+Math.random()*8}px;
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      animation-duration:${1.5+Math.random()*2}s;
+      animation-delay:${Math.random()*0.8}s;
+    `;
+    document.body.appendChild(p);
+    p.addEventListener('animationend', () => p.remove());
+  }
+}
+
+/* ── MUTE ── */
+function toggleMute() {
+  muted = !muted;
+  document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+  if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
+  else { const txt = document.getElementById('instruction-txt').textContent; if (txt) speak(txt); }
+}
+
+/* ── END ── */
+function showEnd() {
+  document.getElementById('game-screen').style.display = 'none';
+  document.getElementById('end-screen').style.display  = 'flex';
+  document.getElementById('final-score').textContent   = score;
+  document.getElementById('end-stars').textContent = score >= 7 ? '⭐⭐⭐' : score >= 5 ? '⭐⭐' : '⭐';
+  window.speechSynthesis?.cancel();
+  playClaps();
+  spawnConfetti();
+  setTimeout(spawnConfetti, 800);
+}
+
+function restartGame() {
+  clearAllStates();
+  window.speechSynthesis?.cancel();
+  document.getElementById('end-screen').style.display  = 'none';
+  document.getElementById('game-screen').style.display = 'flex';
+  curQ = 0; score = 0; attempts = 0; answered = false;
+  loadQuestion();
+}
+</script>
+</body>
+</html>
