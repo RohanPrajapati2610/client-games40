@@ -21,76 +21,13 @@
 
     /* ── INTRO SCREEN ── */
     #intro-screen {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: linear-gradient(160deg, #4a148c, #7b1fa2, #ab47bc);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 18px;
-      border: 5px solid #FFD700;
-      z-index: 200;
-    }
-    #intro-logo {
-      width: 130px;
-      height: auto;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
-      animation: logoBounce 2s ease-in-out infinite;
-    }
-    @keyframes logoBounce {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-    #intro-title {
-      color: #FFD700;
-      font-size: clamp(1.4em, 5vw, 2.2em);
-      font-weight: bold;
-      text-align: center;
-      text-shadow: 0 3px 8px rgba(0,0,0,0.4);
-      letter-spacing: 1px;
-    }
-    #intro-badge {
-      background: rgba(255,255,255,0.15);
-      border: 2px solid rgba(255,255,255,0.4);
-      color: white;
-      padding: 6px 20px;
-      border-radius: 30px;
-      font-size: 1em;
-    }
-    #intro-countdown-text {
-      color: rgba(255,255,255,0.85);
-      font-size: 1em;
-    }
-    #intro-ring {
-      width: 64px; height: 64px;
-      border-radius: 50%;
-      background: conic-gradient(#FFD700 0%, #FFD700 var(--pct), rgba(255,255,255,0.2) var(--pct));
       display: flex; align-items: center; justify-content: center;
-      --pct: 100%;
+      border: 5px solid #FFD700; z-index: 200;
     }
-    #intro-ring-inner {
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      background: #6a0dad;
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 1.4em; font-weight: bold;
-    }
-    #intro-start-btn {
-      background: #FFD700;
-      color: #333;
-      border: none;
-      padding: 13px 36px;
-      border-radius: 40px;
-      font-size: 1.1em;
-      font-family: inherit;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-      transition: transform 0.1s, box-shadow 0.1s;
-    }
-    #intro-start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-    #intro-start-btn:active { transform: translateY(1px); box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
+    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; }
+    @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 
     /* ── GAME SCREEN ── */
     #game-screen {
@@ -126,24 +63,6 @@
       text-align: center;
     }
     .hdr-right { display: flex; align-items: center; gap: 10px; }
-    .timer-ring {
-      position: relative;
-      width: 52px; height: 52px;
-      flex-shrink: 0;
-    }
-    .timer-ring svg {
-      position: absolute; top: 0; left: 0;
-      transform: rotate(-90deg);
-    }
-    .timer-ring circle { fill: none; stroke-width: 5; }
-    .timer-bg { stroke: #e0e0e0; }
-    .timer-fg { stroke: #4CAF50; stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.3s; stroke-dasharray: 138; stroke-dashoffset: 0; }
-    .timer-num {
-      position: absolute;
-      inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.15em; font-weight: bold; color: #333;
-    }
     .mute-btn {
       width: 38px; height: 38px;
       border: 2px solid #ddd;
@@ -422,13 +341,6 @@
 <!-- ── INTRO ── -->
 <div id="intro-screen">
   <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onerror="this.style.display='none'">
-  <div id="intro-title">One to One Correspondence</div>
-  <div id="intro-badge">Numeracy &nbsp;·&nbsp; LY1</div>
-  <div id="intro-ring" style="--pct:100%">
-    <div id="intro-ring-inner" id="cnum">5</div>
-  </div>
-  <div id="intro-countdown-text">Starting in <span id="cnum">5</span> seconds…</div>
-  <button id="intro-start-btn" onclick="startGame()">▶ &nbsp;Start Now</button>
 </div>
 
 <!-- ── DRAG GHOST ── -->
@@ -444,13 +356,6 @@
     <div class="hdr-score">⭐ <span id="score-val">0</span> / 8</div>
     <div class="hdr-title">One to One Correspondence</div>
     <div class="hdr-right">
-      <div class="timer-ring" id="timer-ring">
-        <svg viewBox="0 0 46 46" width="52" height="52">
-          <circle class="timer-bg" cx="23" cy="23" r="22"/>
-          <circle class="timer-fg" id="timer-arc" cx="23" cy="23" r="22"/>
-        </svg>
-        <div class="timer-num" id="timer-num">20</div>
-      </div>
       <button class="mute-btn" id="mute-btn" onclick="toggleMute()" title="Mute/Unmute">🔊</button>
     </div>
   </div>
@@ -516,6 +421,9 @@ const QUESTIONS = [
   { src:'Assets/boy.png',       srcLbl:'Boy',       tgt:'Assets/football.png',    tgtLbl:'Football', text:'Click on the boy and drag it to the football.' },
 ];
 
+/* Preload all images */
+QUESTIONS.forEach(q => { new Image().src = q.src; new Image().src = q.tgt; });
+
 /* ─── STATE ─── */
 let curQ       = 0;
 let score      = 0;
@@ -523,8 +431,6 @@ let attempts   = 0;   // max 2 per question
 let answered   = false;
 let muted      = false;
 let dragging   = false;
-let timerSecs  = 20;
-let timerTick  = null;
 let lineAnimId = null;
 
 /* ─── AUDIO ─── */
@@ -546,23 +452,27 @@ function play(snd) {
   snd.play().catch(() => {});
 }
 
-/* ─── INTRO COUNTDOWN ─── */
-const INTRO_SECS = 5;
-let introLeft = INTRO_SECS;
-const introPct = () => ((introLeft / INTRO_SECS) * 100).toFixed(1) + '%';
-const introRing = document.getElementById('intro-ring');
-const introNumEl = document.getElementById('cnum');
+function speak(text) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 0.85; u.pitch = 1.1;
+    window.speechSynthesis.speak(u);
+  }
+}
 
-const introTick = setInterval(() => {
-  introLeft--;
-  introNumEl.textContent = introLeft;
-  introRing.style.setProperty('--pct', introPct());
-  if (introLeft <= 0) { clearInterval(introTick); startGame(); }
-}, 1000);
+function playClaps() {
+  if (muted) return;
+  sndClaps.currentTime = 0;
+  sndClaps.play().catch(() => {});
+  setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 3000);
+}
+
+/* ─── INTRO ─── */
+setTimeout(startGame, 2000);
 
 /* ─── START / LOAD ─── */
 function startGame() {
-  clearInterval(introTick);
   document.getElementById('intro-screen').style.display = 'none';
   document.getElementById('game-screen').style.display  = 'flex';
   curQ = 0; score = 0;
@@ -590,39 +500,7 @@ function loadQuestion() {
   document.getElementById('src-frame').classList.add('src-frame');
 
   clearCanvas();
-  startTimer(20, true);
-}
-
-/* ─── TIMER ─── */
-const TIMER_CIRC = 2 * Math.PI * 22; // ≈ 138.23
-const timerArc   = document.getElementById('timer-arc');
-const timerNum   = document.getElementById('timer-num');
-
-function startTimer(secs, active) {
-  clearInterval(timerTick);
-  timerSecs = secs;
-  updateTimer(timerSecs, active ? secs : null);
-  if (!active) return;
-  timerTick = setInterval(() => {
-    timerSecs--;
-    updateTimer(timerSecs, secs);
-    if (timerSecs <= 0) { clearInterval(timerTick); onTimeUp(); }
-  }, 1000);
-}
-
-function updateTimer(val, max) {
-  timerNum.textContent = val;
-  const ratio = max ? (val / max) : 0;
-  timerArc.style.strokeDashoffset = TIMER_CIRC * (1 - ratio);
-  timerArc.style.stroke = val <= 5 ? '#f44336' : val <= 10 ? '#FF9800' : '#4CAF50';
-}
-
-function stopTimer() { clearInterval(timerTick); }
-
-function onTimeUp() {
-  if (answered) return;
-  // Treat as wrong attempt
-  registerWrong(true);
+  speak(q.text);
 }
 
 /* ─── DRAG SETUP (once) ─── */
@@ -706,7 +584,6 @@ function initDrag() {
 function registerCorrect() {
   if (answered) return;
   answered = true;
-  stopTimer();
   score++;
   document.getElementById('score-val').textContent = score;
 
@@ -728,8 +605,7 @@ function registerWrong(fromTimer) {
   attempts++;
 
   if (attempts === 1) {
-    // First wrong → hint, pause timer (Preschool: no timer on 2nd attempt)
-    stopTimer();
+    // First wrong → hint
     play(sndWrong);
     showToast('❌ Try again!', '#f44336');
     flashFrame('src-frame', 'wrong');
@@ -738,7 +614,6 @@ function registerWrong(fromTimer) {
   } else {
     // Second wrong → flash red first, then reveal correct answer after a pause
     answered = true;
-    stopTimer();
     hideHint();
     play(sndWrong);
     showToast('❌ Wrong!', '#f44336');
@@ -904,21 +779,19 @@ function toggleMute() {
 
 /* ─── END ─── */
 function showEnd() {
-  stopTimer();
   document.getElementById('game-screen').style.display = 'none';
   const es = document.getElementById('end-screen');
   es.style.display = 'flex';
   document.getElementById('final-score').textContent = score;
   const stars = score >= 7 ? '⭐⭐⭐' : score >= 5 ? '⭐⭐' : '⭐';
   document.getElementById('end-stars').textContent = stars;
-  play(sndClaps);
+  playClaps();
   spawnConfetti();
   setTimeout(spawnConfetti, 800);
 }
 
 /* ─── RESTART ─── */
 function restartGame() {
-  stopTimer();
   clearCanvas();
   document.getElementById('end-screen').style.display  = 'none';
   document.getElementById('game-screen').style.display = 'flex';

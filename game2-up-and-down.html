@@ -23,18 +23,11 @@
     #intro-screen {
       position: fixed; inset: 0;
       background: linear-gradient(160deg, #4a148c, #7b1fa2, #ab47bc);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 18px; border: 5px solid #FFD700; z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      border: 5px solid #FFD700; z-index: 200;
     }
-    #intro-logo { width: 130px; height: auto; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4)); animation: logoBounce 2s ease-in-out infinite; }
-    @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-    #intro-title { color:#FFD700; font-size:clamp(1.6em,6vw,2.4em); font-weight:bold; text-align:center; text-shadow:0 3px 8px rgba(0,0,0,0.4); }
-    #intro-badge { background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.4); color:white; padding:6px 22px; border-radius:30px; font-size:1em; }
-    #intro-ring { width:64px; height:64px; border-radius:50%; background:conic-gradient(#FFD700 0%,#FFD700 var(--pct),rgba(255,255,255,0.2) var(--pct)); display:flex; align-items:center; justify-content:center; --pct:100%; }
-    #intro-ring-inner { width:48px; height:48px; border-radius:50%; background:#6a0dad; display:flex; align-items:center; justify-content:center; color:white; font-size:1.4em; font-weight:bold; }
-    #intro-countdown-text { color:rgba(255,255,255,0.85); font-size:1em; }
-    #intro-start-btn { background:#FFD700; color:#333; border:none; padding:13px 38px; border-radius:40px; font-size:1.1em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 6px 16px rgba(0,0,0,0.25); transition:transform 0.1s; }
-    #intro-start-btn:hover { transform:translateY(-2px); }
+    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; }
+    @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 
     /* ── GAME ── */
     #game-screen {
@@ -162,13 +155,6 @@
 <!-- ── INTRO ── -->
 <div id="intro-screen">
   <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onerror="this.style.display='none'">
-  <div id="intro-title">Up and Down</div>
-  <div id="intro-badge">Numeracy &nbsp;·&nbsp; LY1</div>
-  <div id="intro-ring" style="--pct:100%">
-    <div id="intro-ring-inner"><span id="cnum">5</span></div>
-  </div>
-  <div id="intro-countdown-text">Starting in <span id="cnum2">5</span> seconds…</div>
-  <button id="intro-start-btn" onclick="startGame()">▶ &nbsp;Start Now</button>
 </div>
 
 <!-- ── TOAST ── -->
@@ -237,6 +223,9 @@ const QUESTIONS = [
   { img:'Assets/Game 2/weightingscale.png',    text:'Circle the downside of the weighting scale',  split:'leftright', correct:'left',  hintCx:0.22, hintCy:0.65 },
 ];
 
+/* Preload all images */
+QUESTIONS.forEach(q => { new Image().src = q.img; });
+
 /* ─── STATE ─── */
 let curQ     = 0;
 let score    = 0;
@@ -263,22 +252,27 @@ document.addEventListener('pointerdown', unlockAudio);
 
 function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(()=>{}); }
 
-/* ─── INTRO (5 s) ─── */
-const INTRO_SECS = 5;
-let introLeft = INTRO_SECS;
-const introRingEl = document.getElementById('intro-ring');
-const cnumEl  = document.getElementById('cnum');
-const cnum2El = document.getElementById('cnum2');
-const introTick = setInterval(() => {
-  introLeft--;
-  cnumEl.textContent = cnum2El.textContent = introLeft;
-  introRingEl.style.setProperty('--pct', (introLeft / INTRO_SECS * 100).toFixed(1) + '%');
-  if (introLeft <= 0) { clearInterval(introTick); startGame(); }
-}, 1000);
+function speak(text) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 0.85; u.pitch = 1.1;
+    window.speechSynthesis.speak(u);
+  }
+}
+
+function playClaps() {
+  if (muted) return;
+  sndClaps.currentTime = 0;
+  sndClaps.play().catch(() => {});
+  setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 3000);
+}
+
+/* ─── INTRO ─── */
+setTimeout(startGame, 2000);
 
 /* ─── START ─── */
 function startGame() {
-  clearInterval(introTick);
   document.getElementById('intro-screen').style.display = 'none';
   document.getElementById('game-screen').style.display  = 'flex';
   curQ = 0; score = 0;
@@ -390,6 +384,16 @@ function evaluateDrawing() {
     zone = cy < ch / 2 ? 'top' : 'bottom';
   } else {
     zone = cx < cw / 2 ? 'left' : 'right';
+  }
+
+  /* 5. Proximity check — centroid must be near the correct answer's hint position */
+  const hx = q.hintCx * cw;
+  const hy = q.hintCy * ch;
+  const distToHint = Math.hypot(cx - hx, cy - hy);
+  const maxDist = Math.min(cw, ch) * 0.45;
+  if (distToHint > maxDist) {
+    /* Drew in the right zone but too far from the object — treat as wrong zone */
+    zone = zone === 'left' ? 'right' : zone === 'right' ? 'left' : zone === 'top' ? 'bottom' : 'top';
   }
 
   if (zone === q.correct) registerCorrect();
@@ -532,6 +536,7 @@ function loadQuestion() {
   document.getElementById('score-val').textContent = score;
   document.getElementById('prog-bar').style.width  = (curQ / 8 * 100) + '%';
   document.getElementById('question-txt').textContent = q.text;
+  speak(q.text);
 
   const img = document.getElementById('scene-img');
 
@@ -592,7 +597,7 @@ function showEnd() {
   document.getElementById('end-screen').style.display  = 'flex';
   document.getElementById('final-score').textContent   = score;
   document.getElementById('end-stars').textContent = score >= 7 ? '⭐⭐⭐' : score >= 5 ? '⭐⭐' : '⭐';
-  play(sndClaps);
+  playClaps();
   spawnConfetti();
   setTimeout(spawnConfetti, 800);
 }
