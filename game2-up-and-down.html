@@ -396,15 +396,6 @@ function evaluateDrawing() {
     zone = cx < cw / 2 ? 'left' : 'right';
   }
 
-  /* 5. Proximity check — centroid must be near the correct answer's hint position */
-  const hx = q.hintCx * cw;
-  const hy = q.hintCy * ch;
-  const distToHint = Math.hypot(cx - hx, cy - hy);
-  const maxDist = Math.min(cw, ch) * 0.45;
-  if (distToHint > maxDist) {
-    /* Drew in the right zone but too far from the object — treat as wrong zone */
-    zone = zone === 'left' ? 'right' : zone === 'right' ? 'left' : zone === 'top' ? 'bottom' : 'top';
-  }
 
   if (zone === q.correct) registerCorrect();
   else registerWrong(zone);
