@@ -146,6 +146,14 @@
       transition: box-shadow 0.25s, border-color 0.25s, transform 0.15s;
       background: #f7f7f7;
     }
+    .center-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+    }
+
     /* ── Tablet ── */
     @media (max-width: 768px) {
       #game-screen { padding: 10px; max-width: 100%; }
@@ -377,6 +385,7 @@
     </div>
   </div>
 
+  <div class="center-wrap">
   <div class="instruction" id="instruction-txt"></div>
 
   <div class="q-card" id="q-card">
@@ -401,6 +410,7 @@
       <div class="img-label" id="tgt-lbl"></div>
     </div>
   </div>
+  </div><!-- end center-wrap -->
 
   <div class="bottom-row">
     <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
@@ -613,6 +623,7 @@ function registerCorrect() {
   document.getElementById('src-frame').classList.add('frame-dim');
 
   hideHint();
+  window.speechSynthesis?.cancel();
   playClaps();
   showToast('⭐ Correct!', '#4CAF50');
   animateLine('src-frame', 'tgt-frame', '#4CAF50', () => {});

@@ -58,6 +58,14 @@
     /* Draw instruction */
     .draw-tip { text-align:center; font-size:clamp(0.82em,2.5vw,0.95em); color:#888; margin-bottom:8px; }
 
+    .center-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+    }
+
     /* Scene card */
     .scene-card { background:white; border-radius:24px; padding:20px; box-shadow:0 6px 24px rgba(0,0,0,0.1); position:relative; flex:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; }
 
@@ -181,6 +189,7 @@
     </div>
   </div>
 
+  <div class="center-wrap">
   <div class="question-txt" id="question-txt"></div>
   <div class="draw-tip">✏️ Draw a circle around the correct answer!</div>
 
@@ -193,6 +202,7 @@
       <div id="hint-label">✏️ Circle here!</div>
     </div>
   </div>
+  </div><!-- end center-wrap -->
 
   <div class="bottom-row">
     <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
@@ -417,6 +427,7 @@ function registerCorrect() {
 
   score++;
   document.getElementById('score-val').textContent = score;
+  window.speechSynthesis?.cancel();
   playClaps();
   showToast('⭐ Correct!', '#4CAF50');
   spawnConfetti();
