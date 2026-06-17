@@ -413,7 +413,7 @@ function loadQuestion() {
 
   buildTrain(q.sequence, q.missingIdx);
   buildChoices(q.choices);
-  speak(q.text);
+  speak(q.text.replace(/\?/g, 'blank'));
 }
 
 function selectChoice(val) {
