@@ -155,7 +155,6 @@
 <!-- ── INTRO ── -->
 <div id="intro-screen">
   <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onclick="startGame()" style="cursor:pointer" onerror="this.style.display='none'">
-  <div style="color:rgba(255,255,255,0.85);font-size:1.1em;margin-top:12px;animation:logoBounce 1.5s ease-in-out infinite;">👆 Tap to Start</div>
 </div>
 
 <!-- ── TOAST ── -->
@@ -214,14 +213,14 @@
 /* split:'topbottom' uses top/bottom halves; split:'leftright' uses left/right halves
    hintCx/hintCy = 0–1 fraction of image width/height for the hint circle center */
 const QUESTIONS = [
-  { img:'Assets/Game 2/aeroplane and car.png', text:'Circle the aeroplane flying up in the sky',   split:'topbottom', correct:'top',   hintCx:0.52, hintCy:0.28 },
-  { img:'Assets/Game 2/birds.png',             text:'Circle the bird on the ground',               split:'leftright', correct:'right', hintCx:0.63, hintCy:0.78 },
-  { img:'Assets/Game 2/catdog.png',            text:'Circle the cat on the roof',                  split:'leftright', correct:'right', hintCx:0.72, hintCy:0.22 },
-  { img:'Assets/Game 2/elevator.png',          text:'Circle the girl coming down the elevator',    split:'leftright', correct:'right', hintCx:0.62, hintCy:0.55 },
-  { img:'Assets/Game 2/lift.png',              text:'Circle the lift going up',                    split:'leftright', correct:'left',  hintCx:0.28, hintCy:0.52 },
-  { img:'Assets/Game 2/seasaw.png',            text:'Circle the child who is down on the seesaw',  split:'leftright', correct:'right', hintCx:0.72, hintCy:0.68 },
-  { img:'Assets/Game 2/slide.png',             text:'Circle the boy who is climbing the slide',    split:'leftright', correct:'right', hintCx:0.82, hintCy:0.38 },
-  { img:'Assets/Game 2/weightingscale.png',    text:'Circle the downside of the weighting scale',  split:'leftright', correct:'left',  hintCx:0.22, hintCy:0.65 },
+  { img:'Assets/Game%202/aeroplane%20and%20car.png', text:'Circle the aeroplane flying up in the sky',   split:'topbottom', correct:'top',   hintCx:0.52, hintCy:0.28 },
+  { img:'Assets/Game%202/birds.png',                 text:'Circle the bird on the ground',               split:'leftright', correct:'right', hintCx:0.63, hintCy:0.78 },
+  { img:'Assets/Game%202/catdog.png',                text:'Circle the cat on the roof',                  split:'leftright', correct:'right', hintCx:0.72, hintCy:0.22 },
+  { img:'Assets/Game%202/elevator.png',              text:'Circle the girl coming down the elevator',    split:'leftright', correct:'right', hintCx:0.62, hintCy:0.55 },
+  { img:'Assets/Game%202/lift.png',                  text:'Circle the lift going up',                    split:'leftright', correct:'left',  hintCx:0.28, hintCy:0.52 },
+  { img:'Assets/Game%202/seasaw.png',                text:'Circle the child who is down on the seesaw',  split:'leftright', correct:'right', hintCx:0.72, hintCy:0.68 },
+  { img:'Assets/Game%202/slide.png',                 text:'Circle the boy who is climbing the slide',    split:'leftright', correct:'right', hintCx:0.82, hintCy:0.38 },
+  { img:'Assets/Game%202/weightingscale.png',        text:'Circle the downside of the weighting scale',  split:'leftright', correct:'left',  hintCx:0.22, hintCy:0.65 },
 ];
 
 /* Preload all images */
