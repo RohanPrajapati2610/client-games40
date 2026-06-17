@@ -145,14 +145,14 @@
     /* ── Tablet ── */
     @media (max-width: 768px) {
       #game-screen { padding: 10px; max-width: 100%; }
-      .q-card { padding: 20px; min-height: 0; flex: 1; justify-content: center; gap: 30px; }
+      .q-card { padding: 20px !important; padding-left: 20px !important; padding-right: 20px !important; min-height: 0; flex: 1; justify-content: center !important; gap: 40px !important; }
       .img-frame { width: min(140px, 28vw); height: min(140px, 28vw); }
       .hdr-title { display: none; }
     }
     /* ── Phone ── */
     @media (max-width: 480px) {
       #game-screen { padding: 8px 8px 6px; }
-      .q-card { padding: 16px; border-radius: 18px; flex: 1; min-height: 0; justify-content: center; gap: 24px; }
+      .q-card { padding: 16px !important; padding-left: 16px !important; padding-right: 16px !important; border-radius: 18px; flex: 1; min-height: 0; justify-content: center !important; gap: 36px !important; }
       .img-frame { width: min(130px, 34vw); height: min(130px, 34vw); border-radius: 14px; }
       .img-col { gap: 6px; }
       .hdr-score { font-size: 1em; }
@@ -792,7 +792,13 @@ if (!document.querySelector('#cf-style')) {
 function toggleMute() {
   muted = !muted;
   document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
-  if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
+  if (muted) {
+    window.speechSynthesis?.cancel();
+    sndClaps.pause();
+  } else {
+    const txt = document.getElementById('instruction-txt').textContent;
+    if (txt) speak(txt);
+  }
 }
 
 /* ─── END ─── */

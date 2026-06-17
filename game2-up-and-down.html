@@ -595,7 +595,13 @@ if (!document.querySelector('#cf-style')) {
 function toggleMute() {
   muted = !muted;
   document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
-  if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
+  if (muted) {
+    window.speechSynthesis?.cancel();
+    sndClaps.pause();
+  } else {
+    const txt = document.getElementById('question-txt').textContent;
+    if (txt) speak(txt);
+  }
 }
 
 /* ─── END ─── */
