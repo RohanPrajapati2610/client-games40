@@ -475,12 +475,10 @@ function registerWrong(side) {
     clearHint();
     play(sndWrong);
     showToast('❌ Wrong!', '#f44336');
-    document.getElementById('choice-left').classList.add('wrong');
-    document.getElementById('choice-right').classList.add('wrong');
+    document.getElementById('choice-' + side).classList.add('wrong');
     setTimeout(() => {
       showToast('💡 Correct answer!', '#FF9800');
-      document.getElementById('choice-left').classList.remove('wrong');
-      document.getElementById('choice-right').classList.remove('wrong');
+      document.getElementById('choice-' + side).classList.remove('wrong');
       document.getElementById('choice-' + QUESTIONS[curQ].correctSide).classList.add('correct');
       setTimeout(nextQuestion, 3000);
     }, 1000);
