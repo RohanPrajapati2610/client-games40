@@ -145,15 +145,15 @@
     /* ── Tablet ── */
     @media (max-width: 768px) {
       #game-screen { padding: 10px; max-width: 100%; }
-      .q-card { padding: 20px 30px; min-height: 0; flex: none; }
+      .q-card { padding: 20px 30px; min-height: 0; flex: 1; }
       .img-frame { width: min(140px, 28vw); height: min(140px, 28vw); }
       .hdr-title { display: none; }
     }
     /* ── Phone ── */
     @media (max-width: 480px) {
       #game-screen { padding: 8px 8px 6px; }
-      .q-card { padding: 16px 12px; border-radius: 18px; flex: none; min-height: 0; }
-      .img-frame { width: min(120px, 32vw); height: min(120px, 32vw); border-radius: 14px; }
+      .q-card { padding: 16px 12px; border-radius: 18px; flex: 1; min-height: 0; }
+      .img-frame { width: min(150px, 38vw); height: min(150px, 38vw); border-radius: 14px; }
       .img-col { gap: 6px; }
       .hdr-score { font-size: 1em; }
       .instruction { font-size: clamp(0.85em, 3.5vw, 1em); margin: 6px 0; }
@@ -461,6 +461,7 @@ function play(snd) {
 function speak(text) {
   sndClaps.pause(); sndClaps.currentTime = 0;
   if (!('speechSynthesis' in window)) return;
+  if (muted) { window.speechSynthesis.cancel(); return; }
   window.speechSynthesis.cancel();
   setTimeout(() => {
     const u = new SpeechSynthesisUtterance(text);
@@ -790,6 +791,7 @@ if (!document.querySelector('#cf-style')) {
 function toggleMute() {
   muted = !muted;
   document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+  if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
 }
 
 /* ─── END ─── */

@@ -256,6 +256,7 @@ function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(()=>{});
 function speak(text) {
   sndClaps.pause(); sndClaps.currentTime = 0;
   if (!('speechSynthesis' in window)) return;
+  if (muted) { window.speechSynthesis.cancel(); return; }
   window.speechSynthesis.cancel();
   setTimeout(() => {
     const u = new SpeechSynthesisUtterance(text);
@@ -590,7 +591,11 @@ if (!document.querySelector('#cf-style')) {
 }
 
 /* ─── MUTE ─── */
-function toggleMute() { muted = !muted; document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊'; }
+function toggleMute() {
+  muted = !muted;
+  document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+  if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
+}
 
 /* ─── END ─── */
 function showEnd() {
