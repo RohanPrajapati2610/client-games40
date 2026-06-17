@@ -170,17 +170,17 @@
 
     /* Toast */
     #toast {
-      position: fixed; top: 50%; left: 50%;
-      transform: translate(-50%, -50%) scale(0);
+      position: fixed; top: 20%; left: 50%;
+      transform: translateX(-50%) scale(0);
       background: #4CAF50; color: white;
       padding: 14px 28px; border-radius: 50px;
       font-size: 1.4em; font-weight: 800;
       box-shadow: 0 6px 24px rgba(0,0,0,0.25);
       z-index: 100;
       transition: transform 0.2s, opacity 0.2s;
-      opacity: 0; pointer-events: none;
+      opacity: 0; pointer-events: none; white-space: nowrap;
     }
-    #toast.show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    #toast.show { transform: translateX(-50%) scale(1); opacity: 1; }
 
     /* Confetti */
     .confetti-piece {
