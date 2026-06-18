@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Right and Left Â· LY3</title>
+  <title>Right and Left · LY3</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
@@ -61,7 +61,7 @@
       margin-top: auto; margin-bottom: auto; flex-shrink: 0;
     }
 
-    /* â”€â”€ SCENE â”€â”€ */
+    /* ── SCENE ── */
     .dir-scene {
       width: 100%; border-radius: 20px; overflow: hidden;
       border: 3px solid #e0e0e0;
@@ -97,7 +97,7 @@
       font-size: 2.5em; color: rgba(0,0,0,0.1);
     }
 
-    /* â”€â”€ BUTTONS â”€â”€ */
+    /* ── BUTTONS ── */
     .dir-choices { display: flex; gap: 16px; width: 100%; justify-content: center; }
     .dir-btn {
       flex: 1; max-width: 200px; height: 74px;
@@ -182,7 +182,6 @@
 </head>
 <body>
 
-
 <div id="intro-screen" onclick="startGame()">
   <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine">
 </div>
@@ -191,9 +190,9 @@
 
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">â­ <span id="score-val">0</span> / 8</div>
+    <div class="hdr-score">⭐ <span id="score-val">0</span> / 8</div>
     <div class="hdr-title">Right and Left</div>
-    <button class="mute-btn" id="mute-btn" onclick="toggleMute()">ðŸ”Š</button>
+    <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
   </div>
   <div class="progress-row">
     <span class="progress-label">Q <span id="q-num">1</span> / 8</span>
@@ -203,29 +202,29 @@
   <div class="q-card">
     <div class="dir-scene" id="dir-scene">
       <div class="dir-half left-half">
-        <div class="half-label">â† LEFT</div>
+        <div class="half-label">← LEFT</div>
         <div class="animal-wrap" id="left-animal"></div>
       </div>
       <div class="dir-half right-half">
-        <div class="half-label">RIGHT â†’</div>
+        <div class="half-label">RIGHT →</div>
         <div class="animal-wrap" id="right-animal"></div>
       </div>
     </div>
     <div class="dir-choices">
-      <button class="dir-btn" id="btn-left"  onclick="selectDir('left')">â† LEFT</button>
-      <button class="dir-btn" id="btn-right" onclick="selectDir('right')">RIGHT â†’</button>
+      <button class="dir-btn" id="btn-left"  onclick="selectDir('left')">← LEFT</button>
+      <button class="dir-btn" id="btn-right" onclick="selectDir('right')">RIGHT →</button>
     </div>
   </div>
-  <button class="btn-restart" onclick="restartGame()">ðŸ”„ &nbsp;Restart</button>
+  <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
 </div>
 
 <div id="end-screen">
-  <div class="end-trophy">ðŸ†</div>
+  <div class="end-trophy">🏆</div>
   <div class="end-title">You have done a great job!</div>
   <div class="end-sub">You completed all 8 questions!</div>
   <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 8</div>
   <div class="end-stars" id="end-stars"></div>
-  <button class="btn-play-again" onclick="restartGame()">â–¶ &nbsp;Play Again</button>
+  <button class="btn-play-again" onclick="restartGame()">▶ &nbsp;Play Again</button>
 </div>
 
 <script>
@@ -657,7 +656,7 @@ function registerCorrect(dir) {
   document.getElementById('dir-scene').classList.add('correct');
   document.getElementById('btn-' + dir).classList.add('correct');
   window.speechSynthesis?.cancel();
-  playClaps(); showToast('â­ Correct!', '#4CAF50'); spawnConfetti();
+  playClaps(); showToast('⭐ Correct!', '#4CAF50'); spawnConfetti();
   setTimeout(nextQuestion, 3200);
 }
 
@@ -666,7 +665,7 @@ function registerWrong(dir) {
   attempts++;
   if (attempts === 1) {
     sndWrong.currentTime = 0; if (!muted) sndWrong.play().catch(() => {});
-    showToast('âŒ Try again!', '#f44336');
+    showToast('❌ Try again!', '#f44336');
     const wb = document.getElementById('btn-' + dir);
     wb.classList.add('wrong');
     document.getElementById('btn-' + QUESTIONS[curQ].side).classList.add('hint');
@@ -676,7 +675,7 @@ function registerWrong(dir) {
     sndWrong.currentTime = 0; if (!muted) sndWrong.play().catch(() => {});
     document.getElementById('btn-' + dir).classList.add('wrong');
     setTimeout(() => {
-      showToast('ðŸ’¡ Correct answer!', '#FF9800');
+      showToast('💡 Correct answer!', '#FF9800');
       clearBtnStates();
       document.getElementById('btn-' + QUESTIONS[curQ].side).classList.add('correct');
       document.getElementById('dir-scene').classList.add('correct');
@@ -724,7 +723,7 @@ function spawnConfetti() {
 
 function toggleMute() {
   muted = !muted;
-  document.getElementById('mute-btn').textContent = muted ? 'ðŸ”‡' : 'ðŸ”Š';
+  document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
   if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
   else if (curQ < 8) speak(`Is the ${QUESTIONS[curQ].name} on the left or the right?`);
 }
@@ -733,7 +732,7 @@ function showEnd() {
   document.getElementById('game-screen').style.display = 'none';
   document.getElementById('end-screen').style.display  = 'flex';
   document.getElementById('final-score').textContent   = score;
-  document.getElementById('end-stars').textContent = score >= 7 ? 'â­â­â­' : score >= 5 ? 'â­â­' : 'â­';
+  document.getElementById('end-stars').textContent = score >= 7 ? '⭐⭐⭐' : score >= 5 ? '⭐⭐' : '⭐';
   window.speechSynthesis?.cancel();
   playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 800);
 }
