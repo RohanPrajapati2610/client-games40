@@ -88,7 +88,7 @@
     .animal-wrap {
       flex: 1; display: flex; align-items: center; justify-content: center;
     }
-    .animal-wrap svg { width: 160px; height: 160px; }
+    .animal-wrap img { width: 160px; height: 160px; object-fit: contain; }
 
     .empty-slot {
       width: 120px; height: 120px; border-radius: 50%;
@@ -162,7 +162,7 @@
       #game-screen { padding: 10px 10px 76px; }
       .q-card { padding: 14px 10px; gap: 16px; }
       .dir-half { min-height: 190px; }
-      .animal-wrap svg { width: 130px; height: 130px; }
+      .animal-wrap img { width: 130px; height: 130px; }
       .dir-btn { height: 66px; font-size: 1.3em; }
       .hdr-title { display: none; }
     }
@@ -170,7 +170,7 @@
       #game-screen { padding: 8px 8px 76px; }
       .q-card { padding: 10px 8px; gap: 12px; border-radius: 18px; }
       .dir-half { min-height: 160px; padding: 10px 6px; }
-      .animal-wrap svg { width: 105px; height: 105px; }
+      .animal-wrap img { width: 105px; height: 105px; }
       .empty-slot { width: 80px; height: 80px; font-size: 2em; }
       .half-label { font-size: 0.85em; }
       .dir-btn { height: 60px; font-size: 1.15em; border-radius: 16px; }
@@ -229,360 +229,14 @@
 
 <script>
 const ANIMALS = {
-
-cat: `<svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="cg1" cx="45%" cy="35%" r="60%"><stop offset="0%" stop-color="#FFCC80"/><stop offset="100%" stop-color="#E65100"/></radialGradient>
-    <radialGradient id="cg2" cx="35%" cy="30%" r="65%"><stop offset="0%" stop-color="#A5D6A7"/><stop offset="100%" stop-color="#1B5E20"/></radialGradient>
-  </defs>
-  <!-- Tail -->
-  <path d="M66,96 Q90,80 87,60 Q84,44 70,48" stroke="#E65100" stroke-width="8" fill="none" stroke-linecap="round"/>
-  <!-- Body -->
-  <ellipse cx="48" cy="90" rx="26" ry="20" fill="url(#cg1)"/>
-  <!-- Body stripes -->
-  <path d="M34,82 Q48,78 62,82" fill="none" stroke="#BF360C" stroke-width="2" opacity="0.45"/>
-  <path d="M30,90 Q48,86 66,90" fill="none" stroke="#BF360C" stroke-width="2" opacity="0.45"/>
-  <!-- Ear left -->
-  <polygon points="20,42 33,8 46,42" fill="#E65100"/>
-  <polygon points="24,40 33,14 42,40" fill="#FFAB40"/>
-  <!-- Ear right -->
-  <polygon points="54,42 67,8 80,42" fill="#E65100"/>
-  <polygon points="58,40 67,14 76,40" fill="#FFAB40"/>
-  <!-- Head -->
-  <circle cx="50" cy="54" r="30" fill="url(#cg1)"/>
-  <!-- Forehead stripes -->
-  <path d="M44,28 Q50,24 56,28" fill="none" stroke="#BF360C" stroke-width="1.8" opacity="0.4"/>
-  <path d="M40,35 Q50,31 60,35" fill="none" stroke="#BF360C" stroke-width="1.8" opacity="0.4"/>
-  <!-- Muzzle -->
-  <ellipse cx="50" cy="67" rx="14" ry="10" fill="#FFCC80" opacity="0.75"/>
-  <!-- Cheeks -->
-  <ellipse cx="22" cy="62" rx="9" ry="7" fill="#FFCC80" opacity="0.5"/>
-  <ellipse cx="78" cy="62" rx="9" ry="7" fill="#FFCC80" opacity="0.5"/>
-  <!-- Eyes white -->
-  <ellipse cx="37" cy="50" rx="9" ry="10" fill="white"/>
-  <ellipse cx="63" cy="50" rx="9" ry="10" fill="white"/>
-  <!-- Iris -->
-  <ellipse cx="37" cy="51" rx="7" ry="8" fill="url(#cg2)"/>
-  <ellipse cx="63" cy="51" rx="7" ry="8" fill="url(#cg2)"/>
-  <!-- Pupil -->
-  <ellipse cx="37" cy="51" rx="3" ry="6.5" fill="#111"/>
-  <ellipse cx="63" cy="51" rx="3" ry="6.5" fill="#111"/>
-  <!-- Eye shine -->
-  <circle cx="40" cy="47" r="2.5" fill="white"/>
-  <circle cx="66" cy="47" r="2.5" fill="white"/>
-  <!-- Nose -->
-  <polygon points="50,63 46,68 54,68" fill="#EC407A"/>
-  <!-- Mouth -->
-  <path d="M46,68 Q50,74 54,68" fill="none" stroke="#C2185B" stroke-width="2" stroke-linecap="round"/>
-  <!-- Whiskers -->
-  <line x1="6" y1="62" x2="40" y2="65" stroke="#ddd" stroke-width="1.6"/>
-  <line x1="6" y1="69" x2="40" y2="69" stroke="#ddd" stroke-width="1.6"/>
-  <line x1="60" y1="65" x2="94" y2="62" stroke="#ddd" stroke-width="1.6"/>
-  <line x1="60" y1="69" x2="94" y2="69" stroke="#ddd" stroke-width="1.6"/>
-  <!-- Paws -->
-  <ellipse cx="36" cy="107" rx="12" ry="7" fill="url(#cg1)"/>
-  <ellipse cx="62" cy="107" rx="12" ry="7" fill="url(#cg1)"/>
-  <line x1="30" y1="105" x2="30" y2="109" stroke="#BF360C" stroke-width="1.2" opacity="0.5"/>
-  <line x1="36" y1="104" x2="36" y2="108" stroke="#BF360C" stroke-width="1.2" opacity="0.5"/>
-  <line x1="42" y1="105" x2="42" y2="109" stroke="#BF360C" stroke-width="1.2" opacity="0.5"/>
-</svg>`,
-
-dog: `<svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="dg1" cx="45%" cy="35%" r="65%"><stop offset="0%" stop-color="#FFE0B2"/><stop offset="100%" stop-color="#BF360C"/></radialGradient>
-    <radialGradient id="dg2" cx="40%" cy="35%" r="60%"><stop offset="0%" stop-color="#BCAAA4"/><stop offset="100%" stop-color="#3E2723"/></radialGradient>
-  </defs>
-  <!-- Tail wagging -->
-  <path d="M72,78 Q94,62 90,44" stroke="#A0522D" stroke-width="8" fill="none" stroke-linecap="round"/>
-  <path d="M72,78 Q96,70 96,54" stroke="#BCAAA4" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.5"/>
-  <!-- Body -->
-  <ellipse cx="48" cy="88" rx="28" ry="20" fill="url(#dg1)"/>
-  <!-- Ear left (floppy, hangs down) -->
-  <ellipse cx="20" cy="50" rx="14" ry="22" fill="url(#dg2)" transform="rotate(-12 20 50)"/>
-  <!-- Ear right -->
-  <ellipse cx="80" cy="50" rx="14" ry="22" fill="url(#dg2)" transform="rotate(12 80 50)"/>
-  <!-- Head -->
-  <circle cx="50" cy="50" r="28" fill="url(#dg1)"/>
-  <!-- Snout -->
-  <ellipse cx="50" cy="65" rx="17" ry="13" fill="#FFD0A0"/>
-  <!-- Big wet nose -->
-  <ellipse cx="50" cy="59" rx="10" ry="7" fill="#1a1a1a"/>
-  <ellipse cx="50" cy="57" rx="9" ry="5" fill="#2d2d2d"/>
-  <circle cx="46" cy="56" r="2.5" fill="rgba(255,255,255,0.45)"/>
-  <!-- Eyes white -->
-  <circle cx="35" cy="44" r="9" fill="white"/>
-  <circle cx="65" cy="44" r="9" fill="white"/>
-  <!-- Iris -->
-  <circle cx="35" cy="44" r="6.5" fill="#5D4037"/>
-  <circle cx="65" cy="44" r="6.5" fill="#5D4037"/>
-  <!-- Pupil -->
-  <circle cx="35" cy="44" r="3.5" fill="#1a1a1a"/>
-  <circle cx="65" cy="44" r="3.5" fill="#1a1a1a"/>
-  <!-- Shine -->
-  <circle cx="37" cy="41" r="2.2" fill="white"/>
-  <circle cx="67" cy="41" r="2.2" fill="white"/>
-  <!-- Eyebrows -->
-  <path d="M28,36 Q35,31 42,36" fill="none" stroke="#A0522D" stroke-width="2.5" stroke-linecap="round"/>
-  <path d="M58,36 Q65,31 72,36" fill="none" stroke="#A0522D" stroke-width="2.5" stroke-linecap="round"/>
-  <!-- Tongue -->
-  <path d="M43,72 Q50,84 57,72" fill="#EF5350"/>
-  <line x1="50" y1="76" x2="50" y2="82" stroke="#E53935" stroke-width="2"/>
-  <!-- Paws -->
-  <ellipse cx="34" cy="106" rx="13" ry="8" fill="url(#dg1)"/>
-  <ellipse cx="62" cy="106" rx="13" ry="8" fill="url(#dg1)"/>
-</svg>`,
-
-duck: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="duck-b" cx="40%" cy="30%" r="65%"><stop offset="0%" stop-color="#FFF176"/><stop offset="100%" stop-color="#F57F17"/></radialGradient>
-  </defs>
-  <!-- Tail feathers -->
-  <path d="M22,70 Q6,58 8,46 Q16,56 24,64" fill="#FDD835"/>
-  <path d="M18,76 Q2,68 4,54 Q12,62 20,72" fill="#FFEE58"/>
-  <!-- Body -->
-  <ellipse cx="52" cy="74" rx="32" ry="26" fill="url(#duck-b)"/>
-  <!-- Wing -->
-  <ellipse cx="36" cy="72" rx="20" ry="13" fill="#FDD835" transform="rotate(-20 36 72)"/>
-  <ellipse cx="36" cy="72" rx="15" ry="9" fill="#FFEE58" transform="rotate(-20 36 72)"/>
-  <!-- Wing feather detail -->
-  <path d="M22,64 Q30,68 24,76" fill="none" stroke="#F9A825" stroke-width="1.5" opacity="0.7"/>
-  <path d="M28,62 Q36,66 30,74" fill="none" stroke="#F9A825" stroke-width="1.5" opacity="0.7"/>
-  <!-- Neck -->
-  <ellipse cx="64" cy="56" rx="16" ry="12" fill="url(#duck-b)"/>
-  <!-- Head -->
-  <circle cx="68" cy="36" r="22" fill="url(#duck-b)"/>
-  <!-- Bill upper -->
-  <path d="M86,33 Q100,36 98,42 Q94,47 82,44 L80,36 Z" fill="#FF8F00"/>
-  <!-- Bill lower -->
-  <path d="M83,42 Q96,44 94,48 Q90,52 80,49 L80,42 Z" fill="#E65100"/>
-  <!-- Bill line -->
-  <line x1="84" y1="42" x2="96" y2="41" stroke="#BF360C" stroke-width="1" opacity="0.6"/>
-  <!-- Eye -->
-  <circle cx="75" cy="30" r="7" fill="white"/>
-  <circle cx="76" cy="30" r="5" fill="#1a1a1a"/>
-  <circle cx="78" cy="28" r="2" fill="white"/>
-  <!-- Feet -->
-  <path d="M40,98 L28,100 L32,104 L38,100 L44,104 L48,100 L48,96 Z" fill="#FF8F00"/>
-  <path d="M64,98 L52,100 L56,104 L62,100 L68,104 L72,100 L72,96 Z" fill="#FF8F00"/>
-</svg>`,
-
-butterfly: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="bfw1" cx="38%" cy="38%" r="62%"><stop offset="0%" stop-color="#F48FB1"/><stop offset="100%" stop-color="#880E4F"/></radialGradient>
-    <radialGradient id="bfw2" cx="62%" cy="38%" r="62%"><stop offset="0%" stop-color="#CE93D8"/><stop offset="100%" stop-color="#4A148C"/></radialGradient>
-    <radialGradient id="bfw3" cx="38%" cy="60%" r="60%"><stop offset="0%" stop-color="#FFCC80"/><stop offset="100%" stop-color="#E65100"/></radialGradient>
-  </defs>
-  <!-- Upper wings -->
-  <ellipse cx="27" cy="36" rx="26" ry="22" fill="url(#bfw1)" transform="rotate(-22 27 36)"/>
-  <ellipse cx="73" cy="36" rx="26" ry="22" fill="url(#bfw2)" transform="rotate(22 73 36)"/>
-  <!-- Wing patterns upper -->
-  <circle cx="22" cy="26" r="8" fill="rgba(255,255,255,0.4)"/>
-  <circle cx="33" cy="46" r="5" fill="rgba(255,255,255,0.3)"/>
-  <circle cx="78" cy="26" r="8" fill="rgba(255,255,255,0.4)"/>
-  <circle cx="67" cy="46" r="5" fill="rgba(255,255,255,0.3)"/>
-  <circle cx="18" cy="38" r="4" fill="rgba(255,255,255,0.25)"/>
-  <circle cx="82" cy="38" r="4" fill="rgba(255,255,255,0.25)"/>
-  <!-- Lower wings -->
-  <ellipse cx="30" cy="70" rx="22" ry="18" fill="url(#bfw3)" transform="rotate(22 30 70)"/>
-  <ellipse cx="70" cy="70" rx="22" ry="18" fill="url(#bfw3)" transform="rotate(-22 70 70)"/>
-  <!-- Lower wing patterns -->
-  <circle cx="28" cy="72" r="6" fill="rgba(255,255,255,0.35)"/>
-  <circle cx="72" cy="72" r="6" fill="rgba(255,255,255,0.35)"/>
-  <circle cx="36" cy="82" r="4" fill="rgba(255,255,255,0.25)"/>
-  <circle cx="64" cy="82" r="4" fill="rgba(255,255,255,0.25)"/>
-  <!-- Body -->
-  <ellipse cx="50" cy="54" rx="5" ry="30" fill="#4E342E"/>
-  <ellipse cx="50" cy="54" rx="3.5" ry="28" fill="#6D4C41"/>
-  <!-- Belly segments -->
-  <ellipse cx="50" cy="56" rx="3" ry="5" fill="#5D4037" opacity="0.7"/>
-  <ellipse cx="50" cy="66" rx="3" ry="5" fill="#5D4037" opacity="0.7"/>
-  <ellipse cx="50" cy="76" rx="2.5" ry="4" fill="#5D4037" opacity="0.6"/>
-  <!-- Head -->
-  <circle cx="50" cy="22" r="8" fill="#4E342E"/>
-  <!-- Antennae -->
-  <path d="M50,15 Q40,4 33,2" fill="none" stroke="#4E342E" stroke-width="2.2" stroke-linecap="round"/>
-  <circle cx="32" cy="1" r="4" fill="#E91E63"/>
-  <path d="M50,15 Q60,4 67,2" fill="none" stroke="#4E342E" stroke-width="2.2" stroke-linecap="round"/>
-  <circle cx="68" cy="1" r="4" fill="#9C27B0"/>
-</svg>`,
-
-bee: `<svg viewBox="0 0 100 105" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="bee-b" cx="35%" cy="28%" r="65%"><stop offset="0%" stop-color="#FFF176"/><stop offset="100%" stop-color="#F57F17"/></radialGradient>
-  </defs>
-  <!-- Wings (transparent, behind) -->
-  <ellipse cx="26" cy="40" rx="24" ry="14" fill="rgba(210,240,255,0.85)" stroke="rgba(100,180,255,0.4)" stroke-width="1" transform="rotate(-28 26 40)"/>
-  <ellipse cx="74" cy="40" rx="24" ry="14" fill="rgba(210,240,255,0.85)" stroke="rgba(100,180,255,0.4)" stroke-width="1" transform="rotate(28 74 40)"/>
-  <!-- Wing veins -->
-  <path d="M14,32 Q26,40 38,34" fill="none" stroke="rgba(100,180,255,0.5)" stroke-width="0.8"/>
-  <path d="M62,34 Q74,40 86,32" fill="none" stroke="rgba(100,180,255,0.5)" stroke-width="0.8"/>
-  <!-- Stinger -->
-  <polygon points="50,98 46,105 54,105" fill="#F9A825"/>
-  <!-- Abdomen (body) -->
-  <ellipse cx="50" cy="73" rx="20" ry="27" fill="url(#bee-b)"/>
-  <!-- Stripes -->
-  <rect x="31" y="60" width="38" height="10" rx="4" fill="#212121"/>
-  <rect x="31" y="75" width="38" height="10" rx="4" fill="#212121"/>
-  <!-- Body shine -->
-  <ellipse cx="41" cy="57" rx="9" ry="6" fill="rgba(255,255,255,0.28)" transform="rotate(-15 41 57)"/>
-  <!-- Head -->
-  <circle cx="50" cy="36" r="19" fill="url(#bee-b)"/>
-  <!-- Fuzzy head top -->
-  <ellipse cx="50" cy="18" rx="16" ry="6" fill="#FDD835" opacity="0.6"/>
-  <!-- Eyes -->
-  <circle cx="39" cy="33" r="7" fill="white"/>
-  <circle cx="61" cy="33" r="7" fill="white"/>
-  <circle cx="39" cy="33" r="4.5" fill="#1a1a1a"/>
-  <circle cx="61" cy="33" r="4.5" fill="#1a1a1a"/>
-  <circle cx="41" cy="31" r="1.8" fill="white"/>
-  <circle cx="63" cy="31" r="1.8" fill="white"/>
-  <!-- Smile -->
-  <path d="M42,44 Q50,51 58,44" fill="none" stroke="#E65100" stroke-width="2.2" stroke-linecap="round"/>
-  <!-- Antennae -->
-  <line x1="44" y1="18" x2="33" y2="5" stroke="#212121" stroke-width="2.5" stroke-linecap="round"/>
-  <circle cx="32" cy="4" r="4.5" fill="#F44336"/>
-  <line x1="56" y1="18" x2="67" y2="5" stroke="#212121" stroke-width="2.5" stroke-linecap="round"/>
-  <circle cx="68" cy="4" r="4.5" fill="#F44336"/>
-</svg>`,
-
-fish: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="fish-b" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#FF7043"/>
-      <stop offset="50%" stop-color="#FF5722"/>
-      <stop offset="100%" stop-color="#BF360C"/>
-    </linearGradient>
-    <linearGradient id="fish-belly" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#FF8A65"/>
-      <stop offset="100%" stop-color="#FFCCBC"/>
-    </linearGradient>
-  </defs>
-  <!-- Tail fan -->
-  <polygon points="80,50 100,24 100,76" fill="#FF7043"/>
-  <polygon points="80,50 100,30 100,44" fill="#FFAB91"/>
-  <polygon points="80,50 100,56 100,70" fill="#FFAB91"/>
-  <!-- Tail center line -->
-  <line x1="80" y1="50" x2="100" y2="50" stroke="#BF360C" stroke-width="1.5" opacity="0.5"/>
-  <!-- Body -->
-  <ellipse cx="45" cy="50" rx="42" ry="26" fill="url(#fish-b)"/>
-  <!-- Belly -->
-  <ellipse cx="42" cy="58" rx="32" ry="14" fill="url(#fish-belly)" opacity="0.6"/>
-  <!-- Scale pattern -->
-  <ellipse cx="28" cy="42" rx="14" ry="11" fill="rgba(255,255,255,0.2)"/>
-  <ellipse cx="48" cy="44" rx="14" ry="11" fill="rgba(255,255,255,0.16)"/>
-  <ellipse cx="24" cy="56" rx="12" ry="9" fill="rgba(255,255,255,0.14)"/>
-  <!-- Accent stripes -->
-  <ellipse cx="60" cy="50" rx="4" ry="22" fill="rgba(255,213,79,0.55)"/>
-  <ellipse cx="70" cy="50" rx="4" ry="17" fill="rgba(255,213,79,0.45)"/>
-  <!-- Dorsal fin -->
-  <polygon points="24,24 46,24 36,40" fill="#E64A19"/>
-  <path d="M24,24 Q35,20 46,24" fill="#FF8A65" opacity="0.6"/>
-  <!-- Pectoral fin -->
-  <ellipse cx="38" cy="60" rx="12" ry="7" fill="#E64A19" transform="rotate(20 38 60)"/>
-  <!-- Gill line -->
-  <path d="M26,35 Q22,50 26,65" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="2.2"/>
-  <!-- Eye -->
-  <circle cx="14" cy="45" r="11" fill="white"/>
-  <circle cx="14" cy="45" r="7.5" fill="#1a1a1a"/>
-  <circle cx="17" cy="42" r="3" fill="white"/>
-  <!-- Mouth -->
-  <path d="M2,52 Q6,58 2,64" fill="none" stroke="#BF360C" stroke-width="2.5" stroke-linecap="round"/>
-</svg>`,
-
-monkey: `<svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="mk1" cx="45%" cy="35%" r="65%"><stop offset="0%" stop-color="#A1887F"/><stop offset="100%" stop-color="#3E2723"/></radialGradient>
-    <radialGradient id="mk2" cx="45%" cy="30%" r="65%"><stop offset="0%" stop-color="#BCAAA4"/><stop offset="100%" stop-color="#4E342E"/></radialGradient>
-  </defs>
-  <!-- Tail -->
-  <path d="M68,92 Q94,76 90,56 Q86,40 70,44" stroke="#4E342E" stroke-width="9" fill="none" stroke-linecap="round"/>
-  <path d="M68,92 Q92,78 88,58 Q84,42 70,46" stroke="#6D4C41" stroke-width="5" fill="none" stroke-linecap="round"/>
-  <!-- Body -->
-  <ellipse cx="48" cy="88" rx="26" ry="20" fill="url(#mk1)"/>
-  <!-- Belly -->
-  <ellipse cx="48" cy="90" rx="18" ry="14" fill="#FFCCBC" opacity="0.7"/>
-  <!-- Ears (behind head) -->
-  <circle cx="16" cy="48" r="17" fill="url(#mk1)"/>
-  <circle cx="16" cy="48" r="11" fill="#FFCCBC"/>
-  <circle cx="84" cy="48" r="17" fill="url(#mk1)"/>
-  <circle cx="84" cy="48" r="11" fill="#FFCCBC"/>
-  <!-- Head -->
-  <circle cx="50" cy="48" r="28" fill="url(#mk1)"/>
-  <!-- Face oval -->
-  <ellipse cx="50" cy="58" rx="20" ry="17" fill="#FFCCBC"/>
-  <!-- Eyes white -->
-  <circle cx="38" cy="42" r="9" fill="white"/>
-  <circle cx="62" cy="42" r="9" fill="white"/>
-  <!-- Iris -->
-  <circle cx="38" cy="42" r="6" fill="#5D4037"/>
-  <circle cx="62" cy="42" r="6" fill="#5D4037"/>
-  <!-- Pupil -->
-  <circle cx="38" cy="42" r="3" fill="#1a1a1a"/>
-  <circle cx="62" cy="42" r="3" fill="#1a1a1a"/>
-  <!-- Shine -->
-  <circle cx="40" cy="40" r="2.2" fill="white"/>
-  <circle cx="64" cy="40" r="2.2" fill="white"/>
-  <!-- Nostrils -->
-  <circle cx="46" cy="58" rx="4" fill="#BCAAA4"/>
-  <circle cx="54" cy="58" rx="4" fill="#BCAAA4"/>
-  <circle cx="46" cy="58" r="4" fill="#BCAAA4"/>
-  <circle cx="54" cy="58" r="4" fill="#BCAAA4"/>
-  <!-- Smile -->
-  <path d="M38,66 Q50,77 62,66" fill="none" stroke="#4E342E" stroke-width="2.5" stroke-linecap="round"/>
-  <!-- Arms -->
-  <path d="M24,72 Q8,82 6,96" stroke="#5D4037" stroke-width="11" stroke-linecap="round" fill="none"/>
-  <path d="M24,72 Q8,82 6,96" stroke="#795548" stroke-width="7" stroke-linecap="round" fill="none"/>
-  <path d="M74,72 Q90,82 92,96" stroke="#5D4037" stroke-width="11" stroke-linecap="round" fill="none"/>
-  <path d="M74,72 Q90,82 92,96" stroke="#795548" stroke-width="7" stroke-linecap="round" fill="none"/>
-</svg>`,
-
-rabbit: `<svg viewBox="0 0 100 115" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="rab1" cx="45%" cy="35%" r="65%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#BDBDBD"/></radialGradient>
-    <radialGradient id="rab2" cx="35%" cy="30%" r="65%"><stop offset="0%" stop-color="#F48FB1"/><stop offset="100%" stop-color="#880E4F"/></radialGradient>
-  </defs>
-  <!-- Ears -->
-  <ellipse cx="34" cy="22" rx="12" ry="28" fill="url(#rab1)"/>
-  <ellipse cx="34" cy="22" rx="7" ry="22" fill="#F8BBD0"/>
-  <ellipse cx="66" cy="22" rx="12" ry="28" fill="url(#rab1)"/>
-  <ellipse cx="66" cy="22" rx="7" ry="22" fill="#F8BBD0"/>
-  <!-- Body -->
-  <ellipse cx="50" cy="88" rx="30" ry="24" fill="url(#rab1)"/>
-  <!-- Fluffy tail -->
-  <circle cx="76" cy="92" r="13" fill="white"/>
-  <circle cx="76" cy="90" r="10" fill="white"/>
-  <!-- Feet -->
-  <ellipse cx="36" cy="110" rx="16" ry="8" fill="url(#rab1)"/>
-  <ellipse cx="64" cy="110" rx="16" ry="8" fill="url(#rab1)"/>
-  <!-- Head -->
-  <circle cx="50" cy="56" r="28" fill="url(#rab1)"/>
-  <!-- Cheek fluff -->
-  <ellipse cx="24" cy="64" rx="10" ry="8" fill="white" opacity="0.75"/>
-  <ellipse cx="76" cy="64" rx="10" ry="8" fill="white" opacity="0.75"/>
-  <!-- Eyes white -->
-  <circle cx="38" cy="52" r="9" fill="white"/>
-  <circle cx="62" cy="52" r="9" fill="white"/>
-  <!-- Iris -->
-  <circle cx="38" cy="52" r="7" fill="url(#rab2)"/>
-  <circle cx="62" cy="52" r="7" fill="url(#rab2)"/>
-  <!-- Pupil -->
-  <circle cx="38" cy="52" r="3.5" fill="#1a1a1a"/>
-  <circle cx="62" cy="52" r="3.5" fill="#1a1a1a"/>
-  <!-- Shine -->
-  <circle cx="40" cy="49" r="2" fill="white"/>
-  <circle cx="64" cy="49" r="2" fill="white"/>
-  <!-- Nose -->
-  <circle cx="50" cy="64" r="5.5" fill="#F48FB1"/>
-  <circle cx="50" cy="63" r="4" fill="#F06292"/>
-  <!-- Mouth -->
-  <path d="M46,68 Q50,75 54,68" fill="none" stroke="#CE93D8" stroke-width="2.2" stroke-linecap="round"/>
-  <!-- Whiskers -->
-  <line x1="10" y1="64" x2="42" y2="66" stroke="#ccc" stroke-width="1.6"/>
-  <line x1="10" y1="70" x2="42" y2="70" stroke="#ccc" stroke-width="1.6"/>
-  <line x1="58" y1="66" x2="90" y2="64" stroke="#ccc" stroke-width="1.6"/>
-  <line x1="58" y1="70" x2="90" y2="70" stroke="#ccc" stroke-width="1.6"/>
-</svg>`,
-
+  cat:       'Assets/cat.png',
+  dog:       'Assets/dog.png',
+  duck:      'Assets/duck.png',
+  butterfly: 'Assets/butterfly.jpg',
+  bee:       'Assets/bee.png',
+  fish:      'Assets/fish.png',
+  monkey:    'Assets/monkey.png',
+  elephant:  'Assets/elephant.png',
 };
 
 const QUESTIONS = [
@@ -593,7 +247,7 @@ const QUESTIONS = [
   { animal: 'bee',       name: 'bee',       side: 'right' },
   { animal: 'fish',      name: 'fish',      side: 'left'  },
   { animal: 'monkey',    name: 'monkey',    side: 'right' },
-  { animal: 'rabbit',    name: 'rabbit',    side: 'left'  },
+  { animal: 'elephant',  name: 'elephant',  side: 'left'  },
 ];
 
 const sndWrong = new Audio('Assets/wrong.mp3');
@@ -634,10 +288,10 @@ function loadQuestion() {
   document.getElementById('prog-bar').style.width  = (curQ / 8 * 100) + '%';
   const text = `Is the ${q.name} on the left or the right?`;
   document.getElementById('instruction-txt').textContent = text.toUpperCase();
-  const svgHtml  = ANIMALS[q.animal];
+  const imgHtml   = `<img src="${ANIMALS[q.animal]}" alt="${q.name}">`;
   const emptyHtml = `<div class="empty-slot">?</div>`;
-  document.getElementById('left-animal').innerHTML  = q.side === 'left'  ? svgHtml : emptyHtml;
-  document.getElementById('right-animal').innerHTML = q.side === 'right' ? svgHtml : emptyHtml;
+  document.getElementById('left-animal').innerHTML  = q.side === 'left'  ? imgHtml : emptyHtml;
+  document.getElementById('right-animal').innerHTML = q.side === 'right' ? imgHtml : emptyHtml;
   document.getElementById('dir-scene').className = 'dir-scene';
   clearBtnStates();
   speak(text);
