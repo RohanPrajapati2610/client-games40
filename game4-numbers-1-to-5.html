@@ -94,7 +94,10 @@
       max-width: 92%; max-height: 200px;
       object-fit: contain; border-radius: 14px;
       animation: objPop 0.35s ease backwards;
+      display: block;
     }
+    .obj-img, .group-img { opacity: 0; transition: opacity 0.2s; }
+    .obj-img.loaded, .group-img.loaded { opacity: 1; }
     @keyframes objPop { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
 
     /* Number buttons */
@@ -278,6 +281,9 @@ const QUESTIONS = [
 const sndWrong = new Audio('Assets/wrong.mp3');
 const sndClaps = new Audio('Assets/free_claps.mp3');
 
+/* Preload all question images so they're cached before any question renders */
+const _preloaded = QUESTIONS.map(q => { const i = new Image(); i.src = q.img; return i; });
+
 let curQ = 0, score = 0, muted = false, answered = false, attempts = 0;
 
 /* ── AUDIO ── */
@@ -341,12 +347,17 @@ function loadQuestion() {
   /* Render objects */
   const box = document.getElementById('obj-display');
   box.innerHTML = '';
+  function revealOnLoad(img) {
+    if (img.complete) { img.classList.add('loaded'); }
+    else { img.onload = () => img.classList.add('loaded'); }
+  }
   if (q.group) {
     const img = document.createElement('img');
     img.src = q.img;
     img.alt = q.obj;
     img.className = 'group-img';
     box.appendChild(img);
+    revealOnLoad(img);
   } else {
     for (let i = 0; i < q.count; i++) {
       const img = document.createElement('img');
@@ -355,6 +366,7 @@ function loadQuestion() {
       img.className = 'obj-img';
       img.style.animationDelay = (i * 0.08) + 's';
       box.appendChild(img);
+      revealOnLoad(img);
     }
   }
 }
