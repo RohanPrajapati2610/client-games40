@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Numbers 1–5 · LY2</title>
+  <title>Count and Match · LY2</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
@@ -44,8 +44,7 @@
     }
     .hdr-score { font-size: 1.2em; font-weight: bold; color: #4CAF50; min-width: 70px; }
     .hdr-title { font-size: clamp(0.75em,2.5vw,1em); color: #6a0dad; font-weight: bold; text-align: center; }
-    .mute-btn { width: 38px; height: 38px; border: 2px solid #ddd; border-radius: 50%; background: white; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.2s; }
-    .mute-btn:hover { border-color: #aaa; }
+    .mute-btn { width: 38px; height: 38px; border: 2px solid #ddd; border-radius: 50%; background: white; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
     /* Progress */
     .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-shrink: 0; }
@@ -62,37 +61,60 @@
 
     /* Card */
     .q-card {
-      background: white; border-radius: 24px; padding: 28px 20px;
+      background: white; border-radius: 24px; padding: 20px 16px;
       box-shadow: 0 6px 24px rgba(0,0,0,0.1);
-      display: flex; align-items: center; justify-content: center;
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
       margin-top: auto; margin-bottom: auto; flex-shrink: 0;
     }
 
-    /* Number grid */
+    /* Object display box */
+    .obj-display {
+      width: 100%;
+      min-height: 150px;
+      background: linear-gradient(135deg, #fff9f0, #fff3e0);
+      border-radius: 18px;
+      border: 3px solid #FFB74D;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 18px 14px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .obj-display.correct { border-color: #4CAF50; box-shadow: 0 0 0 4px #4CAF5040; }
+
+    .obj-img {
+      width: 72px; height: 72px;
+      object-fit: contain;
+      border-radius: 10px;
+      animation: objPop 0.3s ease backwards;
+    }
+    @keyframes objPop { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
+
+    /* Number buttons */
     .numbers-grid {
       display: flex; flex-wrap: wrap;
-      justify-content: center; gap: 16px;
+      justify-content: center; gap: 12px;
       width: 100%;
     }
 
     .num-btn {
-      width: 120px; height: 120px;
-      border-radius: 24px;
+      width: 100px; height: 100px;
+      border-radius: 22px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 3em; font-weight: 800;
+      font-size: 2.8em; font-weight: 800;
       cursor: pointer;
       border: 4px solid transparent;
       transition: transform 0.1s, box-shadow 0.2s;
       box-shadow: 0 4px 14px rgba(0,0,0,0.12);
       color: white;
-      position: relative;
       flex-shrink: 0;
     }
     .num-btn:active { transform: scale(0.93); }
 
-    /* Each number gets its own colour */
     .num-btn[data-num="1"] { background: linear-gradient(135deg, #FF6B6B, #ee5a24); }
-    .num-btn[data-num="2"] { background: linear-gradient(135deg, #FF9F43, #ee5a24); }
+    .num-btn[data-num="2"] { background: linear-gradient(135deg, #FF9F43, #e67e22); }
     .num-btn[data-num="3"] { background: linear-gradient(135deg, #1dd1a1, #10ac84); }
     .num-btn[data-num="4"] { background: linear-gradient(135deg, #54a0ff, #2e86de); }
     .num-btn[data-num="5"] { background: linear-gradient(135deg, #a29bfe, #6c5ce7); }
@@ -166,41 +188,40 @@
       font-family: inherit; cursor: pointer;
       box-shadow: 0 4px 16px rgba(255,215,0,0.5);
     }
-    .btn-play-again:hover { transform: scale(1.05); }
 
     /* Responsive */
     @media (max-width: 768px) {
       #game-screen { padding: 10px 10px 76px; }
-      .q-card { padding: 20px 14px; }
-      .num-btn { width: 100px; height: 100px; font-size: 2.6em; border-radius: 20px; }
-      .numbers-grid { gap: 12px; }
+      .q-card { padding: 16px 12px; gap: 16px; }
+      .obj-img { width: 62px; height: 62px; }
+      .num-btn { width: 86px; height: 86px; font-size: 2.4em; border-radius: 18px; }
+      .numbers-grid { gap: 10px; }
       .hdr-title { display: none; }
     }
     @media (max-width: 480px) {
       #game-screen { padding: 8px 8px 76px; }
-      .q-card { padding: 16px 10px; border-radius: 18px; }
-      .num-btn { width: 80px; height: 80px; font-size: 2.2em; border-radius: 16px; }
-      .numbers-grid { gap: 10px; }
+      .q-card { padding: 12px 8px; gap: 12px; border-radius: 18px; }
+      .obj-display { min-height: 120px; gap: 8px; padding: 12px 10px; }
+      .obj-img { width: 52px; height: 52px; }
+      .num-btn { width: 68px; height: 68px; font-size: 2em; border-radius: 14px; }
+      .numbers-grid { gap: 8px; }
       .hdr-score { font-size: 1em; }
-      .instruction { font-size: clamp(0.85em,3.5vw,1em); margin-bottom: 8px; }
+      .instruction { font-size: clamp(0.85em,3.5vw,1em); margin-bottom: 6px; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── INTRO ── -->
 <div id="intro-screen" onclick="startGame()">
   <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine">
 </div>
 
 <div id="toast"></div>
 
-<!-- ── GAME ── -->
 <div id="game-screen">
-
   <div class="hdr">
     <div class="hdr-score">⭐ <span id="score-val">0</span> / 8</div>
-    <div class="hdr-title">Numbers 1–5</div>
+    <div class="hdr-title">Count and Match</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
   </div>
 
@@ -214,6 +235,7 @@
   <div class="instruction" id="instruction-txt"></div>
 
   <div class="q-card">
+    <div class="obj-display" id="obj-display"></div>
     <div class="numbers-grid">
       <div class="num-btn" data-num="1" onclick="selectNum(1)">1</div>
       <div class="num-btn" data-num="2" onclick="selectNum(2)">2</div>
@@ -226,7 +248,6 @@
   <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
 </div>
 
-<!-- ── END ── -->
 <div id="end-screen">
   <div class="end-trophy">🏆</div>
   <div class="end-title">You have done a great job!</div>
@@ -238,19 +259,18 @@
 
 <script>
 const QUESTIONS = [
-  { correct: 1, text: 'Click on the number 1' },
-  { correct: 3, text: 'Click on the number 3' },
-  { correct: 5, text: 'Click on the number 5' },
-  { correct: 2, text: 'Click on the number 2' },
-  { correct: 4, text: 'Click on the number 4' },
-  { correct: 3, text: 'Click on the number 3' },
-  { correct: 1, text: 'Click on the number 1' },
-  { correct: 5, text: 'Click on the number 5' },
+  { count: 2, obj: 'cat',       img: 'Assets/cat.png'         },
+  { count: 1, obj: 'dog',       img: 'Assets/dog.png'         },
+  { count: 4, obj: 'duck',      img: 'Assets/duck.png'        },
+  { count: 3, obj: 'apple',     img: 'Assets/apple.jpg'       },
+  { count: 5, obj: 'banana',    img: 'Assets/banana.png'      },
+  { count: 2, obj: 'balloon',   img: 'Assets/balloon.png'     },
+  { count: 4, obj: 'fish',      img: 'Assets/fish.png'        },
+  { count: 3, obj: 'butterfly', img: 'Assets/butterfly.jpg'   },
 ];
 
-const sndCorrect = new Audio('Assets/correct.mp3');
-const sndWrong   = new Audio('Assets/wrong.mp3');
-const sndClaps   = new Audio('Assets/free_claps.mp3');
+const sndWrong = new Audio('Assets/wrong.mp3');
+const sndClaps = new Audio('Assets/free_claps.mp3');
 
 let curQ = 0, score = 0, muted = false, answered = false, attempts = 0;
 
@@ -286,9 +306,8 @@ function playClaps() {
 function numBtn(n) { return document.querySelector('.num-btn[data-num="' + n + '"]'); }
 
 function clearAllStates() {
-  document.querySelectorAll('.num-btn').forEach(b => {
-    b.classList.remove('correct', 'wrong', 'hint');
-  });
+  document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('correct','wrong','hint'));
+  document.getElementById('obj-display').classList.remove('correct');
 }
 
 /* ── GAME FLOW ── */
@@ -308,26 +327,36 @@ function loadQuestion() {
   document.getElementById('q-num').textContent     = curQ + 1;
   document.getElementById('score-val').textContent = score;
   document.getElementById('prog-bar').style.width  = (curQ / 8 * 100) + '%';
-  document.getElementById('instruction-txt').textContent = q.text;
-  speak(q.text);
+
+  const txt = `How many ${q.obj}s are there?`;
+  document.getElementById('instruction-txt').textContent = txt.toUpperCase();
+  speak(txt);
+
+  /* Render objects with staggered pop animation */
+  const box = document.getElementById('obj-display');
+  box.innerHTML = '';
+  for (let i = 0; i < q.count; i++) {
+    const img = document.createElement('img');
+    img.src = q.img;
+    img.alt = q.obj;
+    img.className = 'obj-img';
+    img.style.animationDelay = (i * 0.08) + 's';
+    box.appendChild(img);
+  }
 }
 
 function selectNum(n) {
   if (answered) return;
-  if (n === QUESTIONS[curQ].correct) {
-    registerCorrect();
-  } else {
-    registerWrong(n);
-  }
+  if (n === QUESTIONS[curQ].count) registerCorrect(n);
+  else registerWrong(n);
 }
 
-function registerCorrect() {
+function registerCorrect(n) {
   if (answered) return;
-  answered = true;
-  score++;
+  answered = true; score++;
   document.getElementById('score-val').textContent = score;
-  clearAllStates();
-  numBtn(QUESTIONS[curQ].correct).classList.add('correct');
+  document.getElementById('obj-display').classList.add('correct');
+  numBtn(n).classList.add('correct');
   window.speechSynthesis?.cancel();
   playClaps();
   showToast('⭐ Correct!', '#4CAF50');
@@ -340,24 +369,21 @@ function registerWrong(n) {
   attempts++;
 
   if (attempts === 1) {
-    /* 1st wrong: shake wrong, hint glow on correct */
     play(sndWrong);
     showToast('❌ Try again!', '#f44336');
     const wrongEl = numBtn(n);
     wrongEl.classList.add('wrong');
-    numBtn(QUESTIONS[curQ].correct).classList.add('hint');
+    numBtn(QUESTIONS[curQ].count).classList.add('hint');
     setTimeout(() => { wrongEl.classList.remove('wrong'); hideToast(); }, 900);
   } else {
-    /* 2nd wrong: only wrong flashes red, then reveal correct */
     answered = true;
     play(sndWrong);
-    showToast('❌ Wrong!', '#f44336');
-    clearAllStates();
     numBtn(n).classList.add('wrong');
     setTimeout(() => {
       showToast('💡 Correct answer!', '#FF9800');
-      numBtn(n).classList.remove('wrong');
-      numBtn(QUESTIONS[curQ].correct).classList.add('correct');
+      clearAllStates();
+      numBtn(QUESTIONS[curQ].count).classList.add('correct');
+      document.getElementById('obj-display').classList.add('correct');
       setTimeout(nextQuestion, 3000);
     }, 1000);
   }
