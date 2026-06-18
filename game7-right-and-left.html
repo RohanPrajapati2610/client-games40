@@ -68,7 +68,7 @@
       display: grid; grid-template-columns: 1fr 1fr;
       transition: border-color 0.3s, box-shadow 0.3s;
     }
-    .dir-scene.correct { border-color: #4CAF50; box-shadow: 0 0 0 4px #4CAF5040; }
+    .dir-half.correct-half { box-shadow: inset 0 0 0 4px #4CAF50; }
 
     .dir-half {
       display: flex; flex-direction: column;
@@ -649,11 +649,14 @@ function selectDir(dir) {
   else registerWrong(dir);
 }
 
+function getHalf(side) {
+  return document.getElementById('dir-scene').querySelector('.' + side + '-half');
+}
 function registerCorrect(dir) {
   if (answered) return;
   answered = true; score++;
   document.getElementById('score-val').textContent = score;
-  document.getElementById('dir-scene').classList.add('correct');
+  getHalf(dir).classList.add('correct-half');
   document.getElementById('btn-' + dir).classList.add('correct');
   window.speechSynthesis?.cancel();
   playClaps(); showToast('⭐ Correct!', '#4CAF50'); spawnConfetti();
@@ -678,7 +681,7 @@ function registerWrong(dir) {
       showToast('💡 Correct answer!', '#FF9800');
       clearBtnStates();
       document.getElementById('btn-' + QUESTIONS[curQ].side).classList.add('correct');
-      document.getElementById('dir-scene').classList.add('correct');
+      getHalf(QUESTIONS[curQ].side).classList.add('correct-half');
       setTimeout(nextQuestion, 3000);
     }, 1000);
   }
@@ -688,6 +691,7 @@ function nextQuestion() { clearBtnStates(); curQ++; loadQuestion(); }
 function clearBtnStates() {
   document.getElementById('btn-left').classList.remove('correct','wrong','hint');
   document.getElementById('btn-right').classList.remove('correct','wrong','hint');
+  document.querySelectorAll('.dir-half').forEach(h => h.classList.remove('correct-half'));
 }
 
 function startGame() {
