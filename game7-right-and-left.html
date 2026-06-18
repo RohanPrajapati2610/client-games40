@@ -85,7 +85,10 @@
       object-fit: contain;
       pointer-events: none;
       -webkit-user-drag: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
+    .img-slot img.loaded { opacity: 1; }
 
     #draw-canvas {
       position: absolute;
@@ -459,9 +462,14 @@ function loadQuestion() {
   document.getElementById('score-val').textContent  = score;
   document.getElementById('prog-bar').style.width   = (curQ / 8 * 100) + '%';
   document.getElementById('question-txt').textContent = q.text;
-  document.getElementById('img-left').src  = q.left;
-  document.getElementById('img-mid').src   = q.mid;
-  document.getElementById('img-right').src = q.right;
+  ['img-left','img-mid','img-right'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.classList.remove('loaded');
+    el.onload = () => el.classList.add('loaded');
+    el.onerror = () => el.classList.add('loaded'); /* show broken img rather than stay invisible */
+    el.src = [q.left, q.mid, q.right][i];
+    if (el.complete && el.naturalWidth) el.classList.add('loaded'); /* already cached */
+  });
 
   speak(q.text);
   clearCanvas(); hideHint();
