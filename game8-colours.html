@@ -250,10 +250,11 @@ function loadQuestion() {
   img.src = q.img;
   if (img.complete && img.naturalWidth) img.classList.add('loaded');
 
-  /* build colour buttons */
+  /* build colour buttons — shuffle so correct answer isn't always in same position */
   const wrap = document.getElementById('colour-choices');
   wrap.innerHTML = '';
-  q.choices.forEach(colour => {
+  const shuffled = [...q.choices].sort(() => Math.random() - 0.5);
+  shuffled.forEach(colour => {
     const btn = document.createElement('button');
     btn.className = 'colour-btn';
     btn.dataset.colour = colour;
