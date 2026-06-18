@@ -90,6 +90,11 @@
       border-radius: 10px;
       animation: objPop 0.3s ease backwards;
     }
+    .group-img {
+      max-width: 92%; max-height: 200px;
+      object-fit: contain; border-radius: 14px;
+      animation: objPop 0.35s ease backwards;
+    }
     @keyframes objPop { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
 
     /* Number buttons */
@@ -203,6 +208,7 @@
       .q-card { padding: 12px 8px; gap: 12px; border-radius: 18px; }
       .obj-display { min-height: 120px; gap: 8px; padding: 12px 10px; }
       .obj-img { width: 52px; height: 52px; }
+      .group-img { max-height: 150px; }
       .num-btn { width: 68px; height: 68px; font-size: 2em; border-radius: 14px; }
       .numbers-grid { gap: 8px; }
       .hdr-score { font-size: 1em; }
@@ -259,14 +265,14 @@
 
 <script>
 const QUESTIONS = [
-  { count: 2, obj: 'cat',       img: 'Assets/cat.png'         },
-  { count: 1, obj: 'dog',       img: 'Assets/dog.png'         },
-  { count: 4, obj: 'duck',      img: 'Assets/duck.png'        },
-  { count: 3, obj: 'apple',     img: 'Assets/apple.jpg'       },
-  { count: 5, obj: 'banana',    img: 'Assets/banana.png'      },
-  { count: 2, obj: 'balloon',   img: 'Assets/balloon.png'     },
-  { count: 4, obj: 'fish',      img: 'Assets/fish.png'        },
-  { count: 3, obj: 'butterfly', img: 'Assets/butterfly.jpg'   },
+  { count: 2, obj: 'frog',    img: 'Assets/mine/2 frogs.png',     group: true  },
+  { count: 1, obj: 'dog',     img: 'Assets/dog.png',              group: false },
+  { count: 4, obj: 'flower',  img: 'Assets/mine/flower.png',      group: true  },
+  { count: 3, obj: 'mango',   img: 'Assets/mine/mangoes.png',     group: true  },
+  { count: 5, obj: 'cupcake', img: 'Assets/mine/cupcakes.png',    group: true  },
+  { count: 3, obj: 'banana',  img: 'Assets/bananas.jpg',          group: true  },
+  { count: 4, obj: 'watermelon', img: 'Assets/mine/4 watermelons.png', group: true },
+  { count: 2, obj: 'cherry',  img: 'Assets/cherry.png',            group: true  },
 ];
 
 const sndWrong = new Audio('Assets/wrong.mp3');
@@ -332,16 +338,24 @@ function loadQuestion() {
   document.getElementById('instruction-txt').textContent = txt.toUpperCase();
   speak(txt);
 
-  /* Render objects with staggered pop animation */
+  /* Render objects */
   const box = document.getElementById('obj-display');
   box.innerHTML = '';
-  for (let i = 0; i < q.count; i++) {
+  if (q.group) {
     const img = document.createElement('img');
     img.src = q.img;
     img.alt = q.obj;
-    img.className = 'obj-img';
-    img.style.animationDelay = (i * 0.08) + 's';
+    img.className = 'group-img';
     box.appendChild(img);
+  } else {
+    for (let i = 0; i < q.count; i++) {
+      const img = document.createElement('img');
+      img.src = q.img;
+      img.alt = q.obj;
+      img.className = 'obj-img';
+      img.style.animationDelay = (i * 0.08) + 's';
+      box.appendChild(img);
+    }
   }
 }
 
