@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Right and Left · LY3</title>
+  <title>Right and Left Â· LY3</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
@@ -13,72 +13,10 @@
 
     body {
       font-family: 'Nunito', 'Trebuchet MS', Arial, sans-serif;
-      background: #87CEEB;
+      background: linear-gradient(135deg, #fce4ec 0%, #e8f5e9 50%, #e3f2fd 100%);
       height: 100vh; height: 100dvh;
       display: flex; align-items: stretch; justify-content: center;
       overflow: hidden; user-select: none; -webkit-user-select: none;
-    }
-
-    /* ── BACKGROUND SCENE ── */
-    #bg-scene {
-      position: fixed; inset: 0; z-index: 0;
-      pointer-events: none; overflow: hidden;
-    }
-    #bg-static {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-    }
-    #game-screen  { position: relative; z-index: 1; }
-    #toast        { z-index: 100; }
-    #end-screen   { z-index: 150; }
-    #intro-screen { z-index: 200; }
-
-    /* Sun */
-    .bg-sun {
-      position: absolute; top: 10px; left: 14px; width: 100px; height: 100px;
-    }
-    .sun-rays { animation: sunSpin 20s linear infinite; transform-origin: 50px 50px; }
-    @keyframes sunSpin { to { transform: rotate(360deg); } }
-
-    /* Clouds */
-    .bg-cloud {
-      position: absolute; opacity: 0.92;
-      will-change: transform;
-    }
-    .bg-cloud svg { display: block; }
-    .cloud1 { top: 6%;  animation: cloudDrift1 30s linear infinite; }
-    .cloud2 { top: 16%; animation: cloudDrift2 42s linear infinite; }
-    @keyframes cloudDrift1 { 0%{transform:translateX(110vw)} 100%{transform:translateX(-320px)} }
-    @keyframes cloudDrift2 { 0%{transform:translateX(-280px)} 100%{transform:translateX(110vw)} }
-
-    /* Butterfly */
-    .bg-butterfly {
-      position: absolute; top: 22%;
-      animation: bflyPath 20s ease-in-out infinite;
-      will-change: transform;
-    }
-    .bg-butterfly svg { animation: bflyWing 0.5s ease-in-out infinite alternate; }
-    @keyframes bflyPath {
-      0%  { transform: translate(-60px, 0px); }
-      25% { transform: translate(28vw, -55px); }
-      50% { transform: translate(58vw, 18px); }
-      75% { transform: translate(82vw, -38px); }
-      100%{ transform: translate(110vw, 8px); }
-    }
-    @keyframes bflyWing { from{ transform: scaleY(1); } to{ transform: scaleY(0.45); } }
-
-    /* Bee */
-    .bg-bee {
-      position: absolute; top: 32%; right: 10%;
-      animation: beeBuzz 5s ease-in-out infinite;
-      will-change: transform;
-    }
-    @keyframes beeBuzz {
-      0%  { transform: translate(0,0) rotate(0deg); }
-      20% { transform: translate(-20px,-24px) rotate(-15deg); }
-      40% { transform: translate(16px,-40px) rotate(10deg); }
-      60% { transform: translate(-12px,-14px) rotate(-8deg); }
-      80% { transform: translate(22px,-30px) rotate(12deg); }
-      100%{ transform: translate(0,0) rotate(0deg); }
     }
 
     #intro-screen {
@@ -123,7 +61,7 @@
       margin-top: auto; margin-bottom: auto; flex-shrink: 0;
     }
 
-    /* ── SCENE ── */
+    /* â”€â”€ SCENE â”€â”€ */
     .dir-scene {
       width: 100%; border-radius: 20px; overflow: hidden;
       border: 3px solid #e0e0e0;
@@ -159,7 +97,7 @@
       font-size: 2.5em; color: rgba(0,0,0,0.1);
     }
 
-    /* ── BUTTONS ── */
+    /* â”€â”€ BUTTONS â”€â”€ */
     .dir-choices { display: flex; gap: 16px; width: 100%; justify-content: center; }
     .dir-btn {
       flex: 1; max-width: 200px; height: 74px;
@@ -244,184 +182,6 @@
 </head>
 <body>
 
-<div id="bg-scene" aria-hidden="true">
-
-  <!-- Static background: sky already set on body; this SVG has rainbow, hills, flowers, cat, dog -->
-  <svg id="bg-static" viewBox="0 0 1000 620" preserveAspectRatio="xMidYMax slice"
-       xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <radialGradient id="bcat" cx="45%" cy="35%" r="60%">
-        <stop offset="0%" stop-color="#FFCC80"/><stop offset="100%" stop-color="#E65100"/>
-      </radialGradient>
-      <radialGradient id="bdog" cx="45%" cy="35%" r="65%">
-        <stop offset="0%" stop-color="#FFE0B2"/><stop offset="100%" stop-color="#BF360C"/>
-      </radialGradient>
-    </defs>
-
-    <!-- Sky fill (matches body bg) -->
-    <rect width="1000" height="620" fill="#87CEEB"/>
-
-    <!-- Rainbow — 7 vibrant arcs, outermost violet → innermost red -->
-    <path d="M-40,560 Q500,-120 1040,560" fill="none" stroke="#8B00FF" stroke-width="28" opacity="0.9"/>
-    <path d="M-10,560 Q500,-86 1010,560"  fill="none" stroke="#4444FF" stroke-width="28" opacity="0.9"/>
-    <path d="M20,560 Q500,-54 980,560"    fill="none" stroke="#00BBFF" stroke-width="28" opacity="0.9"/>
-    <path d="M50,560 Q500,-24 950,560"    fill="none" stroke="#00DD44" stroke-width="28" opacity="0.9"/>
-    <path d="M80,560 Q500,6 920,560"      fill="none" stroke="#FFEE00" stroke-width="28" opacity="0.9"/>
-    <path d="M110,560 Q500,34 890,560"    fill="none" stroke="#FF8800" stroke-width="28" opacity="0.9"/>
-    <path d="M140,560 Q500,62 860,560"    fill="none" stroke="#FF2200" stroke-width="28" opacity="0.9"/>
-
-    <!-- Back hill (lightest green) -->
-    <path d="M-10,560 Q150,400 350,460 Q500,420 650,460 Q850,400 1010,560 Z" fill="#AED581"/>
-    <!-- Mid hill -->
-    <path d="M-10,580 Q200,450 400,490 Q500,470 600,490 Q800,450 1010,580 Z" fill="#66BB6A"/>
-    <!-- Front hill -->
-    <path d="M-10,610 Q250,510 450,540 Q500,530 550,540 Q750,510 1010,610 Z" fill="#4CAF50"/>
-
-    <!-- Flowers on back hill — mix of tulips and round-petal -->
-    <!-- tulip: stem + 3 petals + center -->
-    <g transform="translate(80,490)"><rect x="-2" y="0" width="4" height="22" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-4" rx="7" ry="10" fill="#FF4081"/><ellipse cx="-8" cy="4" rx="7" ry="9" fill="#FF80AB" transform="rotate(-50 -8 4)"/><ellipse cx="8" cy="4" rx="7" ry="9" fill="#F48FB1" transform="rotate(50 8 4)"/><circle cx="0" cy="-2" r="5" fill="#FFD700"/></g>
-    <g transform="translate(160,480)"><rect x="-2" y="0" width="4" height="22" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-4" rx="7" ry="10" fill="#FF9800"/><ellipse cx="-8" cy="4" rx="7" ry="9" fill="#FFCC02" transform="rotate(-50 -8 4)"/><ellipse cx="8" cy="4" rx="7" ry="9" fill="#FFA726" transform="rotate(50 8 4)"/><circle cx="0" cy="-2" r="5" fill="#FFF176"/></g>
-    <g transform="translate(250,470)"><rect x="-2" y="0" width="4" height="22" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-4" rx="7" ry="10" fill="#7C4DFF"/><ellipse cx="-8" cy="4" rx="7" ry="9" fill="#B388FF" transform="rotate(-50 -8 4)"/><ellipse cx="8" cy="4" rx="7" ry="9" fill="#CE93D8" transform="rotate(50 8 4)"/><circle cx="0" cy="-2" r="5" fill="#FFD700"/></g>
-    <g transform="translate(360,468)"><rect x="-2" y="0" width="4" height="22" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-4" rx="7" ry="10" fill="#E91E63"/><ellipse cx="-8" cy="4" rx="7" ry="9" fill="#F06292" transform="rotate(-50 -8 4)"/><ellipse cx="8" cy="4" rx="7" ry="9" fill="#F48FB1" transform="rotate(50 8 4)"/><circle cx="0" cy="-2" r="5" fill="#FFE082"/></g>
-    <g transform="translate(460,465)"><rect x="-2" y="0" width="4" height="22" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-4" rx="7" ry="10" fill="#00BCD4"/><ellipse cx="-8" cy="4" rx="7" ry="9" fill="#80DEEA" transform="rotate(-50 -8 4)"/><ellipse cx="8" cy="4" rx="7" ry="9" fill="#4DD0E1" transform="rotate(50 8 4)"/><circle cx="0" cy="-2" r="5" fill="#FFD700"/></g>
-    <g transform="translate(560,467)"><rect x="-2" y="0" width="4" height="22" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-4" rx="7" ry="10" fill="#FF5722"/><ellipse cx="-8" cy="4" rx="7" ry="9" fill="#FF8A65" transform="rotate(-50 -8 4)"/><ellipse cx="8" cy="4" rx="7" ry="9" fill="#FFAB91" transform="rotate(50 8 4)"/><circle cx="0" cy="-2" r="5" fill="#FFF176"/></g>
-    <g transform="translate(660,472)"><rect x="-2" y="0" width="4" height="22" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-4" rx="7" ry="10" fill="#FF4081"/><ellipse cx="-8" cy="4" rx="7" ry="9" fill="#FF80AB" transform="rotate(-50 -8 4)"/><ellipse cx="8" cy="4" rx="7" ry="9" fill="#F48FB1" transform="rotate(50 8 4)"/><circle cx="0" cy="-2" r="5" fill="#FFD700"/></g>
-    <g transform="translate(760,478)"><rect x="-2" y="0" width="4" height="22" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-4" rx="7" ry="10" fill="#CDDC39"/><ellipse cx="-8" cy="4" rx="7" ry="9" fill="#F0F4C3" transform="rotate(-50 -8 4)"/><ellipse cx="8" cy="4" rx="7" ry="9" fill="#DCE775" transform="rotate(50 8 4)"/><circle cx="0" cy="-2" r="5" fill="#FF9800"/></g>
-    <g transform="translate(860,484)"><rect x="-2" y="0" width="4" height="22" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-4" rx="7" ry="10" fill="#9C27B0"/><ellipse cx="-8" cy="4" rx="7" ry="9" fill="#CE93D8" transform="rotate(-50 -8 4)"/><ellipse cx="8" cy="4" rx="7" ry="9" fill="#E1BEE7" transform="rotate(50 8 4)"/><circle cx="0" cy="-2" r="5" fill="#FFD700"/></g>
-    <g transform="translate(940,490)"><rect x="-2" y="0" width="4" height="22" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-4" rx="7" ry="10" fill="#FF4081"/><ellipse cx="-8" cy="4" rx="7" ry="9" fill="#FF80AB" transform="rotate(-50 -8 4)"/><ellipse cx="8" cy="4" rx="7" ry="9" fill="#F48FB1" transform="rotate(50 8 4)"/><circle cx="0" cy="-2" r="5" fill="#FFD700"/></g>
-
-    <!-- More flowers on front hill -->
-    <g transform="translate(120,555)"><rect x="-2" y="0" width="4" height="18" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-3" rx="6" ry="8" fill="#FF9800"/><ellipse cx="-7" cy="3" rx="6" ry="8" fill="#FFA726" transform="rotate(-50 -7 3)"/><ellipse cx="7" cy="3" rx="6" ry="8" fill="#FFCC02" transform="rotate(50 7 3)"/><circle cx="0" cy="-1" r="4" fill="#FFF176"/></g>
-    <g transform="translate(230,548)"><rect x="-2" y="0" width="4" height="18" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-3" rx="6" ry="8" fill="#E91E63"/><ellipse cx="-7" cy="3" rx="6" ry="8" fill="#F06292" transform="rotate(-50 -7 3)"/><ellipse cx="7" cy="3" rx="6" ry="8" fill="#F48FB1" transform="rotate(50 7 3)"/><circle cx="0" cy="-1" r="4" fill="#FFE082"/></g>
-    <g transform="translate(340,542)"><rect x="-2" y="0" width="4" height="18" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-3" rx="6" ry="8" fill="#00BCD4"/><ellipse cx="-7" cy="3" rx="6" ry="8" fill="#4DD0E1" transform="rotate(-50 -7 3)"/><ellipse cx="7" cy="3" rx="6" ry="8" fill="#80DEEA" transform="rotate(50 7 3)"/><circle cx="0" cy="-1" r="4" fill="#FFD700"/></g>
-    <g transform="translate(500,538)"><rect x="-2" y="0" width="4" height="18" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-3" rx="6" ry="8" fill="#7C4DFF"/><ellipse cx="-7" cy="3" rx="6" ry="8" fill="#B388FF" transform="rotate(-50 -7 3)"/><ellipse cx="7" cy="3" rx="6" ry="8" fill="#CE93D8" transform="rotate(50 7 3)"/><circle cx="0" cy="-1" r="4" fill="#FFD700"/></g>
-    <g transform="translate(660,542)"><rect x="-2" y="0" width="4" height="18" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-3" rx="6" ry="8" fill="#FF5722"/><ellipse cx="-7" cy="3" rx="6" ry="8" fill="#FF8A65" transform="rotate(-50 -7 3)"/><ellipse cx="7" cy="3" rx="6" ry="8" fill="#FFAB91" transform="rotate(50 7 3)"/><circle cx="0" cy="-1" r="4" fill="#FFF176"/></g>
-    <g transform="translate(780,548)"><rect x="-2" y="0" width="4" height="18" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-3" rx="6" ry="8" fill="#FF4081"/><ellipse cx="-7" cy="3" rx="6" ry="8" fill="#FF80AB" transform="rotate(-50 -7 3)"/><ellipse cx="7" cy="3" rx="6" ry="8" fill="#F48FB1" transform="rotate(50 7 3)"/><circle cx="0" cy="-1" r="4" fill="#FFD700"/></g>
-    <g transform="translate(890,555)"><rect x="-2" y="0" width="4" height="18" rx="2" fill="#388E3C"/><ellipse cx="0" cy="-3" rx="6" ry="8" fill="#9C27B0"/><ellipse cx="-7" cy="3" rx="6" ry="8" fill="#CE93D8" transform="rotate(-50 -7 3)"/><ellipse cx="7" cy="3" rx="6" ry="8" fill="#E1BEE7" transform="rotate(50 7 3)"/><circle cx="0" cy="-1" r="4" fill="#FFD700"/></g>
-
-    <!-- Cat on left hill -->
-    <g transform="translate(90,490)">
-      <path d="M46,76 Q66,62 63,46 Q60,32 50,36" stroke="#E65100" stroke-width="7" fill="none" stroke-linecap="round"/>
-      <ellipse cx="36" cy="72" rx="22" ry="17" fill="url(#bcat)"/>
-      <polygon points="12,32 23,4 34,32" fill="#E65100"/>
-      <polygon points="15,31 23,10 31,31" fill="#FFAB40"/>
-      <polygon points="38,32 49,4 60,32" fill="#E65100"/>
-      <polygon points="41,31 49,10 57,31" fill="#FFAB40"/>
-      <circle cx="38" cy="40" r="24" fill="url(#bcat)"/>
-      <ellipse cx="38" cy="52" rx="12" ry="8" fill="#FFCC80" opacity="0.7"/>
-      <ellipse cx="27" cy="37" rx="8" ry="9" fill="white"/>
-      <ellipse cx="49" cy="37" rx="8" ry="9" fill="white"/>
-      <ellipse cx="27" cy="38" rx="6" ry="7" fill="#2E7D32"/>
-      <ellipse cx="49" cy="38" rx="6" ry="7" fill="#2E7D32"/>
-      <ellipse cx="27" cy="38" rx="2.5" ry="5.5" fill="#111"/>
-      <ellipse cx="49" cy="38" rx="2.5" ry="5.5" fill="#111"/>
-      <circle cx="30" cy="34" r="2" fill="white"/>
-      <circle cx="52" cy="34" r="2" fill="white"/>
-      <polygon points="38,49 34,53 42,53" fill="#EC407A"/>
-      <path d="M34,53 Q38,58 42,53" fill="none" stroke="#C2185B" stroke-width="2" stroke-linecap="round"/>
-    </g>
-
-    <!-- Dog on right hill -->
-    <g transform="translate(820,492)">
-      <path d="M54,62 Q74,46 70,30" stroke="#A0522D" stroke-width="7" fill="none" stroke-linecap="round"/>
-      <ellipse cx="36" cy="70" rx="24" ry="17" fill="url(#bdog)"/>
-      <ellipse cx="10" cy="36" rx="12" ry="18" fill="#A0522D" transform="rotate(-12 10 36)"/>
-      <ellipse cx="62" cy="36" rx="12" ry="18" fill="#A0522D" transform="rotate(12 62 36)"/>
-      <circle cx="36" cy="37" r="24" fill="url(#bdog)"/>
-      <ellipse cx="36" cy="50" rx="14" ry="11" fill="#FFD0A0"/>
-      <ellipse cx="36" cy="45" rx="8" ry="6" fill="#1a1a1a"/>
-      <circle cx="33" cy="43" r="2" fill="rgba(255,255,255,0.4)"/>
-      <circle cx="24" cy="31" r="8" fill="white"/>
-      <circle cx="48" cy="31" r="8" fill="white"/>
-      <circle cx="24" cy="31" r="5" fill="#5D4037"/>
-      <circle cx="48" cy="31" r="5" fill="#5D4037"/>
-      <circle cx="24" cy="31" r="2" fill="#1a1a1a"/>
-      <circle cx="48" cy="31" r="2" fill="#1a1a1a"/>
-      <circle cx="26" cy="28" r="1.8" fill="white"/>
-      <circle cx="50" cy="28" r="1.8" fill="white"/>
-      <path d="M30,56 Q36,66 42,56" fill="#EF5350"/>
-      <line x1="36" y1="60" x2="36" y2="65" stroke="#E53935" stroke-width="2"/>
-    </g>
-  </svg>
-
-  <!-- Sun (animated) -->
-  <div class="bg-sun">
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <g class="sun-rays">
-        <rect x="46" y="2"  width="8" height="18" rx="4" fill="#FFD700"/>
-        <rect x="46" y="80" width="8" height="18" rx="4" fill="#FFD700"/>
-        <rect x="2"  y="46" width="18" height="8" rx="4" fill="#FFD700"/>
-        <rect x="80" y="46" width="18" height="8" rx="4" fill="#FFD700"/>
-        <rect x="16" y="12" width="8" height="18" rx="4" fill="#FFD700" transform="rotate(45 20 21)"/>
-        <rect x="76" y="12" width="8" height="18" rx="4" fill="#FFD700" transform="rotate(-45 80 21)"/>
-        <rect x="16" y="70" width="8" height="18" rx="4" fill="#FFD700" transform="rotate(-45 20 79)"/>
-        <rect x="76" y="70" width="8" height="18" rx="4" fill="#FFD700" transform="rotate(45 80 79)"/>
-      </g>
-      <circle cx="50" cy="50" r="28" fill="#FFD700"/>
-      <circle cx="50" cy="50" r="22" fill="#FFEC4D"/>
-      <circle cx="41" cy="45" r="3.5" fill="#FF9800"/>
-      <circle cx="59" cy="45" r="3.5" fill="#FF9800"/>
-      <path d="M41,56 Q50,65 59,56" fill="none" stroke="#FF9800" stroke-width="3" stroke-linecap="round"/>
-    </svg>
-  </div>
-
-  <!-- Cloud 1 (drifts right→left) -->
-  <div class="bg-cloud cloud1">
-    <svg width="220" height="86" viewBox="0 0 220 86" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="110" cy="70" rx="96" ry="26" fill="white"/>
-      <ellipse cx="72"  cy="56" rx="48" ry="38" fill="white"/>
-      <ellipse cx="130" cy="50" rx="44" ry="36" fill="white"/>
-      <ellipse cx="96"  cy="44" rx="56" ry="34" fill="white"/>
-      <ellipse cx="110" cy="68" rx="94" ry="22" fill="rgba(220,235,255,0.5)"/>
-    </svg>
-  </div>
-
-  <!-- Cloud 2 (drifts left→right) -->
-  <div class="bg-cloud cloud2">
-    <svg width="170" height="68" viewBox="0 0 170 68" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="85"  cy="54" rx="72" ry="22" fill="white"/>
-      <ellipse cx="56"  cy="42" rx="36" ry="30" fill="white"/>
-      <ellipse cx="100" cy="38" rx="34" ry="28" fill="white"/>
-      <ellipse cx="76"  cy="34" rx="44" ry="28" fill="white"/>
-    </svg>
-  </div>
-
-  <!-- Butterfly (animated, flies across) -->
-  <div class="bg-butterfly">
-    <svg width="52" height="46" viewBox="0 0 52 46" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="14" cy="16" rx="13" ry="10" fill="#E91E63" opacity="0.95" transform="rotate(-22 14 16)"/>
-      <ellipse cx="38" cy="16" rx="13" ry="10" fill="#9C27B0" opacity="0.95" transform="rotate(22 38 16)"/>
-      <ellipse cx="15" cy="32" rx="10" ry="7"  fill="#FF9800" opacity="0.95" transform="rotate(25 15 32)"/>
-      <ellipse cx="37" cy="32" rx="10" ry="7"  fill="#FF9800" opacity="0.95" transform="rotate(-25 37 32)"/>
-      <ellipse cx="26" cy="24" rx="3.5" ry="16" fill="#4E342E"/>
-      <circle  cx="26" cy="7"  r="4" fill="#4E342E"/>
-      <line x1="26" y1="4" x2="18" y2="0" stroke="#4E342E" stroke-width="1.8" stroke-linecap="round"/>
-      <circle cx="17" cy="0" r="2.5" fill="#E91E63"/>
-      <line x1="26" y1="4" x2="34" y2="0" stroke="#4E342E" stroke-width="1.8" stroke-linecap="round"/>
-      <circle cx="35" cy="0" r="2.5" fill="#9C27B0"/>
-    </svg>
-  </div>
-
-  <!-- Bee (animated, buzzes) -->
-  <div class="bg-bee">
-    <svg width="44" height="48" viewBox="0 0 44 48" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="12" cy="18" rx="12" ry="6.5" fill="rgba(210,240,255,0.85)" transform="rotate(-28 12 18)"/>
-      <ellipse cx="32" cy="18" rx="12" ry="6.5" fill="rgba(210,240,255,0.85)" transform="rotate(28 32 18)"/>
-      <ellipse cx="22" cy="32" rx="9" ry="13" fill="#FDD835"/>
-      <rect x="13" y="26" width="18" height="5" rx="2.5" fill="#212121"/>
-      <rect x="13" y="34" width="18" height="5" rx="2.5" fill="#212121"/>
-      <polygon points="22,46 18,48 26,48" fill="#F9A825"/>
-      <circle cx="22" cy="16" r="9" fill="#FDD835"/>
-      <circle cx="17" cy="14" r="3" fill="#1a1a1a"/>
-      <circle cx="27" cy="14" r="3" fill="#1a1a1a"/>
-      <line x1="19" y1="8" x2="14" y2="2" stroke="#212121" stroke-width="1.8" stroke-linecap="round"/>
-      <circle cx="13" cy="1" r="2.5" fill="#F44336"/>
-      <line x1="25" y1="8" x2="30" y2="2" stroke="#212121" stroke-width="1.8" stroke-linecap="round"/>
-      <circle cx="31" cy="1" r="2.5" fill="#F44336"/>
-    </svg>
-  </div>
-
-</div>
 
 <div id="intro-screen" onclick="startGame()">
   <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine">
@@ -431,9 +191,9 @@
 
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">⭐ <span id="score-val">0</span> / 8</div>
+    <div class="hdr-score">â­ <span id="score-val">0</span> / 8</div>
     <div class="hdr-title">Right and Left</div>
-    <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
+    <button class="mute-btn" id="mute-btn" onclick="toggleMute()">ðŸ”Š</button>
   </div>
   <div class="progress-row">
     <span class="progress-label">Q <span id="q-num">1</span> / 8</span>
@@ -443,29 +203,29 @@
   <div class="q-card">
     <div class="dir-scene" id="dir-scene">
       <div class="dir-half left-half">
-        <div class="half-label">← LEFT</div>
+        <div class="half-label">â† LEFT</div>
         <div class="animal-wrap" id="left-animal"></div>
       </div>
       <div class="dir-half right-half">
-        <div class="half-label">RIGHT →</div>
+        <div class="half-label">RIGHT â†’</div>
         <div class="animal-wrap" id="right-animal"></div>
       </div>
     </div>
     <div class="dir-choices">
-      <button class="dir-btn" id="btn-left"  onclick="selectDir('left')">← LEFT</button>
-      <button class="dir-btn" id="btn-right" onclick="selectDir('right')">RIGHT →</button>
+      <button class="dir-btn" id="btn-left"  onclick="selectDir('left')">â† LEFT</button>
+      <button class="dir-btn" id="btn-right" onclick="selectDir('right')">RIGHT â†’</button>
     </div>
   </div>
-  <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
+  <button class="btn-restart" onclick="restartGame()">ðŸ”„ &nbsp;Restart</button>
 </div>
 
 <div id="end-screen">
-  <div class="end-trophy">🏆</div>
+  <div class="end-trophy">ðŸ†</div>
   <div class="end-title">You have done a great job!</div>
   <div class="end-sub">You completed all 8 questions!</div>
   <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 8</div>
   <div class="end-stars" id="end-stars"></div>
-  <button class="btn-play-again" onclick="restartGame()">▶ &nbsp;Play Again</button>
+  <button class="btn-play-again" onclick="restartGame()">â–¶ &nbsp;Play Again</button>
 </div>
 
 <script>
@@ -897,7 +657,7 @@ function registerCorrect(dir) {
   document.getElementById('dir-scene').classList.add('correct');
   document.getElementById('btn-' + dir).classList.add('correct');
   window.speechSynthesis?.cancel();
-  playClaps(); showToast('⭐ Correct!', '#4CAF50'); spawnConfetti();
+  playClaps(); showToast('â­ Correct!', '#4CAF50'); spawnConfetti();
   setTimeout(nextQuestion, 3200);
 }
 
@@ -906,7 +666,7 @@ function registerWrong(dir) {
   attempts++;
   if (attempts === 1) {
     sndWrong.currentTime = 0; if (!muted) sndWrong.play().catch(() => {});
-    showToast('❌ Try again!', '#f44336');
+    showToast('âŒ Try again!', '#f44336');
     const wb = document.getElementById('btn-' + dir);
     wb.classList.add('wrong');
     document.getElementById('btn-' + QUESTIONS[curQ].side).classList.add('hint');
@@ -916,7 +676,7 @@ function registerWrong(dir) {
     sndWrong.currentTime = 0; if (!muted) sndWrong.play().catch(() => {});
     document.getElementById('btn-' + dir).classList.add('wrong');
     setTimeout(() => {
-      showToast('💡 Correct answer!', '#FF9800');
+      showToast('ðŸ’¡ Correct answer!', '#FF9800');
       clearBtnStates();
       document.getElementById('btn-' + QUESTIONS[curQ].side).classList.add('correct');
       document.getElementById('dir-scene').classList.add('correct');
@@ -964,7 +724,7 @@ function spawnConfetti() {
 
 function toggleMute() {
   muted = !muted;
-  document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+  document.getElementById('mute-btn').textContent = muted ? 'ðŸ”‡' : 'ðŸ”Š';
   if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
   else if (curQ < 8) speak(`Is the ${QUESTIONS[curQ].name} on the left or the right?`);
 }
@@ -973,7 +733,7 @@ function showEnd() {
   document.getElementById('game-screen').style.display = 'none';
   document.getElementById('end-screen').style.display  = 'flex';
   document.getElementById('final-score').textContent   = score;
-  document.getElementById('end-stars').textContent = score >= 7 ? '⭐⭐⭐' : score >= 5 ? '⭐⭐' : '⭐';
+  document.getElementById('end-stars').textContent = score >= 7 ? 'â­â­â­' : score >= 5 ? 'â­â­' : 'â­';
   window.speechSynthesis?.cancel();
   playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 800);
 }
