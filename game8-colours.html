@@ -60,10 +60,8 @@
     .img-wrap img {
       max-height: 210px; max-width: 85%; object-fit: contain;
       border-radius: 16px;
-      opacity: 0; transition: opacity 0.3s ease;
       filter: drop-shadow(0 4px 12px rgba(0,0,0,0.12));
     }
-    .img-wrap img.loaded { opacity: 1; }
 
     .colour-choices { display:flex; gap:12px; width:100%; }
 
@@ -242,18 +240,18 @@ function loadQuestion() {
   document.getElementById('instruction-txt').textContent = txt;
   speak(txt);
 
-  /* image with fade-in */
+  /* image — same simple approach as game 2 */
   const img = document.getElementById('q-img');
-  img.classList.remove('loaded');
-  img.onload  = () => img.classList.add('loaded');
-  img.onerror = () => img.classList.add('loaded');
   img.src = q.img;
-  if (img.complete && img.naturalWidth) img.classList.add('loaded');
 
-  /* build colour buttons — shuffle so correct answer isn't always in same position */
+  /* build colour buttons — Fisher-Yates shuffle for unbiased random position */
   const wrap = document.getElementById('colour-choices');
   wrap.innerHTML = '';
-  const shuffled = [...q.choices].sort(() => Math.random() - 0.5);
+  const shuffled = [...q.choices];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
   shuffled.forEach(colour => {
     const btn = document.createElement('button');
     btn.className = 'colour-btn';
