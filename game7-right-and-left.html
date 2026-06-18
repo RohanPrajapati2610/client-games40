@@ -23,167 +23,146 @@
       position: fixed; inset: 0;
       background: linear-gradient(160deg, #4a148c, #7b1fa2, #ab47bc);
       display: flex; align-items: center; justify-content: center;
-      border: 5px solid #FFD700; z-index: 200; cursor: pointer;
+      border: 5px solid #FFD700; z-index: 200;
     }
-    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; }
+    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; cursor: pointer; }
     @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 
     #game-screen {
       display: none; flex-direction: column;
-      width: 100%; max-width: 860px;
-      height: 100%; padding: 14px 14px 80px; overflow-y: auto;
+      width: 100%; max-width: 860px; height: 100%; padding: 14px 14px 70px;
+      overflow-y: auto;
     }
 
-    .hdr {
-      display: flex; align-items: center; justify-content: space-between;
-      background: white; border-radius: 18px; padding: 10px 18px;
-      margin-bottom: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); flex-shrink: 0;
-    }
-    .hdr-score { font-size: 1.2em; font-weight: bold; color: #4CAF50; min-width: 70px; }
-    .hdr-title { font-size: clamp(0.75em,2.5vw,1em); color: #6a0dad; font-weight: bold; text-align: center; }
-    .mute-btn { width: 38px; height: 38px; border: 2px solid #ddd; border-radius: 50%; background: white; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .hdr { display:flex; align-items:center; justify-content:space-between; background:white; border-radius:18px; padding:10px 18px; margin-bottom:12px; box-shadow:0 4px 14px rgba(0,0,0,0.1); flex-shrink:0; }
+    .hdr-score { font-size:1.2em; font-weight:bold; color:#4CAF50; min-width:70px; }
+    .hdr-title { font-size:clamp(0.75em,2.5vw,1em); color:#6a0dad; font-weight:bold; text-align:center; }
+    .mute-btn { width:38px; height:38px; border:2px solid #ddd; border-radius:50%; background:white; font-size:1.1em; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 
-    .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-shrink: 0; }
-    .progress-label { font-size: 0.9em; color: #777; white-space: nowrap; }
-    .progress-bar-wrap { flex: 1; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; }
-    .progress-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, #4CAF50, #8BC34A); transition: width 0.5s ease; }
+    .progress-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-shrink:0; }
+    .progress-label { font-size:0.9em; color:#777; white-space:nowrap; }
+    .progress-bar-wrap { flex:1; height:10px; background:#e0e0e0; border-radius:5px; overflow:hidden; }
+    .progress-bar-fill { height:100%; border-radius:5px; background:linear-gradient(90deg,#4CAF50,#8BC34A); transition:width 0.5s ease; }
 
-    .instruction {
-      text-align: center; font-size: clamp(0.95em,3vw,1.15em);
-      color: #333; font-weight: 700; margin-bottom: 10px;
-      padding: 0 4px; flex-shrink: 0; line-height: 1.4;
-    }
+    .question-txt { text-align:center; font-size:clamp(1em,3.5vw,1.2em); color:#333; font-weight:bold; margin-bottom:8px; padding:0 8px; line-height:1.4; flex-shrink:0; }
+    .draw-tip { text-align:center; font-size:clamp(0.8em,2.5vw,0.92em); color:#888; margin-bottom:10px; flex-shrink:0; }
 
-    .q-card {
-      background: white; border-radius: 24px; padding: 20px 16px;
+    .scene-card {
+      background: white; border-radius: 24px; padding: 18px 16px;
       box-shadow: 0 6px 24px rgba(0,0,0,0.1);
-      display: flex; flex-direction: column; align-items: center; gap: 20px;
-      margin-top: auto; margin-bottom: auto; flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center; flex-shrink: 0;
+      margin-top: auto; margin-bottom: auto;
     }
 
-    /* ── SCENE ── */
-    .dir-scene {
-      width: 100%; border-radius: 20px; overflow: hidden;
-      border: 3px solid #e0e0e0;
-      display: grid; grid-template-columns: 1fr 1fr;
-      transition: border-color 0.3s, box-shadow 0.3s;
+    .scene-wrap {
+      position: relative;
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      touch-action: none;
+      border: 3px solid #c8a0e0;
+      background: #fafafa;
     }
-    .dir-half.correct-half { box-shadow: inset 0 0 0 4px #4CAF50; }
 
-    .dir-half {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: space-between;
-      padding: 14px 10px 12px; min-height: 230px;
+    .img-row {
+      display: flex;
+      width: 100%;
     }
-    .dir-half.left-half  { background: linear-gradient(160deg, #e3f2fd, #bbdefb); border-right: 2px dashed #90caf9; }
-    .dir-half.right-half { background: linear-gradient(160deg, #fce4ec, #f8bbd0); }
 
-    .half-label {
-      font-size: 1em; font-weight: 800; letter-spacing: 0.06em;
-      display: flex; align-items: center; gap: 4px;
-    }
-    .left-half  .half-label { color: #1565c0; }
-    .right-half .half-label { color: #880e4f; }
-
-    .animal-wrap {
-      flex: 1; display: flex; align-items: center; justify-content: center;
-    }
-    .animal-wrap img { width: 160px; height: 160px; object-fit: contain; }
-
-    .empty-slot {
-      width: 120px; height: 120px; border-radius: 50%;
-      border: 4px dashed rgba(0,0,0,0.12);
+    .img-slot {
+      flex: 1;
+      height: 180px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 2.5em; color: rgba(0,0,0,0.1);
+      padding: 12px 8px;
+    }
+    .img-slot:nth-child(2) {
+      border-left: 2px dashed #ddd;
+      border-right: 2px dashed #ddd;
+      background: rgba(200,160,224,0.08);
+    }
+    .img-slot img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      -webkit-user-drag: none;
     }
 
-    /* ── BUTTONS ── */
-    .dir-choices { display: flex; gap: 16px; width: 100%; justify-content: center; }
-    .dir-btn {
-      flex: 1; max-width: 200px; height: 74px;
-      border: 4px solid transparent; border-radius: 20px;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      font-size: 1.5em; font-weight: 800; cursor: pointer;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-      transition: transform 0.1s, border-color 0.2s, box-shadow 0.2s;
-    }
-    .dir-btn:active { transform: scale(0.93); }
-    #btn-left  { background: linear-gradient(135deg, #1565c0, #1e88e5); color: white; }
-    #btn-right { background: linear-gradient(135deg, #880e4f, #e91e63); color: white; }
-    .dir-btn.correct { border-color: #4CAF50; box-shadow: 0 0 0 5px #4CAF5040; animation: popCorrect 0.35s ease; }
-    .dir-btn.wrong   { border-color: #f44336; animation: shakeWrong 0.4s ease; }
-    .dir-btn.hint    { border-color: #FFD700; animation: pulseHint 1s ease-in-out infinite; }
-
-    @keyframes popCorrect { 0%{transform:scale(1)} 50%{transform:scale(1.08)} 100%{transform:scale(1)} }
-    @keyframes shakeWrong { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
-    @keyframes pulseHint  { 0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.6)} 50%{box-shadow:0 0 0 12px rgba(255,215,0,0)} }
-
-    .btn-restart {
-      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
-      background: linear-gradient(135deg,#FF9800,#F57C00);
-      color: white; border: none; border-radius: 50px;
-      padding: 14px 36px; font-size: 1.05em; font-family: inherit;
-      font-weight: 800; cursor: pointer;
-      box-shadow: 0 4px 16px rgba(255,152,0,0.4); z-index: 50; white-space: nowrap;
+    #draw-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      cursor: crosshair;
+      touch-action: none;
+      border-radius: 14px;
+      will-change: contents;
     }
 
-    #toast {
-      position: fixed; top: 20%; left: 50%;
-      transform: translateX(-50%) scale(0);
-      color: white; padding: 14px 28px; border-radius: 50px;
-      font-size: 1.4em; font-weight: 800;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.25); z-index: 100;
-      transition: transform 0.2s, opacity 0.2s;
-      opacity: 0; pointer-events: none; white-space: nowrap;
+    #hint-guide {
+      position: absolute;
+      border-radius: 50%;
+      border: 4px dashed #FFD700;
+      pointer-events: none;
+      display: none;
+      animation: hintGlowAnim 0.8s ease-in-out infinite;
+      z-index: 10;
+      transform: translate(-50%, -50%);
     }
-    #toast.show { transform: translateX(-50%) scale(1); opacity: 1; }
+    #hint-guide.show { display: block; }
+    @keyframes hintGlowAnim {
+      0%,100% { box-shadow: 0 0 10px 3px rgba(255,215,0,0.5); border-color:#FFD700; }
+      50%      { box-shadow: 0 0 24px 8px rgba(255,215,0,0.9); border-color:#FFC200; }
+    }
 
-    .confetti-piece {
-      position: fixed; top: -10px; pointer-events: none; z-index: 999;
-      animation: confettiFall linear forwards;
+    #hint-label {
+      display: none;
+      position: absolute;
+      background: #FFD700; color: #333;
+      font-size: 0.82em; font-weight: bold;
+      padding: 5px 13px; border-radius: 20px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      white-space: nowrap; z-index: 20;
+      pointer-events: none;
+      animation: arrowBounce 0.65s ease-in-out infinite;
+      transform: translateX(-50%);
     }
-    @keyframes confettiFall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+    #hint-label.show { display: block; }
+    @keyframes arrowBounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
 
-    #end-screen {
-      display: none; position: fixed; inset: 0;
-      background: linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc);
-      flex-direction: column; align-items: center; justify-content: center;
-      gap: 18px; z-index: 150; padding: 30px;
-    }
-    .end-trophy { font-size: 4.5em; animation: trophySpin 1.5s ease-out; }
-    @keyframes trophySpin { from{transform:rotate(-20deg) scale(0)} 60%{transform:rotate(10deg) scale(1.1)} to{transform:rotate(0deg) scale(1)} }
-    .end-title { color: #FFD700; font-size: clamp(1.5em,5vw,2.2em); font-weight: bold; text-shadow: 0 3px 10px rgba(0,0,0,0.3); text-align: center; }
-    .end-sub { color: rgba(255,255,255,0.9); font-size: 1.1em; text-align: center; }
-    .end-score-box { background: rgba(255,255,255,0.15); border-radius: 16px; padding: 12px 28px; color: white; font-size: 1.4em; font-weight: bold; }
-    .end-stars { font-size: 2.2em; letter-spacing: 4px; }
-    .btn-play-again { background: #FFD700; color: #333; border: none; border-radius: 50px; padding: 14px 36px; font-size: 1.1em; font-weight: 800; font-family: inherit; cursor: pointer; box-shadow: 0 4px 16px rgba(255,215,0,0.5); }
+    .bottom-row { display:flex; justify-content:center; position:fixed; bottom:16px; left:0; right:0; z-index:50; pointer-events:none; }
+    .btn-restart { pointer-events:all; background:linear-gradient(135deg,#FF9800,#F57C00); color:white; border:none; padding:12px 32px; border-radius:40px; font-size:1em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 5px 14px rgba(255,152,0,0.4); }
+
+    #toast { position:fixed; top:18%; left:50%; transform:translateX(-50%) scale(0.7); padding:14px 30px; border-radius:50px; font-size:1.5em; font-weight:bold; color:white; pointer-events:none; opacity:0; transition:opacity 0.2s,transform 0.2s; z-index:500; white-space:nowrap; box-shadow:0 8px 24px rgba(0,0,0,0.2); will-change:transform,opacity; }
+    #toast.show { opacity:1; transform:translateX(-50%) scale(1); }
+
+    .confetti { position:fixed; pointer-events:none; z-index:9998; border-radius:2px; }
+
+    #end-screen { display:none; position:fixed; inset:0; background:linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc); flex-direction:column; align-items:center; justify-content:center; gap:16px; z-index:200; text-align:center; padding:30px; }
+    .end-trophy { font-size:4.5em; animation:trophySpin 1.5s ease-out; }
+    @keyframes trophySpin { from{transform:rotate(-20deg) scale(0)} 60%{transform:rotate(10deg) scale(1.1)} to{transform:rotate(0) scale(1)} }
+    .end-title  { color:#FFD700; font-size:clamp(1.5em,5vw,2.2em); font-weight:bold; text-shadow:0 3px 10px rgba(0,0,0,0.3); }
+    .end-sub    { color:rgba(255,255,255,0.9); font-size:1.1em; }
+    .end-score-box { background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.35); border-radius:20px; padding:16px 40px; color:white; font-size:1.8em; font-weight:bold; }
+    .end-stars  { font-size:2.2em; letter-spacing:4px; }
+    .btn-play-again { background:#FFD700; color:#333; border:none; padding:15px 45px; border-radius:40px; font-size:1.2em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,0.2); margin-top:8px; }
 
     @media (max-width: 768px) {
-      #game-screen { padding: 10px 10px 76px; }
-      .q-card { padding: 14px 10px; gap: 16px; }
-      .dir-half { min-height: 190px; }
-      .animal-wrap img { width: 130px; height: 130px; }
-      .dir-btn { height: 66px; font-size: 1.3em; }
-      .hdr-title { display: none; }
+      #game-screen { padding:10px 10px 70px; }
+      .hdr-title { display:none; }
+      .img-slot { height: 150px; padding: 8px 6px; }
     }
     @media (max-width: 480px) {
-      #game-screen { padding: 8px 8px 76px; }
-      .q-card { padding: 10px 8px; gap: 12px; border-radius: 18px; }
-      .dir-half { min-height: 160px; padding: 10px 6px; }
-      .animal-wrap img { width: 105px; height: 105px; }
-      .empty-slot { width: 80px; height: 80px; font-size: 2em; }
-      .half-label { font-size: 0.85em; }
-      .dir-btn { height: 60px; font-size: 1.15em; border-radius: 16px; }
-      .dir-choices { gap: 10px; }
-      .hdr-score { font-size: 1em; }
-      .instruction { font-size: clamp(0.85em,3.5vw,1em); margin-bottom: 6px; }
+      .img-slot { height: 115px; padding: 6px 4px; }
+      .question-txt { font-size:0.92em; margin-bottom:6px; }
+      .draw-tip { font-size:0.78em; margin-bottom:8px; }
+      .scene-card { padding:12px 10px; }
+      .hdr-score { font-size:1em; }
     }
   </style>
 </head>
 <body>
 
-<div id="intro-screen" onclick="startGame()">
-  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine">
+<div id="intro-screen">
+  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onclick="startGame()">
 </div>
 
 <div id="toast"></div>
@@ -198,24 +177,23 @@
     <span class="progress-label">Q <span id="q-num">1</span> / 8</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
-  <div class="instruction" id="instruction-txt"></div>
-  <div class="q-card">
-    <div class="dir-scene" id="dir-scene">
-      <div class="dir-half left-half">
-        <div class="half-label">← LEFT</div>
-        <div class="animal-wrap" id="left-animal"></div>
+  <div class="question-txt" id="question-txt"></div>
+  <div class="draw-tip">✏️ Draw a circle around the correct answer!</div>
+  <div class="scene-card">
+    <div class="scene-wrap" id="scene-wrap">
+      <div class="img-row">
+        <div class="img-slot"><img id="img-left"  src="" alt="left"></div>
+        <div class="img-slot"><img id="img-mid"   src="" alt="middle"></div>
+        <div class="img-slot"><img id="img-right" src="" alt="right"></div>
       </div>
-      <div class="dir-half right-half">
-        <div class="half-label">RIGHT →</div>
-        <div class="animal-wrap" id="right-animal"></div>
-      </div>
-    </div>
-    <div class="dir-choices">
-      <button class="dir-btn" id="btn-left"  onclick="selectDir('left')">← LEFT</button>
-      <button class="dir-btn" id="btn-right" onclick="selectDir('right')">RIGHT →</button>
+      <canvas id="draw-canvas"></canvas>
+      <div id="hint-guide"></div>
+      <div id="hint-label">✏️ Circle here!</div>
     </div>
   </div>
-  <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
+  <div class="bottom-row">
+    <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
+  </div>
 </div>
 
 <div id="end-screen">
@@ -228,41 +206,47 @@
 </div>
 
 <script>
-const ANIMALS = {
-  cat:       'Assets/cat.png',
-  dog:       'Assets/dog.png',
-  duck:      'Assets/duck.png',
-  butterfly: 'Assets/butterfly.jpg',
-  bee:       'Assets/bee.png',
-  fish:      'Assets/fish.png',
-  monkey:    'Assets/monkey.png',
-  elephant:  'Assets/elephant.png',
-};
-
 const QUESTIONS = [
-  { animal: 'cat',       name: 'cat',       side: 'right' },
-  { animal: 'dog',       name: 'dog',       side: 'left'  },
-  { animal: 'duck',      name: 'duck',      side: 'right' },
-  { animal: 'butterfly', name: 'butterfly', side: 'left'  },
-  { animal: 'bee',       name: 'bee',       side: 'right' },
-  { animal: 'fish',      name: 'fish',      side: 'left'  },
-  { animal: 'monkey',    name: 'monkey',    side: 'right' },
-  { animal: 'elephant',  name: 'elephant',  side: 'left'  },
+  { left:'Assets/eagle.png',               mid:'Assets/duck.png',                 right:'Assets/S-Colours/parrot.png',       text:'Circle the bird to the RIGHT of the duck',          correct:'right', hintCx:5/6, hintCy:0.5 },
+  { left:'Assets/ant.png',                 mid:'Assets/bee.png',                  right:'Assets/butterfly.jpg',              text:'Circle the insect to the RIGHT of the bee',          correct:'right', hintCx:5/6, hintCy:0.5 },
+  { left:'Assets/cat.png',                 mid:'Assets/dog.png',                  right:'Assets/fish.png',                   text:'Circle the animal to the LEFT of the dog',            correct:'left',  hintCx:1/6, hintCy:0.5 },
+  { left:'Assets/cow.png',                 mid:'Assets/elephant.png',             right:'Assets/monkey.png',                 text:'Circle the animal to the RIGHT of the elephant',     correct:'right', hintCx:5/6, hintCy:0.5 },
+  { left:'Assets/apple.jpg',               mid:'Assets/banana.png',               right:'Assets/cherry.png',                 text:'Circle the fruit to the LEFT of the banana',          correct:'left',  hintCx:1/6, hintCy:0.5 },
+  { left:'Assets/cake.png',                mid:'Assets/cup%20cake.png',           right:'Assets/donut.jpg',                  text:'Circle the sweet to the LEFT of the cupcake',        correct:'left',  hintCx:1/6, hintCy:0.5 },
+  { left:'Assets/cricket-ball.png',        mid:'Assets/cricket-bat-clipart.png',  right:'Assets/football.png',               text:'Circle the object to the RIGHT of the cricket bat',  correct:'right', hintCx:5/6, hintCy:0.5 },
+  { left:'Assets/aeroplane.png',           mid:'Assets/balloon.png',              right:'Assets/car.png',                    text:'Circle the vehicle to the LEFT of the balloon',      correct:'left',  hintCx:1/6, hintCy:0.5 },
 ];
 
-const sndWrong = new Audio('Assets/wrong.mp3');
-const sndClaps = new Audio('Assets/free_claps.mp3');
-let curQ = 0, score = 0, muted = false, answered = false, attempts = 0;
+QUESTIONS.forEach(q => { [q.left, q.mid, q.right].forEach(src => { new Image().src = src; }); });
+
+let curQ = 0, score = 0, attempts = 0, answered = false, muted = false;
+let isDrawing = false, pathPts = [];
+
+/* Cached references — avoid repeated DOM lookups and reflows */
+let _canvas = null, _ctx = null, _drawRect = null, _lastPt = null;
+function getCanvas() { return _canvas || (_canvas = document.getElementById('draw-canvas')); }
+function getCtx()    { return _ctx    || (_ctx    = getCanvas().getContext('2d')); }
+
+const sndCorrect = new Audio('Assets/correct.mp3');
+const sndWrong   = new Audio('Assets/wrong.mp3');
+const sndClaps   = new Audio('Assets/free_claps.mp3');
+
+function unlockAudio() {
+  [sndCorrect, sndWrong, sndClaps].forEach(s => { s.play().catch(()=>{}); s.pause(); s.currentTime = 0; });
+  document.removeEventListener('pointerdown', unlockAudio);
+}
+document.addEventListener('pointerdown', unlockAudio);
+
+function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(()=>{}); }
 
 function speak(text) {
   sndClaps.pause(); sndClaps.currentTime = 0;
-  if (!('speechSynthesis' in window)) return;
+  if (!('speechSynthesis' in window) || muted) return;
   window.speechSynthesis.cancel();
-  if (muted) return;
   setTimeout(() => {
     if (muted) return;
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US'; u.rate = 0.8; u.pitch = 1.0;
+    u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.0;
     const voices = window.speechSynthesis.getVoices();
     const v = voices.find(v => v.lang.startsWith('en') && !v.name.includes('Google'))
            || voices.find(v => v.lang.startsWith('en')) || voices[0];
@@ -275,123 +259,287 @@ window.speechSynthesis.addEventListener('voiceschanged', () => window.speechSynt
 
 function playClaps() {
   if (muted) return;
-  sndClaps.currentTime = 0; sndClaps.play().catch(() => {});
+  sndClaps.currentTime = 0; sndClaps.play().catch(()=>{});
   setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 3000);
 }
 
-function loadQuestion() {
-  if (curQ >= 8) { showEnd(); return; }
-  answered = false; attempts = 0;
-  const q = QUESTIONS[curQ];
-  document.getElementById('q-num').textContent     = curQ + 1;
-  document.getElementById('score-val').textContent = score;
-  document.getElementById('prog-bar').style.width  = (curQ / 8 * 100) + '%';
-  const text = `Is the ${q.name} on the left or the right?`;
-  document.getElementById('instruction-txt').textContent = text.toUpperCase();
-  const imgHtml   = `<img src="${ANIMALS[q.animal]}" alt="${q.name}">`;
-  const emptyHtml = `<div class="empty-slot">?</div>`;
-  document.getElementById('left-animal').innerHTML  = q.side === 'left'  ? imgHtml : emptyHtml;
-  document.getElementById('right-animal').innerHTML = q.side === 'right' ? imgHtml : emptyHtml;
-  document.getElementById('dir-scene').className = 'dir-scene';
-  clearBtnStates();
-  speak(text);
+/* ─── CANVAS HELPERS ─── */
+function clearCanvas() {
+  const cv = getCanvas();
+  getCtx().clearRect(0, 0, cv.width, cv.height);
 }
 
-function selectDir(dir) {
-  if (answered) return;
-  if (dir === QUESTIONS[curQ].side) registerCorrect(dir);
-  else registerWrong(dir);
+function syncCanvasSize() {
+  const wrap = document.getElementById('scene-wrap');
+  const cv   = getCanvas();
+  cv.width   = wrap.offsetWidth;
+  cv.height  = wrap.offsetHeight;
+  /* reset cached ctx after resize clears it */
+  _ctx = cv.getContext('2d');
 }
 
-function getHalf(side) {
-  return document.getElementById('dir-scene').querySelector('.' + side + '-half');
+/* ─── POINTER EVENTS ─── */
+function getCanvasXY(e) {
+  /* reuse cached rect — avoids layout reflow on every pointermove */
+  const r = _drawRect;
+  const src = e.touches ? e.touches[0] : e;
+  return { x: src.clientX - r.left, y: src.clientY - r.top };
 }
-function registerCorrect(dir) {
+
+const MIN_POINT_DIST = 4; /* skip points closer than 4px — cuts array size & GC */
+
+function onDown(e) {
   if (answered) return;
-  answered = true; score++;
+  e.preventDefault();
+  isDrawing = true; pathPts = []; _lastPt = null;
+  /* cache rect once per stroke — getBoundingClientRect forces reflow */
+  _drawRect = getCanvas().getBoundingClientRect();
+  const pos = getCanvasXY(e);
+  pathPts.push(pos); _lastPt = pos;
+  /* set style once here, not on every onMove */
+  const ctx = getCtx();
+  ctx.strokeStyle = 'rgba(60,160,80,0.85)';
+  ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(pos.x, pos.y);
+  getCanvas().setPointerCapture(e.pointerId);
+}
+
+function onMove(e) {
+  if (!isDrawing || answered) return;
+  e.preventDefault();
+  const pos = getCanvasXY(e);
+  /* skip micro-movements to reduce point count and GC pressure */
+  if (_lastPt && Math.hypot(pos.x - _lastPt.x, pos.y - _lastPt.y) < MIN_POINT_DIST) return;
+  _lastPt = pos;
+  pathPts.push(pos);
+  const ctx = getCtx();
+  ctx.lineTo(pos.x, pos.y);
+  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(pos.x, pos.y);
+}
+
+function onUp(e) {
+  if (!isDrawing) return;
+  isDrawing = false;
+  clearCanvas();
+  if (pathPts.length < 5) return;
+  evaluateDrawing();
+}
+
+/* ─── EVALUATE DRAWING ─── */
+function evaluateDrawing() {
+  if (pathPts.length < 8) return;
+
+  /* Minimum stroke length */
+  let len = 0;
+  for (let i = 1; i < pathPts.length; i++)
+    len += Math.hypot(pathPts[i].x - pathPts[i-1].x, pathPts[i].y - pathPts[i-1].y);
+  if (len < 60) return;
+
+  /* Centroid */
+  const cx = pathPts.reduce((s,p) => s+p.x, 0) / pathPts.length;
+  const cy = pathPts.reduce((s,p) => s+p.y, 0) / pathPts.length;
+
+  /* Circularity check — must cover at least 240° */
+  const angles = pathPts.map(p => Math.atan2(p.y - cy, p.x - cx));
+  const sorted = [...angles].sort((a,b) => a-b);
+  let maxGap = 0;
+  for (let i = 1; i < sorted.length; i++) maxGap = Math.max(maxGap, sorted[i] - sorted[i-1]);
+  maxGap = Math.max(maxGap, sorted[0] + Math.PI*2 - sorted[sorted.length-1]);
+  if (maxGap > (120 * Math.PI / 180)) return; // not a circle — let child retry
+
+  /* Zone detection — use cached rect, split into 3 equal columns */
+  const third = (_drawRect ? _drawRect.width : getCanvas().getBoundingClientRect().width) / 3;
+  let zone;
+  if (cx < third)         zone = 'left';
+  else if (cx > third*2)  zone = 'right';
+  else                    zone = 'middle';
+
+  if (zone === QUESTIONS[curQ].correct) registerCorrect();
+  else registerWrong(zone);
+}
+
+/* ─── CORRECT ─── */
+function registerCorrect() {
+  answered = true;
+  hideHint();
+  flashPath('#4CAF50', 1.0, 8);
+  score++;
   document.getElementById('score-val').textContent = score;
-  getHalf(dir).classList.add('correct-half');
-  document.getElementById('btn-' + dir).classList.add('correct');
   window.speechSynthesis?.cancel();
-  playClaps(); showToast('⭐ Correct!', '#4CAF50'); spawnConfetti();
-  setTimeout(nextQuestion, 3200);
+  playClaps();
+  showToast('⭐ Correct!', '#4CAF50');
+  spawnConfetti();
+  setTimeout(() => { curQ++; loadQuestion(); }, 3200);
 }
 
-function registerWrong(dir) {
+/* ─── WRONG ─── */
+function registerWrong(zone) {
   if (answered) return;
   attempts++;
   if (attempts === 1) {
-    sndWrong.currentTime = 0; if (!muted) sndWrong.play().catch(() => {});
+    flashPath('#f44336', 0.9, 7);
+    play(sndWrong);
     showToast('❌ Try again!', '#f44336');
-    const wb = document.getElementById('btn-' + dir);
-    wb.classList.add('wrong');
-    document.getElementById('btn-' + QUESTIONS[curQ].side).classList.add('hint');
-    setTimeout(() => { wb.classList.remove('wrong'); hideToast(); }, 900);
+    setTimeout(() => { clearCanvas(); showHint(); }, 800);
   } else {
     answered = true;
-    sndWrong.currentTime = 0; if (!muted) sndWrong.play().catch(() => {});
-    document.getElementById('btn-' + dir).classList.add('wrong');
+    flashPath('#f44336', 0.9, 7);
+    play(sndWrong);
+    showToast('❌ Wrong!', '#f44336');
     setTimeout(() => {
+      hideHint(); clearCanvas();
+      drawHintCircle('#4CAF50');
       showToast('💡 Correct answer!', '#FF9800');
-      clearBtnStates();
-      document.getElementById('btn-' + QUESTIONS[curQ].side).classList.add('correct');
-      getHalf(QUESTIONS[curQ].side).classList.add('correct-half');
-      setTimeout(nextQuestion, 3000);
+      setTimeout(() => { curQ++; loadQuestion(); }, 3000);
     }, 1000);
   }
 }
 
-function nextQuestion() { clearBtnStates(); curQ++; loadQuestion(); }
-function clearBtnStates() {
-  document.getElementById('btn-left').classList.remove('correct','wrong','hint');
-  document.getElementById('btn-right').classList.remove('correct','wrong','hint');
-  document.querySelectorAll('.dir-half').forEach(h => h.classList.remove('correct-half'));
+/* ─── CANVAS DRAW HELPERS ─── */
+function flashPath(color, alpha, width) {
+  const cv  = getCanvas(); const ctx = getCtx();
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  if (!pathPts.length) return;
+  ctx.save();
+  ctx.globalAlpha = alpha; ctx.strokeStyle = color;
+  ctx.lineWidth = width; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.shadowColor = color; ctx.shadowBlur = 10;
+  ctx.beginPath(); ctx.moveTo(pathPts[0].x, pathPts[0].y);
+  pathPts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.stroke(); ctx.restore();
 }
 
+function drawHintCircle(color) {
+  const q = QUESTIONS[curQ]; const cv = getCanvas(); const ctx = getCtx();
+  const cx = q.hintCx * cv.width;
+  const cy = q.hintCy * cv.height;
+  const r  = Math.min(cv.width / 7, cv.height * 0.42);
+  ctx.save();
+  ctx.strokeStyle = color; ctx.lineWidth = 7;
+  ctx.globalAlpha = 0.9; ctx.shadowColor = color; ctx.shadowBlur = 14;
+  ctx.setLineDash(color === '#4CAF50' ? [] : [10, 6]);
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.stroke(); ctx.restore();
+}
+
+/* ─── HINT GUIDE (dashed ring overlay) ─── */
+function showHint() {
+  const q    = QUESTIONS[curQ];
+  const wrap = document.getElementById('scene-wrap');
+  const w = wrap.offsetWidth; const h = wrap.offsetHeight;
+  const r  = Math.min(w / 7, h * 0.42);
+  const px = q.hintCx * w; const py = q.hintCy * h;
+
+  const guide = document.getElementById('hint-guide');
+  guide.style.width  = (r*2) + 'px';
+  guide.style.height = (r*2) + 'px';
+  guide.style.left   = px + 'px';
+  guide.style.top    = py + 'px';
+  guide.classList.add('show');
+
+  const label = document.getElementById('hint-label');
+  label.style.left = px + 'px';
+  label.style.top  = Math.max(6, py - r - 38) + 'px';
+  label.classList.add('show');
+}
+
+function hideHint() {
+  document.getElementById('hint-guide').classList.remove('show');
+  document.getElementById('hint-label').classList.remove('show');
+}
+
+/* ─── LOAD QUESTION ─── */
+function loadQuestion() {
+  if (curQ >= QUESTIONS.length) { showEnd(); return; }
+  answered = false; attempts = 0; pathPts = [];
+
+  const q = QUESTIONS[curQ];
+  document.getElementById('q-num').textContent      = curQ + 1;
+  document.getElementById('score-val').textContent  = score;
+  document.getElementById('prog-bar').style.width   = (curQ / 8 * 100) + '%';
+  document.getElementById('question-txt').textContent = q.text;
+  document.getElementById('img-left').src  = q.left;
+  document.getElementById('img-mid').src   = q.mid;
+  document.getElementById('img-right').src = q.right;
+
+  speak(q.text);
+  clearCanvas(); hideHint();
+
+  /* rAF ensures layout is complete before reading offsetWidth/Height */
+  requestAnimationFrame(() => { syncCanvasSize(); clearCanvas(); });
+}
+
+/* ─── START / RESTART ─── */
 function startGame() {
   document.getElementById('intro-screen').style.display = 'none';
   document.getElementById('game-screen').style.display  = 'flex';
-  curQ = 0; score = 0; loadQuestion();
+  curQ = 0; score = 0;
+
+  const cv = document.getElementById('draw-canvas');
+  cv.addEventListener('pointerdown', onDown);
+  cv.addEventListener('pointermove', onMove);
+  cv.addEventListener('pointerup',   onUp);
+  cv.addEventListener('pointercancel', onUp);
+  cv.addEventListener('pointerleave', onUp);
+
+  window.addEventListener('resize', () => { syncCanvasSize(); clearCanvas(); hideHint(); });
+
+  loadQuestion();
 }
 
 function restartGame() {
-  clearBtnStates(); window.speechSynthesis?.cancel();
+  clearCanvas(); hideHint(); pathPts = [];
   document.getElementById('end-screen').style.display  = 'none';
   document.getElementById('game-screen').style.display = 'flex';
-  curQ = 0; score = 0; attempts = 0; answered = false; loadQuestion();
+  curQ = 0; score = 0; attempts = 0; answered = false;
+  loadQuestion();
 }
 
-function showToast(msg, color) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.style.background = color; t.classList.add('show');
-  setTimeout(hideToast, 1800);
+/* ─── TOAST ─── */
+let toastTimer = null;
+function showToast(msg, bg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.style.background = bg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 1400);
 }
-function hideToast() { document.getElementById('toast').classList.remove('show'); }
 
+/* ─── CONFETTI ─── */
+const CC = ['#FFD700','#FF6B6B','#4CAF50','#2196F3','#FF9800','#AB47BC','#26C6DA'];
 function spawnConfetti() {
-  const colors = ['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF922B','#cc5de8','#ff6b81'];
-  for (let i = 0; i < 60; i++) {
-    const p = document.createElement('div');
-    p.className = 'confetti-piece';
-    p.style.cssText = `left:${Math.random()*100}vw;background:${colors[Math.floor(Math.random()*colors.length)]};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>0.5?'50%':'2px'};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*0.8}s;`;
-    document.body.appendChild(p);
-    p.addEventListener('animationend', () => p.remove());
+  for (let i = 0; i < 70; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      const sz = 6 + Math.random() * 9;
+      el.style.cssText = `left:${Math.random()*100}vw;top:-12px;width:${sz}px;height:${sz}px;background:${CC[Math.floor(Math.random()*CC.length)]};border-radius:${Math.random()>.4?'50%':'2px'};animation:cfFall ${1.4+Math.random()*1.8}s linear forwards;`;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 3500);
+    }, i * 22);
   }
 }
+if (!document.querySelector('#cf-style')) {
+  const s = document.createElement('style'); s.id = 'cf-style';
+  s.textContent = `@keyframes cfFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(540deg);opacity:0}}`;
+  document.head.appendChild(s);
+}
 
+/* ─── MUTE ─── */
 function toggleMute() {
   muted = !muted;
   document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
   if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
-  else if (curQ < 8) speak(`Is the ${QUESTIONS[curQ].name} on the left or the right?`);
+  else speak(document.getElementById('question-txt').textContent);
 }
 
+/* ─── END ─── */
 function showEnd() {
   document.getElementById('game-screen').style.display = 'none';
   document.getElementById('end-screen').style.display  = 'flex';
   document.getElementById('final-score').textContent   = score;
   document.getElementById('end-stars').textContent = score >= 7 ? '⭐⭐⭐' : score >= 5 ? '⭐⭐' : '⭐';
-  window.speechSynthesis?.cancel();
   playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 800);
 }
 </script>
