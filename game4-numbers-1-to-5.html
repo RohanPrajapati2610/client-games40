@@ -318,7 +318,7 @@ function playClaps() {
 function numBtn(n) { return document.querySelector('.num-btn[data-num="' + n + '"]'); }
 
 function clearAllStates() {
-  document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('correct','wrong','hint'));
+  document.querySelectorAll('.num-btn').forEach(b => b.className = 'num-btn');
   document.getElementById('obj-display').classList.remove('correct');
 }
 

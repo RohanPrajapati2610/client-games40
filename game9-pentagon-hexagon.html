@@ -321,7 +321,7 @@ function getCard(shapeName) {
 }
 
 function clearAllStates() {
-  document.querySelectorAll('.shape-card').forEach(c => c.classList.remove('correct','wrong','hint'));
+  document.querySelectorAll('.shape-card').forEach(c => c.className = 'shape-card');
 }
 
 /* ── GAME FLOW ── */
