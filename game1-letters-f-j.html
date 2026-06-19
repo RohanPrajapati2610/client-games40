@@ -216,6 +216,29 @@ function speak(text) {
     window.speechSynthesis.speak(u);
   }, 150);
 }
+
+/* Two-part TTS: say "Find the letter" → pause → say the letter slowly */
+function speakLetter(letter) {
+  if (!('speechSynthesis' in window) || muted) return;
+  window.speechSynthesis.cancel();
+  setTimeout(() => {
+    if (muted) return;
+    const v = getVoice();
+    const u1 = new SpeechSynthesisUtterance('Find the letter');
+    u1.lang = 'en-US'; u1.rate = 0.8; u1.pitch = 1.1;
+    if (v) u1.voice = v;
+    u1.onend = () => {
+      setTimeout(() => {
+        if (muted) return;
+        const u2 = new SpeechSynthesisUtterance(letter);
+        u2.lang = 'en-US'; u2.rate = 0.4; u2.pitch = 1.0;
+        if (v) u2.voice = v;
+        window.speechSynthesis.speak(u2);
+      }, 450);
+    };
+    window.speechSynthesis.speak(u1);
+  }, 150);
+}
 window.speechSynthesis.getVoices();
 window.speechSynthesis.addEventListener('voiceschanged', () => window.speechSynthesis.getVoices());
 
@@ -238,9 +261,8 @@ function loadQuestion() {
   document.getElementById('score-val').textContent = score;
   document.getElementById('prog-bar').style.width  = (curQ / 8 * 100) + '%';
 
-  const txt = `Find the letter ${q.answer}!`;
-  document.getElementById('instruction-txt').textContent = txt;
-  speak(txt);
+  document.getElementById('instruction-txt').textContent = 'Find the letter!';
+  speakLetter(q.answer);
 
   /* build letter buttons — Fisher-Yates shuffle */
   const wrap = document.getElementById('letter-choices');
@@ -363,7 +385,7 @@ function toggleMute() {
   muted = !muted;
   document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
   if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
-  else speak(document.getElementById('instruction-txt').textContent);
+  else speakLetter(QUESTIONS[curQ].answer);
 }
 
 /* ── END ── */
