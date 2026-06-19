@@ -127,11 +127,6 @@
     .num-btn[data-num="4"] { background: linear-gradient(135deg, #54a0ff, #2e86de); }
     .num-btn[data-num="5"] { background: linear-gradient(135deg, #a29bfe, #6c5ce7); }
 
-    .num-btn.correct {
-      border-color: #4CAF50; border-width: 5px;
-      box-shadow: 0 0 0 6px #4CAF5040;
-      animation: popCorrect 0.35s ease;
-    }
     .num-btn.wrong {
       border-color: #f44336; border-width: 5px;
       animation: shakeWrong 0.4s ease;
@@ -139,6 +134,11 @@
     .num-btn.hint {
       border-color: #FFD700; border-width: 5px;
       animation: pulseHint 1s ease-in-out infinite;
+    }
+    .num-btn.correct {
+      border-color: #4CAF50; border-width: 5px;
+      box-shadow: 0 0 0 6px #4CAF5040;
+      animation: popCorrect 0.35s ease;
     }
     @keyframes popCorrect  { 0%{transform:scale(1)} 50%{transform:scale(1.1)} 100%{transform:scale(1)} }
     @keyframes shakeWrong  { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
@@ -381,6 +381,7 @@ function registerCorrect(n) {
   if (answered) return;
   answered = true; score++;
   document.getElementById('score-val').textContent = score;
+  clearAllStates();
   document.getElementById('obj-display').classList.add('correct');
   numBtn(n).classList.add('correct');
   window.speechSynthesis?.cancel();

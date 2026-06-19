@@ -98,11 +98,6 @@
 
     .shape-label { display: none; }
 
-    .shape-card.correct {
-      border-color: #4CAF50; border-style: solid; border-width: 4px;
-      background: #e8f5e9; box-shadow: 0 0 0 5px #4CAF5040;
-      animation: popCorrect 0.35s ease;
-    }
     .shape-card.wrong {
       border-color: #f44336; border-style: solid; border-width: 4px;
       background: #ffebee; animation: shakeWrong 0.4s ease;
@@ -110,6 +105,11 @@
     .shape-card.hint {
       border-color: #FFD700; border-style: solid; border-width: 4px;
       animation: pulseHint 1s ease-in-out infinite;
+    }
+    .shape-card.correct {
+      border-color: #4CAF50; border-style: solid; border-width: 4px;
+      background: #e8f5e9; box-shadow: 0 0 0 5px #4CAF5040;
+      animation: popCorrect 0.35s ease;
     }
     @keyframes popCorrect { 0%{transform:scale(1)} 50%{transform:scale(1.07)} 100%{transform:scale(1)} }
     @keyframes shakeWrong { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }

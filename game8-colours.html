@@ -75,9 +75,9 @@
       will-change: transform;
     }
     .colour-btn:active { transform: scale(0.93); }
-    .colour-btn.correct { border-color: #4CAF50; box-shadow: 0 0 0 5px #4CAF5040; animation: popCorrect 0.35s ease; }
     .colour-btn.wrong   { border-color: #f44336; animation: shakeWrong 0.4s ease; }
     .colour-btn.hint    { border-color: #FFD700; animation: pulseHint 1s ease-in-out infinite; }
+    .colour-btn.correct { border-color: #4CAF50; box-shadow: 0 0 0 5px #4CAF5040; animation: popCorrect 0.35s ease; }
 
     @keyframes popCorrect { 0%{transform:scale(1)} 50%{transform:scale(1.08)} 100%{transform:scale(1)} }
     @keyframes shakeWrong { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
