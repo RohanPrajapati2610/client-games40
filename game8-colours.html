@@ -274,6 +274,7 @@ function selectColour(colour) {
 /* ─── CORRECT ─── */
 function registerCorrect(colour) {
   answered = true;
+  clearBtnStates();
   getBtn(colour).classList.add('correct');
   score++;
   document.getElementById('score-val').textContent = score;

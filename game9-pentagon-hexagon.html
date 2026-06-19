@@ -369,6 +369,7 @@ function registerCorrect(name) {
   if (answered) return;
   answered = true; score++;
   document.getElementById('score-val').textContent = score;
+  clearAllStates();
   getCard(name).classList.add('correct');
   window.speechSynthesis?.cancel();
   playClaps();
