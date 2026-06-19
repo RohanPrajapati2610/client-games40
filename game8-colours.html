@@ -298,7 +298,7 @@ function registerWrong(colour) {
     showToast('❌ Try again!', '#f44336');
     setTimeout(() => {
       wrongBtn.classList.remove('wrong');
-      correctBtn.classList.add('hint');
+      if (!answered) correctBtn.classList.add('hint');
     }, 900);
   } else {
     answered = true;
