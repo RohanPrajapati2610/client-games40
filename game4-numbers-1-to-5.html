@@ -475,6 +475,12 @@ function restartGame() {
   curQ = 0; score = 0; attempts = 0; answered = false;
   loadQuestion();
 }
+
+/* touchend handlers for num-btn: fire before the 300ms click delay on mobile */
+document.querySelectorAll('.num-btn').forEach(btn => {
+  const n = +btn.dataset.num;
+  btn.addEventListener('touchend', e => { e.preventDefault(); selectNum(n); }, { passive: false });
+});
 </script>
 </body>
 </html>

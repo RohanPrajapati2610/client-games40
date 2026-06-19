@@ -353,6 +353,7 @@ function loadQuestion() {
     card.className = 'shape-card';
     card.dataset.shape = name;
     card.innerHTML = coloredSvg(name, colors[i]);
+    card.addEventListener('touchend', e => { e.preventDefault(); selectShape(name); }, { passive: false });
     card.onclick = () => selectShape(name);
     grid.appendChild(card);
   });

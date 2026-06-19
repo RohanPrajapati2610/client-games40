@@ -259,6 +259,7 @@ function loadQuestion() {
     btn.style.background = COLOUR_HEX[colour];
     btn.style.color = colour === 'Yellow' ? '#333' : 'white';
     btn.textContent = colour;
+    btn.addEventListener('touchend', e => { e.preventDefault(); selectColour(colour); }, { passive: false });
     btn.onclick = () => selectColour(colour);
     wrap.appendChild(btn);
   });
