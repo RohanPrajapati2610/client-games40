@@ -210,46 +210,45 @@
 <script>
 /* ── SHAPE HEADER ICONS (shown in column header) ── */
 const HDR_ICON = {
-  circle:    `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="#FF6B6B"/></svg>`,
-  square:    `<svg viewBox="0 0 40 40"><rect x="4" y="4" width="32" height="32" fill="#54a0ff"/></svg>`,
-  triangle:  `<svg viewBox="0 0 40 40"><polygon points="20,3 37,37 3,37" fill="#f9ca24"/></svg>`,
-  rectangle: `<svg viewBox="0 0 40 40"><rect x="2" y="11" width="36" height="18" fill="#1dd1a1"/></svg>`,
-  oval:      `<svg viewBox="0 0 40 40"><ellipse cx="20" cy="20" rx="18" ry="11" fill="#a29bfe"/></svg>`,
-  star:      `<svg viewBox="0 0 40 40"><polygon points="20,2 24,14 37,14 27,22 31,36 20,28 9,36 13,22 3,14 16,14" fill="#FF9F43"/></svg>`,
-  heart:     `<svg viewBox="0 0 40 40"><path d="M20,33 C19,31 3,22 3,13 C3,7 7,3 13,3 C16,3 19,5 20,8 C21,5 24,3 27,3 C33,3 37,7 37,13 C37,22 21,31 20,33 Z" fill="#FF6B9D"/></svg>`,
-  diamond:   `<svg viewBox="0 0 40 40"><polygon points="20,2 38,20 20,38 2,20" fill="#00cec9"/></svg>`,
+  circle:     `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="#FF6B6B"/></svg>`,
+  square:     `<svg viewBox="0 0 40 40"><rect x="4" y="4" width="32" height="32" fill="#54a0ff"/></svg>`,
+  triangle:   `<svg viewBox="0 0 40 40"><polygon points="20,3 37,37 3,37" fill="#f9ca24"/></svg>`,
+  rectangle:  `<svg viewBox="0 0 40 40"><rect x="2" y="11" width="36" height="18" fill="#1dd1a1"/></svg>`,
+  oval:       `<svg viewBox="0 0 40 40"><ellipse cx="20" cy="20" rx="18" ry="11" fill="#a29bfe"/></svg>`,
+  star:       `<svg viewBox="0 0 40 40"><polygon points="20,2 24,14 37,14 27,22 31,36 20,28 9,36 13,22 3,14 16,14" fill="#FF9F43"/></svg>`,
+  semicircle: `<svg viewBox="0 0 40 40"><path d="M4,26 A16,16 0 0,1 36,26 Z" fill="#6c5ce7"/></svg>`,
 };
 
 const SHAPE_LABEL = {
   circle:'Circle', square:'Square', triangle:'Triangle', rectangle:'Rectangle',
-  oval:'Oval', star:'Star', heart:'Heart', diamond:'Diamond',
+  oval:'Oval', star:'Star', semicircle:'Semicircle',
 };
 
-/* ── DRAGGABLE OBJECTS — 3 per shape ── */
+/* ── DRAGGABLE OBJECTS ── */
+const N = 'Assets/new%20assets/';
 const OBJ_POOL = {
-  circle:    [ 'Assets/mine/pie-chart.png', 'Assets/mine/cookie.png',    'Assets/mine/orange.png'     ],
-  triangle:  [ 'Assets/mine/triangle1.png', 'Assets/mine/triangle2.png', 'Assets/mine/triangle3.png'  ],
-  rectangle: [ 'Assets/mine/rectangle1.png','Assets/mine/rectangle2.png','Assets/mine/rectangle3.png' ],
-  square:    [ 'Assets/mine/sq1.png',        'Assets/mine/sq2.png',       'Assets/mine/sq3.png'        ],
-  oval:      [ 'Assets/mine/ov1.png',        'Assets/mine/ov2.png',       'Assets/egg.png'             ],
-  star:      [ 'Assets/mine/st1.png',        'Assets/mine/st2.png',       'Assets/mine/st3.png'        ],
-  heart:     [ 'Assets/mine/he1.png',        'Assets/mine/he2.png',       'Assets/mine/he3.png'        ],
-  diamond:   [ 'Assets/mine/dia1.png',       'Assets/mine/dia2.png',      'Assets/mine/dia3.png'       ],
+  circle:     [ N+'pizza.jpg',             N+'button.jpg',              N+'chip.jpg'                ],
+  square:     [ N+'chess%20board.jpg',     N+'square%20pillow.jpg',     N+'biscut.jpg'              ],
+  triangle:   [ N+'pizza%20slice.jpg',     N+'tent.jpg'                                            ],
+  rectangle:  [ N+'board.jpg',             N+'envolop.jpg'                                         ],
+  oval:       [ N+'potato.jpg',            N+'stone%20oval.jpg'                                    ],
+  star:       [ N+'star%20hanging.jpg',    N+'star%20shaped%20ballons.jpg', N+'starfish.jpg'       ],
+  semicircle: [ N+'rainbow.jpg',           N+'arch%20of%20window.jpg',  N+'fan.jpg'                ],
 };
 
 /* Preload all images */
 Object.values(OBJ_POOL).forEach(arr => arr.forEach(src => { new Image().src = src; }));
 
-/* ── QUESTIONS: each pairs 2 shapes, all 3 images per shape (6 draggable items total) ── */
+/* ── QUESTIONS: 8 rounds, each pairs 2 shapes ── */
 const QUESTIONS = [
-  { shapeA:'circle',    idxA:[0,1,2], shapeB:'rectangle', idxB:[0,1,2] },
-  { shapeA:'triangle',  idxA:[0,1,2], shapeB:'square',    idxB:[0,1,2] },
-  { shapeA:'oval',      idxA:[0,1,2], shapeB:'star',      idxB:[0,1,2] },
-  { shapeA:'heart',     idxA:[0,1,2], shapeB:'diamond',   idxB:[0,1,2] },
-  { shapeA:'circle',    idxA:[0,1,2], shapeB:'triangle',  idxB:[0,1,2] },
-  { shapeA:'square',    idxA:[0,1,2], shapeB:'rectangle', idxB:[0,1,2] },
-  { shapeA:'oval',      idxA:[0,1,2], shapeB:'heart',     idxB:[0,1,2] },
-  { shapeA:'star',      idxA:[0,1,2], shapeB:'diamond',   idxB:[0,1,2] },
+  { shapeA:'circle',     idxA:[0,1,2], shapeB:'triangle',   idxB:[0,1]   },
+  { shapeA:'square',     idxA:[0,1,2], shapeB:'oval',       idxB:[0,1]   },
+  { shapeA:'semicircle', idxA:[0,1,2], shapeB:'rectangle',  idxB:[0,1]   },
+  { shapeA:'star',       idxA:[0,1,2], shapeB:'circle',     idxB:[0,1,2] },
+  { shapeA:'triangle',   idxA:[0,1],   shapeB:'star',       idxB:[0,1,2] },
+  { shapeA:'oval',       idxA:[0,1],   shapeB:'semicircle', idxB:[0,1,2] },
+  { shapeA:'rectangle',  idxA:[0,1],   shapeB:'square',     idxB:[0,1,2] },
+  { shapeA:'circle',     idxA:[0,1,2], shapeB:'semicircle', idxB:[0,1,2] },
 ];
 
 const sndCorrect = new Audio('Assets/correct.mp3');
@@ -258,6 +257,7 @@ const sndClaps   = new Audio('Assets/free_claps.mp3');
 
 let curQ = 0, score = 0, muted = false;
 let placedCount = { a:0, b:0 };
+let colTotal    = { a:3,  b:3  };
 let questionOK = true;
 
 /* drag state */
@@ -306,7 +306,7 @@ function shuffle(arr) {
 /* ── LOAD QUESTION ── */
 function loadQuestion() {
   if (curQ >= 8) { showEnd(); return; }
-  placedCount = { a:0, b:0 }; questionOK = true;
+  placedCount = { a:0, b:0 }; colTotal = { a: q.idxA.length, b: q.idxB.length }; questionOK = true;
   dragShape = null; dragSrcEl = null; ghost.style.display = 'none';
 
   const q = QUESTIONS[curQ];
@@ -327,7 +327,7 @@ function loadQuestion() {
       <div class="col-header">
         ${HDR_ICON[shape]}
         <span class="col-name">${SHAPE_LABEL[shape]}</span>
-        <span class="col-count" id="cnt-${bin}">0 / 3</span>
+        <span class="col-count" id="cnt-${bin}">0 / ${bin === 'a' ? q.idxA.length : q.idxB.length}</span>
       </div>
       <div class="col-zone" id="zone-${bin}"></div>`;
     colRow.appendChild(col);
@@ -432,8 +432,8 @@ function placeInColumn(el, shape) {
   document.getElementById(`zone-${bin}`).appendChild(placed);
   el.remove();
   placedCount[bin]++;
-  document.getElementById(`cnt-${bin}`).textContent = `${placedCount[bin]} / 3`;
-  if (placedCount[bin] === 3) col.classList.add('done-col');
+  document.getElementById(`cnt-${bin}`).textContent = `${placedCount[bin]} / ${colTotal[bin]}`;
+  if (placedCount[bin] === colTotal[bin]) col.classList.add('done-col');
   col.classList.remove('hint-col');
 }
 
@@ -482,7 +482,7 @@ function resetDrag() {
 }
 
 function checkComplete() {
-  if (placedCount.a !== 3 || placedCount.b !== 3) return;
+  if (placedCount.a !== colTotal.a || placedCount.b !== colTotal.b) return;
   window.speechSynthesis?.cancel();
   if (questionOK) {
     score++;
