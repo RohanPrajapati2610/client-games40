@@ -126,12 +126,12 @@
 
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">⭐ <span id="score-val">0</span> / 11</div>
+    <div class="hdr-score">⭐ <span id="score-val">0</span> / 13</div>
     <div class="hdr-title">Colours</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
   </div>
   <div class="progress-row">
-    <span class="progress-label">Q <span id="q-num">1</span> / 11</span>
+    <span class="progress-label">Q <span id="q-num">1</span> / 13</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
   <div class="instruction" id="instruction-txt"></div>
@@ -149,8 +149,8 @@
 <div id="end-screen">
   <div class="end-trophy">🏆</div>
   <div class="end-title">You have done a great job!</div>
-  <div class="end-sub">You completed all 11 questions!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 11</div>
+  <div class="end-sub">You completed all 13 questions!</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 13</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">▶ &nbsp;Play Again</button>
 </div>
@@ -160,21 +160,22 @@ const COLOUR_HEX = {
   'Orange': '#FB8C00',
   'Green':  '#43A047',
   'Purple': '#8E24AA',
-  'Violet': '#673AB7',
 };
 
 const QUESTIONS = [
-  { img:'Assets/S-Colours/ballonorange.png', obj:'balloon',    answer:'Orange', choices:['Orange','Green','Violet']  },
-  { img:'Assets/S-Colours/bow.png',          obj:'bow',        answer:'Violet', choices:['Violet','Purple','Orange'] },
-  { img:'Assets/S-Colours/brinjal.png',      obj:'brinjal',    answer:'Purple', choices:['Purple','Green','Orange']  },
-  { img:'Assets/S-Colours/carorange.png',    obj:'car',        answer:'Orange', choices:['Orange','Violet','Purple'] },
-  { img:'Assets/S-Colours/grapes.png',       obj:'grapes',     answer:'Green',  choices:['Green','Purple','Orange']  },
-  { img:'Assets/S-Colours/green.jpg',        text:'What colour is this?', answer:'Green',  choices:['Green','Orange','Violet']  },
-  { img:'Assets/S-Colours/orange.jpg',       text:'What colour is this?', answer:'Orange', choices:['Orange','Purple','Green']  },
-  { img:'Assets/S-Colours/orangefruit.png',  obj:'orange',     answer:'Orange', choices:['Orange','Green','Violet']  },
-  { img:'Assets/S-Colours/parrot.png',       obj:'parrot',     answer:'Green',  choices:['Green','Orange','Purple']  },
-  { img:'Assets/S-Colours/purple.png',       text:'What colour is this?', answer:'Purple', choices:['Purple','Green','Orange']  },
-  { img:'Assets/S-Colours/tshirt.png',       obj:'t-shirt',    answer:'Violet', choices:['Violet','Green','Orange']  },
+  { img:'Assets/S-Colours/ballonorange.png',   obj:'balloon',  answer:'Orange', choices:['Orange','Green','Purple']  },
+  { img:'Assets/S-Colours/bow.png',            obj:'bow',      answer:'Purple', choices:['Purple','Green','Orange']  },
+  { img:'Assets/S-Colours/brinjal.png',        obj:'brinjal',  answer:'Purple', choices:['Purple','Orange','Green']  },
+  { img:'Assets/S-Colours/carorange.png',      obj:'car',      answer:'Orange', choices:['Orange','Purple','Green']  },
+  { img:'Assets/S-Colours/grapes.png',         obj:'grapes',   answer:'Green',  choices:['Green','Purple','Orange']  },
+  { img:'Assets/S-Colours/green.jpg',          text:'What colour is this?', answer:'Green',  choices:['Green','Orange','Purple']  },
+  { img:'Assets/S-Colours/orange.jpg',         text:'What colour is this?', answer:'Orange', choices:['Orange','Purple','Green']  },
+  { img:'Assets/S-Colours/orangefruit.png',    obj:'orange',   answer:'Orange', choices:['Orange','Green','Purple']  },
+  { img:'Assets/S-Colours/parrot.png',         obj:'parrot',   answer:'Green',  choices:['Green','Orange','Purple']  },
+  { img:'Assets/S-Colours/purple.png',         text:'What colour is this?', answer:'Purple', choices:['Purple','Green','Orange']  },
+  { img:'Assets/S-Colours/tshirt.png',         obj:'t-shirt',  answer:'Purple', choices:['Purple','Orange','Green']  },
+  { img:'Assets/S-Colours/bag_purple.jpg',     obj:'bag',      answer:'Purple', choices:['Purple','Green','Orange']  },
+  { img:'Assets/S-Colours/purple crayon.jpg',  obj:'crayon',   answer:'Purple', choices:['Purple','Orange','Green']  },
 ];
 
 QUESTIONS.forEach(q => { new Image().src = q.img; });
@@ -373,7 +374,7 @@ function showEnd() {
   document.getElementById('game-screen').style.display = 'none';
   document.getElementById('end-screen').style.display  = 'flex';
   document.getElementById('final-score').textContent   = score;
-  document.getElementById('end-stars').textContent = score >= 9 ? '⭐⭐⭐' : score >= 6 ? '⭐⭐' : '⭐';
+  document.getElementById('end-stars').textContent = score >= 11 ? '⭐⭐⭐' : score >= 7 ? '⭐⭐' : '⭐';
   playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 800);
 }
 </script>
