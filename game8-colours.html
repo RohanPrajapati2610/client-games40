@@ -267,6 +267,7 @@ function loadQuestion() {
 /* ─── SELECT ─── */
 function selectColour(colour) {
   if (answered) return;
+  clearBtnStates();
   if (colour === QUESTIONS[curQ].answer) registerCorrect(colour);
   else registerWrong(colour);
 }

@@ -360,6 +360,7 @@ function loadQuestion() {
 
 function selectShape(name) {
   if (answered) return;
+  clearAllStates();
   if (name === QUESTIONS[curQ].correct) registerCorrect(name);
   else registerWrong(name);
 }

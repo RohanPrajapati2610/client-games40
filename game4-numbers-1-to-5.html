@@ -373,6 +373,7 @@ function loadQuestion() {
 
 function selectNum(n) {
   if (answered) return;
+  clearAllStates();
   if (n === QUESTIONS[curQ].count) registerCorrect(n);
   else registerWrong(n);
 }
