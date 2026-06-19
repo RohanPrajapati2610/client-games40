@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -84,6 +85,10 @@
     @keyframes shakeWrong { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
     @keyframes pulseHint  { 0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.6)} 50%{box-shadow:0 0 0 14px rgba(255,215,0,0)} }
 
+    /* ── HEAR BUTTON ── */
+    .btn-hear { background:linear-gradient(135deg,#7b1fa2,#ab47bc); color:white; border:none; padding:14px 28px; border-radius:40px; font-size:1.05em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 5px 14px rgba(123,31,162,0.35); display:flex; align-items:center; gap:8px; }
+    .btn-hear:active { transform:scale(0.93); }
+
     /* ── BOTTOM RESTART ── */
     .bottom-row { display:flex; justify-content:center; position:fixed; bottom:16px; left:0; right:0; z-index:50; pointer-events:none; }
     .btn-restart { pointer-events:all; background:linear-gradient(135deg,#FF9800,#F57C00); color:white; border:none; padding:12px 32px; border-radius:40px; font-size:1em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 5px 14px rgba(255,152,0,0.4); }
@@ -139,6 +144,7 @@
   </div>
   <div class="instruction" id="instruction-txt">Tap the letter you hear!</div>
   <div class="q-card">
+    <button class="btn-hear" id="hear-btn" onclick="hearLetter()">🔊 &nbsp;Hear</button>
     <div class="letter-choices" id="letter-choices"></div>
   </div>
   <div class="bottom-row">
@@ -156,6 +162,15 @@
 </div>
 
 <script>
+/* ── LETTER PHONEME SOUNDS ── */
+const LETTER_PHONEME = {
+  'f': 'fuh',
+  'g': 'guh',
+  'h': 'huh',
+  'i': 'ih',
+  'j': 'juh',
+};
+
 /* ── LETTER COLOURS ── */
 const LETTER_COLOUR = {
   'f': '#FF6B6B',
@@ -200,47 +215,41 @@ function playClaps() {
 }
 
 /* ── TTS ── */
-function getVoice() {
-  const v = window.speechSynthesis.getVoices();
-  return v.find(x => x.lang.startsWith('en') && !x.name.includes('Google'))
-      || v.find(x => x.lang.startsWith('en')) || v[0];
-}
-function speak(text) {
-  if (!('speechSynthesis' in window) || muted) return;
-  window.speechSynthesis.cancel();
-  setTimeout(() => {
-    if (muted) return;
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.1;
-    const v = getVoice(); if (v) u.voice = v;
-    window.speechSynthesis.speak(u);
-  }, 150);
+const RV_VOICE = 'UK English Female';
+const RV_OPTS  = { rate: 0.8, pitch: 1.1 };
+
+function rvSpeak(text, opts) {
+  if (muted) return;
+  if (window.responsiveVoice && responsiveVoice.voiceSupport()) {
+    responsiveVoice.cancel();
+    responsiveVoice.speak(text, RV_VOICE, opts || RV_OPTS);
+  } else {
+    /* fallback: native TTS */
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    setTimeout(() => {
+      if (muted) return;
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US'; u.rate = 0.75; u.pitch = 1.1;
+      window.speechSynthesis.speak(u);
+    }, 100);
+  }
 }
 
-/* Two-part TTS: say "Find the letter" → pause → say the letter slowly */
+function speak(text) { rvSpeak(text); }
+
 function speakLetter(letter) {
-  if (!('speechSynthesis' in window) || muted) return;
-  window.speechSynthesis.cancel();
-  setTimeout(() => {
-    if (muted) return;
-    const v = getVoice();
-    const u1 = new SpeechSynthesisUtterance('Find the letter');
-    u1.lang = 'en-US'; u1.rate = 0.8; u1.pitch = 1.1;
-    if (v) u1.voice = v;
-    u1.onend = () => {
-      setTimeout(() => {
-        if (muted) return;
-        const u2 = new SpeechSynthesisUtterance(letter);
-        u2.lang = 'en-US'; u2.rate = 0.4; u2.pitch = 1.0;
-        if (v) u2.voice = v;
-        window.speechSynthesis.speak(u2);
-      }, 450);
-    };
-    window.speechSynthesis.speak(u1);
-  }, 150);
+  if (muted) return;
+  const phoneme = LETTER_PHONEME[letter] || letter;
+  setTimeout(() => rvSpeak('Find the letter. ' + phoneme), 150);
 }
-window.speechSynthesis.getVoices();
-window.speechSynthesis.addEventListener('voiceschanged', () => window.speechSynthesis.getVoices());
+
+/* ── HEAR BUTTON ── */
+function hearLetter() {
+  if (muted) return;
+  const phoneme = LETTER_PHONEME[QUESTIONS[curQ].answer] || QUESTIONS[curQ].answer;
+  rvSpeak(phoneme, { rate: 0.7, pitch: 1.1 });
+}
 
 /* ── HELPERS ── */
 function getBtn(letter) {
@@ -261,7 +270,7 @@ function loadQuestion() {
   document.getElementById('score-val').textContent = score;
   document.getElementById('prog-bar').style.width  = (curQ / 8 * 100) + '%';
 
-  document.getElementById('instruction-txt').textContent = 'Find the letter!';
+  document.getElementById('instruction-txt').textContent = `Find the letter  ${q.answer}!`;
   speakLetter(q.answer);
 
   /* build letter buttons — Fisher-Yates shuffle */
