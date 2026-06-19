@@ -55,20 +55,6 @@
       margin-top: auto; margin-bottom: auto; flex-shrink: 0; width: 100%;
     }
 
-    /* ── SOUND BUTTON ── */
-    .sound-btn {
-      width: 120px; height: 120px; border-radius: 50%;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border: none; cursor: pointer;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      box-shadow: 0 6px 24px rgba(102,126,234,0.45);
-      transition: transform 0.1s;
-      gap: 4px;
-    }
-    .sound-btn:active { transform: scale(0.92); }
-    .sound-btn-icon { font-size: 3em; line-height: 1; }
-    .sound-btn-label { font-size: 0.7em; color: rgba(255,255,255,0.9); font-weight: 700; letter-spacing: 0.05em; }
-
     /* ── LETTER CHOICE BUTTONS ── */
     .letter-choices {
       display: grid;
@@ -127,8 +113,6 @@
     @media (max-width: 480px) {
       .letter-btn { height:70px; font-size:2.4em; border-radius:14px; border-width:3px; }
       .q-card { padding:16px 12px; gap:18px; }
-      .sound-btn { width:100px; height:100px; }
-      .sound-btn-icon { font-size:2.5em; }
       .instruction { font-size:0.95em; margin-bottom:8px; }
       .hdr-score { font-size:1em; }
       .letter-choices { gap:10px; max-width:300px; }
@@ -155,10 +139,6 @@
   </div>
   <div class="instruction" id="instruction-txt">Tap the letter you hear!</div>
   <div class="q-card">
-    <button class="sound-btn" id="sound-btn" onclick="replaySound()">
-      <span class="sound-btn-icon">🔊</span>
-      <span class="sound-btn-label">TAP TO HEAR</span>
-    </button>
     <div class="letter-choices" id="letter-choices"></div>
   </div>
   <div class="bottom-row">
@@ -238,10 +218,6 @@ function speak(text) {
 }
 window.speechSynthesis.getVoices();
 window.speechSynthesis.addEventListener('voiceschanged', () => window.speechSynthesis.getVoices());
-
-function replaySound() {
-  speak(document.getElementById('instruction-txt').textContent);
-}
 
 /* ── HELPERS ── */
 function getBtn(letter) {
