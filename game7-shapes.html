@@ -98,7 +98,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       animation: popIn 0.3s ease;
     }
-    .placed-item svg { width: 42px; height: 42px; }
+    .placed-item img { width: 42px; height: 42px; object-fit: contain; pointer-events: none; -webkit-user-drag: none; display: block; }
     @keyframes popIn { 0%{transform:scale(0)} 70%{transform:scale(1.1)} 100%{transform:scale(1)} }
 
     /* ── OBJECT POOL ── */
@@ -116,7 +116,7 @@
       transition: box-shadow 0.15s, opacity 0.2s;
       flex-shrink: 0;
     }
-    .obj-item svg { width: 52px; height: 52px; pointer-events: none; }
+    .obj-item img { width: 52px; height: 52px; object-fit: contain; pointer-events: none; -webkit-user-drag: none; display: block; }
     .obj-item.dragging { opacity: 0.25; }
 
     /* ghost following finger */
@@ -128,7 +128,7 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.35);
       transform: translate(-50%, -50%) scale(1.12);
     }
-    #drag-ghost svg { width: 54px; height: 54px; }
+    #drag-ghost img { width: 54px; height: 54px; object-fit: contain; pointer-events: none; -webkit-user-drag: none; display: block; }
 
     /* ── BOTTOM ── */
     .btn-restart {
@@ -139,18 +139,18 @@
       box-shadow: 0 4px 16px rgba(255,152,0,0.4); z-index: 50; white-space: nowrap;
     }
 
-    #toast { position:fixed; top:20%; left:50%; transform:translateX(-50%) scale(0.7); color:white; padding:14px 28px; border-radius:50px; font-size:1.4em; font-weight:800; box-shadow:0 6px 24px rgba(0,0,0,0.25); z-index:100; transition:transform 0.2s,opacity 0.2s; opacity:0; pointer-events:none; white-space:nowrap; will-change:transform,opacity; }
+    #toast { position:fixed; top:20%; left:50%; transform:translateX(-50%) scale(0); color:white; padding:14px 28px; border-radius:50px; font-size:1.5em; font-weight:800; box-shadow:0 6px 24px rgba(0,0,0,0.25); z-index:100; transition:transform 0.2s,opacity 0.2s; opacity:0; pointer-events:none; white-space:nowrap; will-change:transform,opacity; }
     #toast.show { transform:translateX(-50%) scale(1); opacity:1; }
 
     .confetti { position:fixed; top:-10px; pointer-events:none; z-index:9998; border-radius:2px; }
     @keyframes cfFall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
 
-    #end-screen { display:none; position:fixed; inset:0; background:linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc); flex-direction:column; align-items:center; justify-content:center; gap:18px; z-index:150; padding:30px; }
+    #end-screen { display:none; position:fixed; inset:0; background:linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc); flex-direction:column; align-items:center; justify-content:center; gap:18px; z-index:200; padding:30px; }
     .end-trophy { font-size:4.5em; animation:trophySpin 1.5s ease-out; }
     @keyframes trophySpin { from{transform:rotate(-20deg) scale(0)} 60%{transform:rotate(10deg) scale(1.1)} to{transform:rotate(0deg) scale(1)} }
     .end-title { color:#FFD700; font-size:clamp(1.5em,5vw,2.2em); font-weight:bold; text-shadow:0 3px 10px rgba(0,0,0,0.3); text-align:center; }
     .end-sub { color:rgba(255,255,255,0.9); font-size:1.1em; text-align:center; }
-    .end-score-box { background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.35); border-radius:16px; padding:12px 28px; color:white; font-size:1.4em; font-weight:bold; }
+    .end-score-box { background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.35); border-radius:20px; padding:16px 40px; color:white; font-size:1.8em; font-weight:bold; }
     .end-stars { font-size:2.2em; letter-spacing:4px; }
     .btn-play-again { background:#FFD700; color:#333; border:none; border-radius:50px; padding:14px 36px; font-size:1.1em; font-weight:800; font-family:inherit; cursor:pointer; box-shadow:0 4px 16px rgba(255,215,0,0.5); }
 
@@ -178,7 +178,7 @@
 </div>
 
 <div id="toast"></div>
-<div id="drag-ghost"></div>
+<div id="drag-ghost"><img id="ghost-img" src="" alt="" draggable="false"></div>
 
 <div id="game-screen">
   <div class="hdr">
@@ -227,73 +227,46 @@ const SHAPE_LABEL = {
 
 /* ── DRAGGABLE OBJECTS — 3 per shape ── */
 const OBJ_POOL = {
-  circle: [
-    { svg:`<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36" fill="#f8f8f8" stroke="#ddd" stroke-width="2"/><path d="M40,4 A36,36 0 0,1 76,40 L40,40Z" fill="#FF6B6B"/><path d="M76,40 A36,36 0 0,1 40,76 L40,40Z" fill="#54a0ff"/><path d="M40,76 A36,36 0 0,1 4,40 L40,40Z" fill="#ffd43b"/><path d="M4,40 A36,36 0 0,1 40,4 L40,40Z" fill="#1dd1a1"/><line x1="40" y1="4" x2="40" y2="76" stroke="white" stroke-width="2.5"/><line x1="4" y1="40" x2="76" y2="40" stroke="white" stroke-width="2.5"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36" fill="#c89b6e"/><circle cx="28" cy="28" r="5" fill="#7d4e2a"/><circle cx="51" cy="32" r="4" fill="#7d4e2a"/><circle cx="34" cy="52" r="5.5" fill="#7d4e2a"/><circle cx="54" cy="53" r="4" fill="#7d4e2a"/><circle cx="22" cy="48" r="3.5" fill="#7d4e2a"/><circle cx="57" cy="42" r="3" fill="#7d4e2a"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36" fill="#FF9F43"/><line x1="40" y1="8" x2="40" y2="72" stroke="#e67e22" stroke-width="1.5" opacity="0.5"/><line x1="10" y1="26" x2="70" y2="54" stroke="#e67e22" stroke-width="1.5" opacity="0.5"/><line x1="10" y1="54" x2="70" y2="26" stroke="#e67e22" stroke-width="1.5" opacity="0.5"/><rect x="37" y="2" width="6" height="10" rx="3" fill="#2ecc71"/></svg>` },
-  ],
-  triangle: [
-    { svg:`<svg viewBox="0 0 80 80"><polygon points="40,6 72,74 8,74" fill="#FF6B9D"/><line x1="16" y1="60" x2="64" y2="60" stroke="white" stroke-width="5" opacity="0.7"/><line x1="24" y1="44" x2="56" y2="44" stroke="white" stroke-width="5" opacity="0.7"/><line x1="32" y1="28" x2="48" y2="28" stroke="white" stroke-width="4" opacity="0.7"/><circle cx="40" cy="6" r="6" fill="#ffd43b"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><polygon points="40,5 76,75 4,75" fill="#5f6b7a"/><polygon points="40,5 55,34 25,34" fill="white"/><rect x="4" y="68" width="72" height="10" fill="#4a9" opacity="0.5"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><polygon points="40,8 76,74 4,74" fill="#ffd43b"/><polygon points="40,8 70,70 10,70" fill="#e55039" opacity="0.85"/><circle cx="40" cy="48" r="6.5" fill="#795548"/><circle cx="28" cy="61" r="5.5" fill="#795548"/><circle cx="52" cy="60" r="5.5" fill="#795548"/></svg>` },
-  ],
-  rectangle: [
-    { svg:`<svg viewBox="0 0 80 80"><rect x="6" y="18" width="68" height="44" fill="#54a0ff"/><rect x="6" y="18" width="11" height="44" fill="#2980b9"/><line x1="23" y1="30" x2="68" y2="30" stroke="white" stroke-width="2.5" opacity="0.6"/><line x1="23" y1="39" x2="68" y2="39" stroke="white" stroke-width="2.5" opacity="0.6"/><line x1="23" y1="48" x2="55" y2="48" stroke="white" stroke-width="2.5" opacity="0.6"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><rect x="12" y="8" width="56" height="66" fill="#c0855a"/><rect x="16" y="12" width="22" height="28" fill="#a0694a" opacity="0.45"/><rect x="42" y="12" width="22" height="28" fill="#a0694a" opacity="0.45"/><rect x="16" y="44" width="48" height="26" fill="#a0694a" opacity="0.3"/><circle cx="57" cy="42" r="3.5" fill="#f1c40f"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><rect x="4" y="24" width="72" height="34" fill="#2ecc71"/><rect x="8" y="28" width="64" height="26" fill="none" stroke="#27ae60" stroke-width="2"/><text x="40" y="46" text-anchor="middle" font-size="20" fill="#1a6e3c" font-weight="bold" font-family="sans-serif">$</text></svg>` },
-  ],
-  square: [
-    { svg:`<svg viewBox="0 0 80 80"><rect x="8" y="8" width="64" height="64" fill="#a8d4f5"/><rect x="8" y="8" width="64" height="64" fill="none" stroke="#6699cc" stroke-width="4"/><line x1="40" y1="8" x2="40" y2="72" stroke="#6699cc" stroke-width="4"/><line x1="8" y1="40" x2="72" y2="40" stroke="#6699cc" stroke-width="4"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><rect x="8" y="28" width="64" height="44" fill="#FF6B6B"/><rect x="8" y="20" width="64" height="14" fill="#e74c3c"/><rect x="34" y="6" width="12" height="70" fill="#ffd43b"/><rect x="8" y="38" width="64" height="6" fill="#ffd43b"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><rect x="6" y="6" width="68" height="68" fill="#f5e6ca" stroke="#c9a55a" stroke-width="3"/><rect x="14" y="14" width="52" height="52" fill="none" stroke="#c9a55a" stroke-width="2"/><circle cx="40" cy="40" r="10" fill="#ff9f43" opacity="0.7"/></svg>` },
-  ],
-  oval: [
-    { svg:`<svg viewBox="0 0 80 80"><ellipse cx="40" cy="44" rx="26" ry="32" fill="#fff8dc" stroke="#e8d59a" stroke-width="2.5"/><ellipse cx="33" cy="34" rx="5" ry="7" fill="white" opacity="0.5"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><ellipse cx="40" cy="36" rx="26" ry="30" fill="#c5d8f0" stroke="#8099bb" stroke-width="4"/><rect x="34" y="64" width="12" height="12" rx="2" fill="#8099bb"/><rect x="26" y="73" width="28" height="5" rx="2" fill="#8099bb"/><ellipse cx="31" cy="26" rx="5" ry="8" fill="white" opacity="0.35"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><ellipse cx="40" cy="40" rx="27" ry="36" fill="#2ecc71" transform="rotate(-20 40 40)"/><line x1="40" y1="10" x2="40" y2="70" stroke="#27ae60" stroke-width="2" transform="rotate(-20 40 40)"/><line x1="26" y1="32" x2="54" y2="28" stroke="#27ae60" stroke-width="1.5" opacity="0.6"/><line x1="24" y1="44" x2="56" y2="40" stroke="#27ae60" stroke-width="1.5" opacity="0.6"/></svg>` },
-  ],
-  star: [
-    { svg:`<svg viewBox="0 0 80 80"><polygon points="40,5 49,30 76,30 55,47 63,72 40,56 17,72 25,47 4,30 31,30" fill="#ffd43b" stroke="#f0b400" stroke-width="2"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><polygon points="40,5 49,30 76,30 55,47 63,72 40,56 17,72 25,47 4,30 31,30" fill="#FF9F43"/><circle cx="40" cy="40" r="10" fill="#e67e22"/><circle cx="40" cy="12" r="4" fill="#d35400" opacity="0.6"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><polygon points="40,5 49,30 76,30 55,47 63,72 40,56 17,72 25,47 4,30 31,30" fill="#cc5de8"/><polygon points="40,16 46,30 61,30 50,40 54,55 40,46 26,55 30,40 19,30 34,30" fill="#e599f7" opacity="0.6"/></svg>` },
-  ],
-  heart: [
-    { svg:`<svg viewBox="0 0 80 80"><path d="M40,68 C38,63 6,46 6,26 C6,14 15,6 26,6 C32,6 38,10 40,16 C42,10 48,6 54,6 C65,6 74,14 74,26 C74,46 42,63 40,68 Z" fill="#FF6B6B"/><path d="M22,14 C14,14 8,20 8,28" stroke="rgba(255,255,255,0.4)" stroke-width="4" fill="none" stroke-linecap="round"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><path d="M40,68 C38,63 6,46 6,26 C6,14 15,6 26,6 C32,6 38,10 40,16 C42,10 48,6 54,6 C65,6 74,14 74,26 C74,46 42,63 40,68 Z" fill="#fd79a8"/><path d="M22,14 C14,14 8,20 8,28" stroke="rgba(255,255,255,0.4)" stroke-width="4" fill="none" stroke-linecap="round"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><path d="M40,60 C38,56 12,42 12,26 C12,16 20,8 30,8 C35,8 39,11 40,15 C41,11 45,8 50,8 C60,8 68,16 68,26 C68,42 42,56 40,60 Z" fill="#e84393"/><line x1="40" y1="60" x2="40" y2="75" stroke="#aaa" stroke-width="2"/><circle cx="40" cy="77" r="3" fill="#aaa"/></svg>` },
-  ],
-  diamond: [
-    { svg:`<svg viewBox="0 0 80 80"><polygon points="40,5 74,40 40,75 6,40" fill="#54a0ff"/><line x1="40" y1="5" x2="40" y2="75" stroke="#2980b9" stroke-width="1.5"/><line x1="6" y1="40" x2="74" y2="40" stroke="#2980b9" stroke-width="1.5"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><polygon points="40,6 74,40 40,74 6,40" fill="#00cec9"/><polygon points="40,6 74,40 40,30" fill="#55efc4" opacity="0.7"/><polygon points="40,6 6,40 40,30" fill="#81ecec" opacity="0.5"/></svg>` },
-    { svg:`<svg viewBox="0 0 80 80"><polygon points="40,6 72,40 40,74 8,40" fill="#e74c3c"/><polygon points="40,18 62,40 40,62 18,40" fill="#ff7675" opacity="0.4"/></svg>` },
-  ],
+  circle:    [ 'Assets/mine/pie-chart.png', 'Assets/mine/cookie.png',    'Assets/mine/orange.png'     ],
+  triangle:  [ 'Assets/mine/triangle1.png', 'Assets/mine/triangle2.png', 'Assets/mine/triangle3.png'  ],
+  rectangle: [ 'Assets/mine/rectangle1.png','Assets/mine/rectangle2.png','Assets/mine/rectangle3.png' ],
+  square:    [ 'Assets/mine/sq1.png',        'Assets/mine/sq2.png',       'Assets/mine/sq3.png'        ],
+  oval:      [ 'Assets/mine/ov1.png',        'Assets/mine/ov2.png',       'Assets/egg.png'             ],
+  star:      [ 'Assets/mine/st1.png',        'Assets/mine/st2.png',       'Assets/mine/st3.png'        ],
+  heart:     [ 'Assets/mine/he1.png',        'Assets/mine/he2.png',       'Assets/mine/he3.png'        ],
+  diamond:   [ 'Assets/mine/dia1.png',       'Assets/mine/dia2.png',      'Assets/mine/dia3.png'       ],
 };
 
-/* ── QUESTIONS: each pairs 2 shapes, picks 2 objects each (indices into OBJ_POOL) ── */
+/* Preload all images */
+Object.values(OBJ_POOL).forEach(arr => arr.forEach(src => { new Image().src = src; }));
+
+/* ── QUESTIONS: each pairs 2 shapes, all 3 images per shape (6 draggable items total) ── */
 const QUESTIONS = [
-  { shapeA:'circle',    idxA:[0,1], shapeB:'rectangle', idxB:[0,1] },
-  { shapeA:'triangle',  idxA:[0,1], shapeB:'square',    idxB:[0,1] },
-  { shapeA:'oval',      idxA:[0,1], shapeB:'star',      idxB:[0,1] },
-  { shapeA:'heart',     idxA:[0,1], shapeB:'diamond',   idxB:[0,1] },
-  { shapeA:'circle',    idxA:[1,2], shapeB:'triangle',  idxB:[1,2] },
-  { shapeA:'square',    idxA:[1,2], shapeB:'rectangle', idxB:[1,2] },
-  { shapeA:'oval',      idxA:[1,2], shapeB:'heart',     idxB:[1,2] },
-  { shapeA:'star',      idxA:[0,2], shapeB:'diamond',   idxB:[0,2] },
+  { shapeA:'circle',    idxA:[0,1,2], shapeB:'rectangle', idxB:[0,1,2] },
+  { shapeA:'triangle',  idxA:[0,1,2], shapeB:'square',    idxB:[0,1,2] },
+  { shapeA:'oval',      idxA:[0,1,2], shapeB:'star',      idxB:[0,1,2] },
+  { shapeA:'heart',     idxA:[0,1,2], shapeB:'diamond',   idxB:[0,1,2] },
+  { shapeA:'circle',    idxA:[0,1,2], shapeB:'triangle',  idxB:[0,1,2] },
+  { shapeA:'square',    idxA:[0,1,2], shapeB:'rectangle', idxB:[0,1,2] },
+  { shapeA:'oval',      idxA:[0,1,2], shapeB:'heart',     idxB:[0,1,2] },
+  { shapeA:'star',      idxA:[0,1,2], shapeB:'diamond',   idxB:[0,1,2] },
 ];
 
-const sndWrong = new Audio('Assets/wrong.mp3');
-const sndClaps = new Audio('Assets/free_claps.mp3');
+const sndCorrect = new Audio('Assets/correct.mp3');
+const sndWrong   = new Audio('Assets/wrong.mp3');
+const sndClaps   = new Audio('Assets/free_claps.mp3');
 
 let curQ = 0, score = 0, muted = false;
 let placedCount = { a:0, b:0 };
 let questionOK = true;
 
 /* drag state */
-let dragShape = null, dragGhostHTML = null, dragSrcEl = null;
-const ghost = document.getElementById('drag-ghost');
+let dragShape = null, dragSrcEl = null;
+const ghost    = document.getElementById('drag-ghost');
+const ghostImg = document.getElementById('ghost-img');
 
 function unlockAudio() {
-  [sndWrong, sndClaps].forEach(s => { s.play().catch(()=>{}); s.pause(); s.currentTime = 0; });
+  [sndCorrect, sndWrong, sndClaps].forEach(s => { s.play().catch(()=>{}); s.pause(); s.currentTime = 0; });
   document.removeEventListener('pointerdown', unlockAudio);
 }
 document.addEventListener('pointerdown', unlockAudio);
@@ -301,6 +274,7 @@ document.addEventListener('pointerdown', unlockAudio);
 function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(()=>{}); }
 
 function speak(text) {
+  sndClaps.pause(); sndClaps.currentTime = 0;
   if (!('speechSynthesis' in window) || muted) return;
   window.speechSynthesis.cancel();
   setTimeout(() => {
@@ -353,7 +327,7 @@ function loadQuestion() {
       <div class="col-header">
         ${HDR_ICON[shape]}
         <span class="col-name">${SHAPE_LABEL[shape]}</span>
-        <span class="col-count" id="cnt-${bin}">0 / 2</span>
+        <span class="col-count" id="cnt-${bin}">0 / 3</span>
       </div>
       <div class="col-zone" id="zone-${bin}"></div>`;
     colRow.appendChild(col);
@@ -363,56 +337,61 @@ function loadQuestion() {
   const pool = document.getElementById('obj-pool');
   pool.innerHTML = '';
   const items = shuffle([
-    ...q.idxA.map(i => ({ shape: q.shapeA, svg: OBJ_POOL[q.shapeA][i].svg })),
-    ...q.idxB.map(i => ({ shape: q.shapeB, svg: OBJ_POOL[q.shapeB][i].svg })),
+    ...q.idxA.map(i => ({ shape: q.shapeA, src: OBJ_POOL[q.shapeA][i] })),
+    ...q.idxB.map(i => ({ shape: q.shapeB, src: OBJ_POOL[q.shapeB][i] })),
   ]);
   items.forEach(item => {
     const el = document.createElement('div');
-    el.className = 'obj-item'; el.dataset.shape = item.shape;
-    el.innerHTML = item.svg;
-    attachDrag(el, item.shape, item.svg);
+    el.className = 'obj-item'; el.dataset.shape = item.shape; el.dataset.src = item.src;
+    const img = document.createElement('img');
+    img.src = item.src; img.alt = item.shape; img.draggable = false;
+    el.appendChild(img);
     pool.appendChild(el);
   });
 
   speak(`Drag the ${SHAPE_LABEL[q.shapeA]}s and ${SHAPE_LABEL[q.shapeB]}s into the correct groups!`);
 }
 
-/* ── DRAG LOGIC (touch + mouse) ── */
-function attachDrag(el, shape, svgHTML) {
-  const onStart = (e) => {
-    e.preventDefault();
-    const pt = e.touches ? e.touches[0] : e;
-    dragShape = shape;
-    dragSrcEl = el;
-    ghost.innerHTML = svgHTML;
-    ghost.style.display = 'flex';
-    moveGhost(pt.clientX, pt.clientY);
-    el.classList.add('dragging');
-    clearColHighlight();
-  };
-  const onMove = (e) => {
-    if (!dragSrcEl) return;
-    e.preventDefault();
-    const pt = e.touches ? e.touches[0] : e;
-    moveGhost(pt.clientX, pt.clientY);
-    highlightCol(pt.clientX, pt.clientY);
-  };
-  const onEnd = (e) => {
-    if (!dragSrcEl) return;
-    const pt = e.changedTouches ? e.changedTouches[0] : e;
-    ghost.style.display = 'none';
-    clearColHighlight();
-    const col = getColAt(pt.clientX, pt.clientY);
-    if (col) handleDrop(col);
-    else resetDrag();
-  };
-  el.addEventListener('touchstart', onStart, { passive: false });
-  el.addEventListener('touchmove',  onMove,  { passive: false });
-  el.addEventListener('touchend',   onEnd,   { passive: false });
-  el.addEventListener('mousedown',  onStart);
-  document.addEventListener('mousemove', onMove);
-  document.addEventListener('mouseup',   onEnd);
+/* ── DRAG LOGIC — single global listeners (no per-item accumulation) ── */
+function onDragStart(e) {
+  const el = e.target.closest('.obj-item');
+  if (!el) return;
+  e.preventDefault();
+  dragShape = el.dataset.shape;
+  dragSrcEl = el;
+  ghostImg.src = el.dataset.src;
+  ghost.style.display = 'flex';
+  const pt = e.touches ? e.touches[0] : e;
+  moveGhost(pt.clientX, pt.clientY);
+  el.classList.add('dragging');
+  clearColHighlight();
 }
+function onDragMove(e) {
+  if (!dragSrcEl) return;
+  e.preventDefault();
+  const pt = e.touches ? e.touches[0] : e;
+  moveGhost(pt.clientX, pt.clientY);
+  highlightCol(pt.clientX, pt.clientY);
+}
+function onDragEnd(e) {
+  if (!dragSrcEl) return;
+  const pt = e.changedTouches ? e.changedTouches[0] : e;
+  ghost.style.display = 'none';
+  clearColHighlight();
+  const col = getColAt(pt.clientX, pt.clientY);
+  if (col) handleDrop(col);
+  else resetDrag();
+}
+
+/* Attach once to pool — event delegation handles all items */
+const objPool = document.getElementById('obj-pool');
+objPool.addEventListener('mousedown',  onDragStart);
+objPool.addEventListener('touchstart', onDragStart, { passive: false });
+objPool.addEventListener('touchend',   (e) => { e.preventDefault(); }, { passive: false });
+document.addEventListener('mousemove', onDragMove);
+document.addEventListener('mouseup',   onDragEnd);
+document.addEventListener('touchmove', onDragMove, { passive: false });
+document.addEventListener('touchend',  onDragEnd,  { passive: false });
 
 function moveGhost(x, y) {
   ghost.style.left = x + 'px';
@@ -447,12 +426,14 @@ function placeInColumn(el, shape) {
   const col = document.getElementById(`col-${bin}`);
   const placed = document.createElement('div');
   placed.className = 'placed-item';
-  placed.innerHTML = el.innerHTML;
+  const img = document.createElement('img');
+  img.src = el.dataset.src; img.alt = shape; img.draggable = false;
+  placed.appendChild(img);
   document.getElementById(`zone-${bin}`).appendChild(placed);
   el.remove();
   placedCount[bin]++;
-  document.getElementById(`cnt-${bin}`).textContent = `${placedCount[bin]} / 2`;
-  if (placedCount[bin] === 2) col.classList.add('done-col');
+  document.getElementById(`cnt-${bin}`).textContent = `${placedCount[bin]} / 3`;
+  if (placedCount[bin] === 3) col.classList.add('done-col');
   col.classList.remove('hint-col');
 }
 
@@ -501,7 +482,7 @@ function resetDrag() {
 }
 
 function checkComplete() {
-  if (placedCount.a !== 2 || placedCount.b !== 2) return;
+  if (placedCount.a !== 3 || placedCount.b !== 3) return;
   window.speechSynthesis?.cancel();
   if (questionOK) {
     score++;
