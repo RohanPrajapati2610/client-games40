@@ -306,10 +306,11 @@ function shuffle(arr) {
 /* ── LOAD QUESTION ── */
 function loadQuestion() {
   if (curQ >= 8) { showEnd(); return; }
-  placedCount = { a:0, b:0 }; colTotal = { a: q.idxA.length, b: q.idxB.length }; questionOK = true;
+  placedCount = { a:0, b:0 }; questionOK = true;
   dragShape = null; dragSrcEl = null; ghost.style.display = 'none';
 
   const q = QUESTIONS[curQ];
+  colTotal = { a: q.idxA.length, b: q.idxB.length };
   document.getElementById('q-num').textContent     = curQ + 1;
   document.getElementById('score-val').textContent = score;
   document.getElementById('prog-bar').style.width  = (curQ / 8 * 100) + '%';
