@@ -126,12 +126,12 @@
 
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">⭐ <span id="score-val">0</span> / 13</div>
+    <div class="hdr-score">⭐ <span id="score-val">0</span> / 12</div>
     <div class="hdr-title">Colours</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
   </div>
   <div class="progress-row">
-    <span class="progress-label">Q <span id="q-num">1</span> / 13</span>
+    <span class="progress-label">Q <span id="q-num">1</span> / 12</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
   <div class="instruction" id="instruction-txt"></div>
@@ -149,8 +149,8 @@
 <div id="end-screen">
   <div class="end-trophy">🏆</div>
   <div class="end-title">You have done a great job!</div>
-  <div class="end-sub">You completed all 13 questions!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 13</div>
+  <div class="end-sub">You completed all 12 questions!</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 12</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">▶ &nbsp;Play Again</button>
 </div>
@@ -174,7 +174,6 @@ const QUESTIONS = [
   { img:'Assets/S-Colours/parrot.png',         obj:'parrot',   answer:'Green',  choices:['Green','Orange','Purple']  },
   { img:'Assets/S-Colours/purple.png',         text:'What colour is this?', answer:'Purple', choices:['Purple','Green','Orange']  },
   { img:'Assets/S-Colours/tshirt.png',         obj:'t-shirt',  answer:'Purple', choices:['Purple','Orange','Green']  },
-  { img:'Assets/S-Colours/bag_purple.jpg',     obj:'bag',      answer:'Purple', choices:['Purple','Green','Orange']  },
   { img:'Assets/S-Colours/purple crayon.jpg',  obj:'crayon',   answer:'Purple', choices:['Purple','Orange','Green']  },
 ];
 
