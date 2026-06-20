@@ -344,13 +344,13 @@ function startGame() {
 }
 
 function loadQuestion() {
-  if (curQ >= 8) { showEnd(); return; }
+  if (curQ >= QUESTIONS.length) { showEnd(); return; }
   answered = false; attempts = 0;
 
   const q = QUESTIONS[curQ];
   document.getElementById('q-num').textContent     = curQ + 1;
   document.getElementById('score-val').textContent = score;
-  document.getElementById('prog-bar').style.width  = (curQ / 8 * 100) + '%';
+  document.getElementById('prog-bar').style.width  = (curQ / QUESTIONS.length * 100) + '%';
   document.getElementById('instruction-txt').textContent = q.text;
 
   buildRockets(q.sequence, q.missingIdx);
@@ -448,7 +448,7 @@ function toggleMute() {
   muted = !muted;
   document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
   if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
-  else if (curQ < 8) speakSequence(QUESTIONS[curQ]);
+  else if (curQ < QUESTIONS.length) speakSequence(QUESTIONS[curQ]);
 }
 
 function showEnd() {

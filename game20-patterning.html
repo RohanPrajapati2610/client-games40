@@ -115,13 +115,14 @@
     .end-stars  { font-size:2.2em; letter-spacing:4px; }
     .btn-play-again { background:#FFD700; color:#333; border:none; padding:15px 45px; border-radius:40px; font-size:1.2em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,0.2); margin-top:8px; }
 
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       .pattern-item { max-width: 80px; }
       .colour-btn { height: 58px; }
       .pattern-row { gap: 6px; }
       .shape-wrap { padding: 6px; border-radius: 12px; }
+      .hdr-title { display: none; }
     }
-    @media (max-width: 400px) {
+    @media (max-width: 480px) {
       .pattern-item { max-width: 66px; }
       .colour-btn { height: 52px; border-radius: 14px; }
     }
@@ -211,12 +212,11 @@ const QUESTIONS = [
 const TOTAL = QUESTIONS.length;
 let curQ = 0, score = 0, attempts = 0, answered = false, muted = false;
 
-const sndCorrect = new Audio('Assets/correct.mp3');
-const sndWrong   = new Audio('Assets/wrong.mp3');
-const sndClaps   = new Audio('Assets/free_claps.mp3');
+const sndWrong = new Audio('Assets/wrong.mp3');
+const sndClaps = new Audio('Assets/free_claps.mp3');
 
 function unlockAudio() {
-  [sndCorrect, sndWrong, sndClaps].forEach(s => { s.play().catch(()=>{}); s.pause(); s.currentTime = 0; });
+  [sndWrong, sndClaps].forEach(s => { s.play().catch(()=>{}); s.pause(); s.currentTime = 0; });
   document.removeEventListener('pointerdown', unlockAudio);
 }
 document.addEventListener('pointerdown', unlockAudio);
@@ -285,7 +285,6 @@ function loadQuestion() {
     btn.style.background = COLOR_HEX[colour];
     btn.style.color = colour === 'Yellow' ? '#333' : 'white';
     btn.textContent = colour;
-    btn.addEventListener('touchend', e => { e.preventDefault(); selectColour(colour); }, { passive: false });
     btn.onclick = () => selectColour(colour);
     choicesWrap.appendChild(btn);
   });
@@ -362,6 +361,7 @@ function startGame() {
 }
 
 function restartGame() {
+  window.speechSynthesis?.cancel();
   document.getElementById('end-screen').style.display  = 'none';
   document.getElementById('game-screen').style.display = 'flex';
   curQ = 0; score = 0; attempts = 0; answered = false;
@@ -408,7 +408,7 @@ function showEnd() {
   document.getElementById('end-screen').style.display  = 'flex';
   document.getElementById('final-score').textContent   = score;
   document.getElementById('end-stars').textContent = score >= 10 ? '⭐⭐⭐' : score >= 7 ? '⭐⭐' : '⭐';
-  playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 800);
+  window.speechSynthesis?.cancel(); playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 800);
 }
 </script>
 </body>

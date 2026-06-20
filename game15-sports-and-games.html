@@ -254,12 +254,12 @@
 <script>
 const PAIRS = [
   { id:'cricket',  leftImg:'Assets/cricket-ground.jpg',    leftLabel:'Cricket',  rightImg:'Assets/cricket-bat-clipart.png', rightLabel:'Cricket Bat' },
-  { id:'football', leftImg:'Assets/football ground.png',   leftLabel:'Football', rightImg:'Assets/football.png',            rightLabel:'Football'    },
-  { id:'carrom',   leftImg:'Assets/carrom board.jpg',      leftLabel:'Carrom',   rightImg:'Assets/striker.jpg',             rightLabel:'Carrom'      },
+  { id:'football', leftImg:'Assets/football%20ground.png', leftLabel:'Football', rightImg:'Assets/football.png',            rightLabel:'Football'    },
+  { id:'carrom',   leftImg:'Assets/carrom%20board.jpg',    leftLabel:'Carrom',   rightImg:'Assets/striker.jpg',             rightLabel:'Carrom'      },
 ];
 
 const TOTAL_ROUNDS = 3;
-let currentRound = 0, score = 0, matchedCount = 0;
+let currentRound = 0, score = 0;
 let selectedLeftId = null;
 let matched = new Set();
 let attempts = {};

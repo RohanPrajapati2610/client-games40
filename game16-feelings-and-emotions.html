@@ -237,7 +237,7 @@ function loadQuestion() {
   const q = QUESTIONS[curQ];
   document.getElementById('q-num').textContent     = curQ + 1;
   document.getElementById('score-val').textContent = score;
-  document.getElementById('prog-bar').style.width  = (curQ / 8 * 100) + '%';
+  document.getElementById('prog-bar').style.width  = (curQ / QUESTIONS.length * 100) + '%';
   document.getElementById('instruction-txt').textContent = q.text;
   document.getElementById('q-img').src = q.img;
   speak(q.text);
@@ -317,6 +317,7 @@ function startGame() {
 }
 
 function restartGame() {
+  window.speechSynthesis?.cancel();
   document.getElementById('end-screen').style.display  = 'none';
   document.getElementById('game-screen').style.display = 'flex';
   curQ = 0; score = 0; attempts = 0; answered = false;
