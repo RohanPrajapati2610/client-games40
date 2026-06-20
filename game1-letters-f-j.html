@@ -244,7 +244,7 @@ function loadQuestion() {
   document.getElementById('prog-bar').style.width  = (curQ / QUESTIONS.length * 100) + '%';
 
   document.getElementById('instruction-txt').textContent = `Which letter does "${q.word}" start with?`.toUpperCase();
-  speak(`${q.word}. Which letter does ${q.word} start with?`);
+  speak(q.letter);
 
   const img = document.getElementById('q-img');
   img.classList.remove('loaded');
@@ -369,7 +369,7 @@ function toggleMute() {
   if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
   else {
     const q = QUESTIONS[curQ];
-    if (q) speak(`${q.word}. Which letter does ${q.word} start with?`);
+    if (q) speak(q.letter);
   }
 }
 
