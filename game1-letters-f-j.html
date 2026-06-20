@@ -243,12 +243,8 @@ function loadQuestion() {
   document.getElementById('score-val').textContent = score;
   document.getElementById('prog-bar').style.width  = (curQ / QUESTIONS.length * 100) + '%';
 
-  const displayTxt = `Which letter makes the sound for ${q.word}?`;
-  document.getElementById('instruction-txt').textContent = displayTxt.toUpperCase();
-
-  // TTS audio: speaks only the letter sound question once, as requested
-  const speakTxt = `Which letter makes the sound ${q.letter}?`;
-  speak(speakTxt);
+  document.getElementById('instruction-txt').textContent = `Which letter does "${q.word}" start with?`.toUpperCase();
+  speak(`${q.word}. Which letter does ${q.word} start with?`);
 
   const img = document.getElementById('q-img');
   img.classList.remove('loaded');
@@ -373,7 +369,7 @@ function toggleMute() {
   if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
   else {
     const q = QUESTIONS[curQ];
-    if (q) speak(`Which letter makes the sound ${q.letter}?`);
+    if (q) speak(`${q.word}. Which letter does ${q.word} start with?`);
   }
 }
 
