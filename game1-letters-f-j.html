@@ -176,11 +176,11 @@
 const QUESTIONS = [
   { letter: 'f', word: 'fish',       img: 'Assets/fish.png',            choices: ['f', 'g', 'h'] },
   { letter: 'g', word: 'grapes',     img: 'Assets/S-Colours/grapes.png', choices: ['g', 'h', 'i'] },
-  { letter: 'h', word: 'happy face', img: 'Assets/Game%201%20LY3/happy.png', choices: ['h', 'i', 'j'] },
+  { letter: 'h', word: 'happy',      img: 'Assets/Game%201%20LY3/happy.png', choices: ['h', 'i', 'j'] },
   { letter: 'i', word: 'igloo',      img: 'Assets/igloo.png',           choices: ['i', 'j', 'f'] },
   { letter: 'j', word: 'jar',        img: 'Assets/jar.png',             choices: ['j', 'f', 'g'] },
   { letter: 'f', word: 'flower',     img: 'Assets/flower.png',          choices: ['f', 'h', 'j'] },
-  { letter: 'g', word: 'green tree', img: 'Assets/green%20tree.jpg',    choices: ['g', 'i', 'f'] },
+  { letter: 'g', word: 'green',      img: 'Assets/green%20tree.jpg',    choices: ['g', 'i', 'f'] },
   { letter: 'h', word: 'house',      img: 'Assets/house.png',           choices: ['h', 'g', 'j'] },
   { letter: 'i', word: 'ice cream',  img: 'Assets/ice_cream.png',       choices: ['i', 'f', 'h'] },
   { letter: 'j', word: 'jelly',      img: 'Assets/jelly.png',           choices: ['j', 'i', 'g'] }
@@ -243,8 +243,9 @@ function loadQuestion() {
   document.getElementById('score-val').textContent = score;
   document.getElementById('prog-bar').style.width  = (curQ / QUESTIONS.length * 100) + '%';
 
-  document.getElementById('instruction-txt').textContent = `Which letter does "${q.word}" start with?`.toUpperCase();
-  speak(q.letter);
+  const questionText = `Which letter does "${q.word}" start with?`;
+  document.getElementById('instruction-txt').textContent = questionText.toUpperCase();
+  speak(questionText);
 
   const img = document.getElementById('q-img');
   img.classList.remove('loaded');
@@ -266,6 +267,7 @@ function loadQuestion() {
     btn.className = 'letter-btn';
     btn.dataset.letter = lettr;
     btn.textContent = lettr;
+    btn.addEventListener('touchend', e => { e.preventDefault(); selectLetter(lettr); }, { passive: false });
     btn.onclick = () => selectLetter(lettr);
     wrap.appendChild(btn);
   });
@@ -274,8 +276,10 @@ function loadQuestion() {
 function selectLetter(letter) {
   if (answered) return;
   clearBtnStates();
-  if (letter === QUESTIONS[curQ].letter) registerCorrect(letter);
-  else registerWrong(letter);
+  const selectedLetter = letter.toLowerCase();
+  const correctLetter = QUESTIONS[curQ].letter.toLowerCase();
+  if (selectedLetter === correctLetter) registerCorrect(selectedLetter);
+  else registerWrong(selectedLetter);
 }
 
 function registerCorrect(letter) {
@@ -369,7 +373,7 @@ function toggleMute() {
   if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
   else {
     const q = QUESTIONS[curQ];
-    if (q) speak(q.letter);
+    if (q) speak(`Which letter does "${q.word}" start with?`);
   }
 }
 
