@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Colours · LY3</title>
+  <title>Patterning · LY2</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
@@ -23,14 +23,14 @@
       position: fixed; inset: 0;
       background: linear-gradient(160deg, #4a148c, #7b1fa2, #ab47bc);
       display: flex; align-items: center; justify-content: center;
-      border: 5px solid #FFD700; z-index: 200;
+      border: 5px solid #FFD700; z-index: 200; cursor: pointer;
     }
     #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; cursor: pointer; }
     @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 
     #game-screen {
       display: none; flex-direction: column;
-      width: 100%; max-width: 860px; height: 100%; padding: 14px 14px 70px;
+      width: 100%; max-width: 860px; height: 100%; padding: 14px 14px 80px;
       overflow-y: auto;
     }
 
@@ -44,44 +44,59 @@
     .progress-bar-wrap { flex:1; height:10px; background:#e0e0e0; border-radius:5px; overflow:hidden; }
     .progress-bar-fill { height:100%; border-radius:5px; background:linear-gradient(90deg,#4CAF50,#8BC34A); transition:width 0.5s ease; }
 
-    .instruction { text-align:center; font-size:clamp(1em,3.5vw,1.2em); color:#333; font-weight:800; margin-bottom:10px; padding:0 8px; line-height:1.4; flex-shrink:0; }
+    .instruction { text-align:center; font-size:clamp(1em,3.5vw,1.2em); color:#333; font-weight:800; margin-bottom:14px; padding:0 8px; line-height:1.4; flex-shrink:0; }
 
     .q-card {
-      background: white; border-radius: 24px; padding: 20px 16px;
+      background: white; border-radius: 24px; padding: 24px 16px 20px;
       box-shadow: 0 6px 24px rgba(0,0,0,0.1);
-      display: flex; flex-direction: column; align-items: center; gap: 22px;
+      display: flex; flex-direction: column; align-items: center; gap: 24px;
       margin-top: auto; margin-bottom: auto; flex-shrink: 0; width: 100%;
     }
 
-    .img-wrap {
-      width: 100%; display: flex; align-items: center; justify-content: center;
-      min-height: 160px;
-    }
-    .img-wrap img {
-      max-height: 210px; max-width: 85%; object-fit: contain;
-      border-radius: 16px;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.12));
+    .pattern-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; width: 100%;
     }
 
-    .colour-choices { display:flex; gap:12px; width:100%; }
+    .pattern-item {
+      flex: 1; max-width: 130px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    .shape-wrap {
+      width: 100%; aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+      background: #f5f5f5; border-radius: 16px; padding: 10px;
+    }
+    .shape-wrap svg { width: 100%; height: 100%; }
+
+    .shape-wrap.empty {
+      border: 3px dashed #bbb;
+      background: #fafafa;
+    }
+    .shape-wrap.correct-anim { animation: popCorrect 0.4s ease; }
+    .shape-wrap.wrong-anim   { animation: shakeWrong 0.4s ease; }
+
+    @keyframes popCorrect { 0%{transform:scale(1)} 50%{transform:scale(1.12)} 100%{transform:scale(1)} }
+    @keyframes shakeWrong { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+
+    .colour-choices { display:flex; gap:12px; width:100%; justify-content:center; }
 
     .colour-btn {
-      flex: 1; height: 80px;
+      flex: 1; max-width: 140px; height: 72px;
       border: 4px solid transparent; border-radius: 18px;
-      font-size: clamp(0.82em, 2.8vw, 1.05em); font-weight: 800; font-family: inherit;
+      font-size: clamp(0.82em,2.8vw,1em); font-weight: 800; font-family: inherit;
       cursor: pointer; color: white; letter-spacing: 0.02em;
       box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-      transition: transform 0.1s, border-color 0.2s, box-shadow 0.2s;
+      transition: transform 0.1s, border-color 0.2s;
       will-change: transform;
     }
     .colour-btn:active { transform: scale(0.93); }
     .colour-btn.wrong   { border-color: #f44336; animation: shakeWrong 0.4s ease; }
     .colour-btn.hint    { border-color: #FFD700; animation: pulseHint 1s ease-in-out infinite; }
-    .colour-btn.correct { border-color: #4CAF50; box-shadow: 0 0 0 5px #4CAF5040; animation: popCorrect 0.35s ease; }
+    .colour-btn.correct { border-color: #4CAF50; box-shadow: 0 0 0 5px #4CAF5040; }
 
-    @keyframes popCorrect { 0%{transform:scale(1)} 50%{transform:scale(1.08)} 100%{transform:scale(1)} }
-    @keyframes shakeWrong { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
-    @keyframes pulseHint  { 0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.6)} 50%{box-shadow:0 0 0 14px rgba(255,215,0,0)} }
+    @keyframes pulseHint { 0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.6)} 50%{box-shadow:0 0 0 14px rgba(255,215,0,0)} }
 
     .bottom-row { display:flex; justify-content:center; position:fixed; bottom:16px; left:0; right:0; z-index:50; pointer-events:none; }
     .btn-restart { pointer-events:all; background:linear-gradient(135deg,#FF9800,#F57C00); color:white; border:none; padding:12px 32px; border-radius:40px; font-size:1em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 5px 14px rgba(255,152,0,0.4); }
@@ -100,26 +115,22 @@
     .end-stars  { font-size:2.2em; letter-spacing:4px; }
     .btn-play-again { background:#FFD700; color:#333; border:none; padding:15px 45px; border-radius:40px; font-size:1.2em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,0.2); margin-top:8px; }
 
-    @media (max-width: 768px) {
-      #game-screen { padding:10px 10px 70px; }
-      .hdr-title { display:none; }
-      .colour-btn { height:70px; }
-      .img-wrap img { max-height:180px; }
+    @media (max-width: 600px) {
+      .pattern-item { max-width: 80px; }
+      .colour-btn { height: 58px; }
+      .pattern-row { gap: 6px; }
+      .shape-wrap { padding: 6px; border-radius: 12px; }
     }
-    @media (max-width: 480px) {
-      .colour-btn { height:62px; border-radius:14px; border-width:3px; }
-      .q-card { padding:14px 12px; gap:16px; }
-      .img-wrap { min-height:130px; }
-      .img-wrap img { max-height:150px; }
-      .instruction { font-size:0.95em; margin-bottom:8px; }
-      .hdr-score { font-size:1em; }
+    @media (max-width: 400px) {
+      .pattern-item { max-width: 66px; }
+      .colour-btn { height: 52px; border-radius: 14px; }
     }
   </style>
 </head>
 <body>
 
-<div id="intro-screen">
-  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onclick="startGame()">
+<div id="intro-screen" onclick="startGame()">
+  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onerror="this.style.display='none'">
 </div>
 
 <div id="toast"></div>
@@ -127,18 +138,16 @@
 <div id="game-screen">
   <div class="hdr">
     <div class="hdr-score">⭐ <span id="score-val">0</span> / 12</div>
-    <div class="hdr-title">Colours</div>
+    <div class="hdr-title">Patterning</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
   </div>
   <div class="progress-row">
     <span class="progress-label">Q <span id="q-num">1</span> / 12</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
-  <div class="instruction" id="instruction-txt"></div>
+  <div class="instruction">Colour the object to complete the pattern.</div>
   <div class="q-card">
-    <div class="img-wrap">
-      <img id="q-img" src="" alt="">
-    </div>
+    <div class="pattern-row" id="pattern-row"></div>
     <div class="colour-choices" id="colour-choices"></div>
   </div>
   <div class="bottom-row">
@@ -156,29 +165,50 @@
 </div>
 
 <script>
-const COLOUR_HEX = {
-  'Orange': '#FB8C00',
-  'Green':  '#43A047',
+const COLOR_HEX = {
+  'Orange': '#FF7700',
   'Purple': '#8E24AA',
+  'Yellow': '#FFD700',
+  'Green':  '#2E7D32',
+  'Blue':   '#1565C0',
+  'Red':    '#C62828',
+  'Pink':   '#E91E8C',
+  'Teal':   '#00897B',
 };
 
+function shapeSVG(shape, color, isEmpty) {
+  const fill   = isEmpty ? '#ffffff' : COLOR_HEX[color];
+  const stroke = isEmpty ? '#aaaaaa' : COLOR_HEX[color];
+  const sw     = isEmpty ? 3 : 2;
+  const SHAPES = {
+    heart:    `<svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg"><path d="M50,80 C30,65 8,52 8,30 C8,15 18,5 33,5 C40,5 46,8 50,14 C54,8 60,5 67,5 C82,5 92,15 92,30 C92,52 70,65 50,80Z" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/></svg>`,
+    balloon:  `<svg viewBox="0 0 80 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="40" cy="40" rx="28" ry="33" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/><path d="M33,72 Q28,84 33,94 Q40,82 47,94 Q52,84 47,72" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/><line x1="40" y1="94" x2="40" y2="108" stroke="#777" stroke-width="2"/></svg>`,
+    star:     `<svg viewBox="0 0 100 95" xmlns="http://www.w3.org/2000/svg"><polygon points="50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/></svg>`,
+    circle:   `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="44" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/></svg>`,
+    triangle: `<svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg"><polygon points="50,5 95,85 5,85" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/></svg>`,
+    square:   `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="84" height="84" rx="10" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/></svg>`,
+    diamond:  `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><polygon points="50,5 95,50 50,95 5,50" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/></svg>`,
+    flag:     `<svg viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="5" width="5" height="90" fill="#555" rx="2"/><polygon points="19,8 68,22 19,44" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/></svg>`,
+  };
+  return SHAPES[shape] || SHAPES.circle;
+}
+
 const QUESTIONS = [
-  { img:'Assets/S-Colours/ballonorange.png',   obj:'balloon',  answer:'Orange', choices:['Orange','Green','Purple']  },
-  { img:'Assets/S-Colours/bow.png',            obj:'bow',      answer:'Purple', choices:['Purple','Green','Orange']  },
-  { img:'Assets/S-Colours/brinjal.png',        obj:'brinjal',  answer:'Purple', choices:['Purple','Orange','Green']  },
-  { img:'Assets/S-Colours/carorange.png',      obj:'car',      answer:'Orange', choices:['Orange','Purple','Green']  },
-  { img:'Assets/S-Colours/grapes.png',         obj:'grapes',   answer:'Green',  choices:['Green','Purple','Orange']  },
-  { img:'Assets/S-Colours/green.jpg',          text:'What colour is this?', answer:'Green',  choices:['Green','Orange','Purple']  },
-  { img:'Assets/S-Colours/orange.jpg',         text:'What colour is this?', answer:'Orange', choices:['Orange','Purple','Green']  },
-  { img:'Assets/S-Colours/orangefruit.png',    obj:'orange',   answer:'Orange', choices:['Orange','Green','Purple']  },
-  { img:'Assets/S-Colours/parrot.png',         obj:'parrot',   answer:'Green',  choices:['Green','Orange','Purple']  },
-  { img:'Assets/S-Colours/purple.png',         text:'What colour is this?', answer:'Purple', choices:['Purple','Green','Orange']  },
-  { img:'Assets/S-Colours/tshirt.png',         obj:'t-shirt',  answer:'Purple', choices:['Purple','Orange','Green']  },
-  { img:'Assets/S-Colours/purple%20crayon.jpg',  obj:'crayon',   answer:'Purple', choices:['Purple','Orange','Green']  },
+  { shape:'heart',    pattern:['Orange','Purple','Orange',null], answer:'Purple', choices:['Orange','Purple','Blue']   },
+  { shape:'flag',     pattern:['Yellow','Green','Yellow',null],  answer:'Green',  choices:['Red','Yellow','Green']     },
+  { shape:'balloon',  pattern:['Blue','Red','Blue',null],        answer:'Red',    choices:['Blue','Green','Red']       },
+  { shape:'star',     pattern:['Red','Blue','Red',null],         answer:'Blue',   choices:['Yellow','Red','Blue']      },
+  { shape:'circle',   pattern:['Green','Orange','Green',null],   answer:'Orange', choices:['Green','Orange','Purple']  },
+  { shape:'triangle', pattern:['Purple','Yellow','Purple',null], answer:'Yellow', choices:['Purple','Yellow','Red']    },
+  { shape:'square',   pattern:['Pink','Teal','Pink',null],       answer:'Teal',   choices:['Pink','Teal','Orange']     },
+  { shape:'diamond',  pattern:['Red','Green','Red',null],        answer:'Green',  choices:['Red','Blue','Green']       },
+  { shape:'heart',    pattern:['Blue','Yellow','Blue',null],     answer:'Yellow', choices:['Blue','Yellow','Red']      },
+  { shape:'balloon',  pattern:['Purple','Orange','Purple',null], answer:'Orange', choices:['Purple','Orange','Green']  },
+  { shape:'star',     pattern:['Green','Pink','Green',null],     answer:'Pink',   choices:['Teal','Green','Pink']      },
+  { shape:'circle',   pattern:['Teal','Red','Teal',null],        answer:'Red',    choices:['Yellow','Teal','Red']      },
 ];
 
-QUESTIONS.forEach(q => { new Image().src = q.img; });
-
+const TOTAL = QUESTIONS.length;
 let curQ = 0, score = 0, attempts = 0, answered = false, muted = false;
 
 const sndCorrect = new Audio('Assets/correct.mp3');
@@ -194,6 +224,7 @@ document.addEventListener('pointerdown', unlockAudio);
 function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(()=>{}); }
 
 function speak(text) {
+  sndClaps.pause(); sndClaps.currentTime = 0;
   if (!('speechSynthesis' in window) || muted) return;
   window.speechSynthesis.cancel();
   setTimeout(() => {
@@ -216,36 +247,32 @@ function playClaps() {
   setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 3000);
 }
 
-/* ─── HELPERS ─── */
-function getBtn(colour) {
-  return document.querySelector(`.colour-btn[data-colour="${colour}"]`);
-}
-
-function clearBtnStates() {
-  document.querySelectorAll('.colour-btn').forEach(b => b.className = 'colour-btn');
-}
-
-/* ─── LOAD QUESTION ─── */
 function loadQuestion() {
-  if (curQ >= QUESTIONS.length) { showEnd(); return; }
+  if (curQ >= TOTAL) { showEnd(); return; }
   answered = false; attempts = 0;
 
   const q = QUESTIONS[curQ];
-  document.getElementById('q-num').textContent      = curQ + 1;
-  document.getElementById('score-val').textContent  = score;
-  document.getElementById('prog-bar').style.width   = (curQ / QUESTIONS.length * 100) + '%';
+  document.getElementById('q-num').textContent     = curQ + 1;
+  document.getElementById('score-val').textContent = score;
+  document.getElementById('prog-bar').style.width  = (curQ / TOTAL * 100) + '%';
+  speak('Colour the object to complete the pattern.');
 
-  const txt = q.text || `What colour is the ${q.obj}?`;
-  document.getElementById('instruction-txt').textContent = txt;
-  speak(txt);
+  const row = document.getElementById('pattern-row');
+  row.innerHTML = '';
+  q.pattern.forEach((color, idx) => {
+    const isEmpty = color === null;
+    const item    = document.createElement('div');
+    item.className = 'pattern-item';
+    const wrap    = document.createElement('div');
+    wrap.className = 'shape-wrap' + (isEmpty ? ' empty' : '');
+    if (isEmpty) wrap.id = 'empty-shape';
+    wrap.innerHTML = shapeSVG(q.shape, color, isEmpty);
+    item.appendChild(wrap);
+    row.appendChild(item);
+  });
 
-  /* image — same simple approach as game 2 */
-  const img = document.getElementById('q-img');
-  img.src = q.img;
-
-  /* build colour buttons — Fisher-Yates shuffle for unbiased random position */
-  const wrap = document.getElementById('colour-choices');
-  wrap.innerHTML = '';
+  const choicesWrap = document.getElementById('colour-choices');
+  choicesWrap.innerHTML = '';
   const shuffled = [...q.choices];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -255,28 +282,34 @@ function loadQuestion() {
     const btn = document.createElement('button');
     btn.className = 'colour-btn';
     btn.dataset.colour = colour;
-    btn.style.background = COLOUR_HEX[colour];
+    btn.style.background = COLOR_HEX[colour];
     btn.style.color = colour === 'Yellow' ? '#333' : 'white';
     btn.textContent = colour;
     btn.addEventListener('touchend', e => { e.preventDefault(); selectColour(colour); }, { passive: false });
     btn.onclick = () => selectColour(colour);
-    wrap.appendChild(btn);
+    choicesWrap.appendChild(btn);
   });
 }
 
-/* ─── SELECT ─── */
+function getBtn(colour) { return document.querySelector(`.colour-btn[data-colour="${colour}"]`); }
+function clearBtnStates() { document.querySelectorAll('.colour-btn').forEach(b => b.className = 'colour-btn'); }
+
 function selectColour(colour) {
   if (answered) return;
-  clearBtnStates();
   if (colour === QUESTIONS[curQ].answer) registerCorrect(colour);
   else registerWrong(colour);
 }
 
-/* ─── CORRECT ─── */
 function registerCorrect(colour) {
   answered = true;
   clearBtnStates();
   getBtn(colour).classList.add('correct');
+  const emptyWrap = document.getElementById('empty-shape');
+  if (emptyWrap) {
+    emptyWrap.classList.remove('empty');
+    emptyWrap.innerHTML = shapeSVG(QUESTIONS[curQ].shape, colour, false);
+    emptyWrap.classList.add('correct-anim');
+  }
   score++;
   document.getElementById('score-val').textContent = score;
   window.speechSynthesis?.cancel();
@@ -286,15 +319,16 @@ function registerCorrect(colour) {
   setTimeout(() => { curQ++; loadQuestion(); }, 3200);
 }
 
-/* ─── WRONG ─── */
 function registerWrong(colour) {
   if (answered) return;
   attempts++;
   const wrongBtn   = getBtn(colour);
   const correctBtn = getBtn(QUESTIONS[curQ].answer);
+  const emptyWrap  = document.getElementById('empty-shape');
 
   if (attempts === 1) {
     wrongBtn.classList.add('wrong');
+    if (emptyWrap) { emptyWrap.classList.add('wrong-anim'); setTimeout(() => emptyWrap.classList.remove('wrong-anim'), 500); }
     play(sndWrong);
     showToast('❌ Try again!', '#f44336');
     setTimeout(() => {
@@ -309,13 +343,17 @@ function registerWrong(colour) {
     setTimeout(() => {
       clearBtnStates();
       correctBtn.classList.add('correct');
+      if (emptyWrap) {
+        emptyWrap.classList.remove('empty');
+        emptyWrap.innerHTML = shapeSVG(QUESTIONS[curQ].shape, QUESTIONS[curQ].answer, false);
+        emptyWrap.classList.add('correct-anim');
+      }
       showToast('💡 Correct answer!', '#FF9800');
       setTimeout(() => { curQ++; loadQuestion(); }, 3000);
     }, 1000);
   }
 }
 
-/* ─── START / RESTART ─── */
 function startGame() {
   document.getElementById('intro-screen').style.display = 'none';
   document.getElementById('game-screen').style.display  = 'flex';
@@ -330,7 +368,6 @@ function restartGame() {
   loadQuestion();
 }
 
-/* ─── TOAST ─── */
 let toastTimer = null;
 function showToast(msg, bg) {
   const el = document.getElementById('toast');
@@ -340,7 +377,6 @@ function showToast(msg, bg) {
   toastTimer = setTimeout(() => el.classList.remove('show'), 1400);
 }
 
-/* ─── CONFETTI ─── */
 const CC = ['#FFD700','#FF6B6B','#4CAF50','#2196F3','#FF9800','#AB47BC','#26C6DA'];
 function spawnConfetti() {
   for (let i = 0; i < 70; i++) {
@@ -360,21 +396,19 @@ if (!document.querySelector('#cf-style')) {
   document.head.appendChild(s);
 }
 
-/* ─── MUTE ─── */
 function toggleMute() {
   muted = !muted;
   document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
   if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
-  else speak(document.getElementById('instruction-txt').textContent);
+  else speak('Colour the object to complete the pattern.');
 }
 
-/* ─── END ─── */
 function showEnd() {
   document.getElementById('game-screen').style.display = 'none';
   document.getElementById('end-screen').style.display  = 'flex';
   document.getElementById('final-score').textContent   = score;
-  document.getElementById('end-stars').textContent = score >= 11 ? '⭐⭐⭐' : score >= 7 ? '⭐⭐' : '⭐';
-  window.speechSynthesis?.cancel(); playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 800);
+  document.getElementById('end-stars').textContent = score >= 10 ? '⭐⭐⭐' : score >= 7 ? '⭐⭐' : '⭐';
+  playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 800);
 }
 </script>
 </body>

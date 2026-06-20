@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Colours · LY3</title>
+  <title>Feelings and Emotions · LY3 · Game 16</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
@@ -55,29 +55,31 @@
 
     .img-wrap {
       width: 100%; display: flex; align-items: center; justify-content: center;
-      min-height: 160px;
+      min-height: 200px;
     }
     .img-wrap img {
-      max-height: 210px; max-width: 85%; object-fit: contain;
-      border-radius: 16px;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.12));
+      max-height: 240px; max-width: 85%; object-fit: contain;
+      will-change: transform;
     }
 
-    .colour-choices { display:flex; gap:12px; width:100%; }
+    .emotion-choices { display:flex; gap:10px; width:100%; }
 
-    .colour-btn {
-      flex: 1; height: 80px;
+    .emotion-btn {
+      flex: 1; height: 72px;
       border: 4px solid transparent; border-radius: 18px;
       font-size: clamp(0.82em, 2.8vw, 1.05em); font-weight: 800; font-family: inherit;
-      cursor: pointer; color: white; letter-spacing: 0.02em;
+      cursor: pointer; color: white;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 3px; letter-spacing: 0.01em;
       box-shadow: 0 4px 14px rgba(0,0,0,0.2);
       transition: transform 0.1s, border-color 0.2s, box-shadow 0.2s;
       will-change: transform;
     }
-    .colour-btn:active { transform: scale(0.93); }
-    .colour-btn.wrong   { border-color: #f44336; animation: shakeWrong 0.4s ease; }
-    .colour-btn.hint    { border-color: #FFD700; animation: pulseHint 1s ease-in-out infinite; }
-    .colour-btn.correct { border-color: #4CAF50; box-shadow: 0 0 0 5px #4CAF5040; animation: popCorrect 0.35s ease; }
+    .emotion-btn .btn-icon { font-size: 1.4em; line-height: 1; }
+    .emotion-btn:active { transform: scale(0.93); }
+    .emotion-btn.correct { border-color: #4CAF50; box-shadow: 0 0 0 5px #4CAF5040; animation: popCorrect 0.35s ease; }
+    .emotion-btn.wrong   { border-color: #f44336; animation: shakeWrong 0.4s ease; }
+    .emotion-btn.hint    { border-color: #FFD700; animation: pulseHint 1s ease-in-out infinite; }
 
     @keyframes popCorrect { 0%{transform:scale(1)} 50%{transform:scale(1.08)} 100%{transform:scale(1)} }
     @keyframes shakeWrong { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
@@ -103,14 +105,15 @@
     @media (max-width: 768px) {
       #game-screen { padding:10px 10px 70px; }
       .hdr-title { display:none; }
-      .colour-btn { height:70px; }
-      .img-wrap img { max-height:180px; }
+      .emotion-btn { height:64px; }
+      .img-wrap img { max-height:200px; }
     }
     @media (max-width: 480px) {
-      .colour-btn { height:62px; border-radius:14px; border-width:3px; }
+      .emotion-btn { height:58px; border-radius:14px; border-width:3px; gap:2px; }
+      .emotion-btn .btn-icon { font-size:1.1em; }
       .q-card { padding:14px 12px; gap:16px; }
-      .img-wrap { min-height:130px; }
-      .img-wrap img { max-height:150px; }
+      .img-wrap { min-height:160px; }
+      .img-wrap img { max-height:170px; }
       .instruction { font-size:0.95em; margin-bottom:8px; }
       .hdr-score { font-size:1em; }
     }
@@ -118,28 +121,28 @@
 </head>
 <body>
 
-<div id="intro-screen">
-  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onclick="startGame()">
+<div id="intro-screen" onclick="startGame()" style="cursor:pointer">
+  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onerror="this.style.display='none'">
 </div>
 
 <div id="toast"></div>
 
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">⭐ <span id="score-val">0</span> / 12</div>
-    <div class="hdr-title">Colours</div>
+    <div class="hdr-score">⭐ <span id="score-val">0</span> / 8</div>
+    <div class="hdr-title">Feelings and Emotions</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
   </div>
   <div class="progress-row">
-    <span class="progress-label">Q <span id="q-num">1</span> / 12</span>
+    <span class="progress-label">Q <span id="q-num">1</span> / 8</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
   <div class="instruction" id="instruction-txt"></div>
   <div class="q-card">
     <div class="img-wrap">
-      <img id="q-img" src="" alt="">
+      <img id="q-img" src="" alt="" decoding="async">
     </div>
-    <div class="colour-choices" id="colour-choices"></div>
+    <div class="emotion-choices" id="emotion-choices"></div>
   </div>
   <div class="bottom-row">
     <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
@@ -149,55 +152,58 @@
 <div id="end-screen">
   <div class="end-trophy">🏆</div>
   <div class="end-title">You have done a great job!</div>
-  <div class="end-sub">You completed all 12 questions!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 12</div>
+  <div class="end-sub">You completed all 8 questions!</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 8</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">▶ &nbsp;Play Again</button>
 </div>
 
 <script>
-const COLOUR_HEX = {
-  'Orange': '#FB8C00',
-  'Green':  '#43A047',
-  'Purple': '#8E24AA',
+const EMOTIONS = {
+  Angry:     { label: 'Angry',     icon: '😠', bg: '#C62828' },
+  Happy:     { label: 'Happy',     icon: '😊', bg: '#F9A825' },
+  Sad:       { label: 'Sad',       icon: '😢', bg: '#1565C0' },
+  Scared:    { label: 'Scared',    icon: '😨', bg: '#6A1B9A' },
+  Surprised: { label: 'Surprised', icon: '😲', bg: '#00838F' },
+  Tired:     { label: 'Tired',     icon: '😴', bg: '#546E7A' },
 };
 
+const BASE = 'Assets/Game%201%20LY3/';
+
 const QUESTIONS = [
-  { img:'Assets/S-Colours/ballonorange.png',   obj:'balloon',  answer:'Orange', choices:['Orange','Green','Purple']  },
-  { img:'Assets/S-Colours/bow.png',            obj:'bow',      answer:'Purple', choices:['Purple','Green','Orange']  },
-  { img:'Assets/S-Colours/brinjal.png',        obj:'brinjal',  answer:'Purple', choices:['Purple','Orange','Green']  },
-  { img:'Assets/S-Colours/carorange.png',      obj:'car',      answer:'Orange', choices:['Orange','Purple','Green']  },
-  { img:'Assets/S-Colours/grapes.png',         obj:'grapes',   answer:'Green',  choices:['Green','Purple','Orange']  },
-  { img:'Assets/S-Colours/green.jpg',          text:'What colour is this?', answer:'Green',  choices:['Green','Orange','Purple']  },
-  { img:'Assets/S-Colours/orange.jpg',         text:'What colour is this?', answer:'Orange', choices:['Orange','Purple','Green']  },
-  { img:'Assets/S-Colours/orangefruit.png',    obj:'orange',   answer:'Orange', choices:['Orange','Green','Purple']  },
-  { img:'Assets/S-Colours/parrot.png',         obj:'parrot',   answer:'Green',  choices:['Green','Orange','Purple']  },
-  { img:'Assets/S-Colours/purple.png',         text:'What colour is this?', answer:'Purple', choices:['Purple','Green','Orange']  },
-  { img:'Assets/S-Colours/tshirt.png',         obj:'t-shirt',  answer:'Purple', choices:['Purple','Orange','Green']  },
-  { img:'Assets/S-Colours/purple%20crayon.jpg',  obj:'crayon',   answer:'Purple', choices:['Purple','Orange','Green']  },
+  { img: BASE + 'angry.png',      text: 'How does this child feel?', answer: 'Angry',     choices: ['Angry',    'Happy',     'Sad']       },
+  { img: BASE + 'happy.png',      text: 'How does this child feel?', answer: 'Happy',     choices: ['Happy',    'Surprised', 'Scared']    },
+  { img: BASE + 'surprised.png',  text: 'How does this child feel?', answer: 'Surprised', choices: ['Surprised','Angry',     'Tired']     },
+  { img: BASE + 'scared.png',     text: 'How does this child feel?', answer: 'Scared',    choices: ['Scared',   'Sad',       'Happy']     },
+  { img: BASE + 'angry1.png',     text: 'How does this child feel?', answer: 'Angry',     choices: ['Angry',    'Tired',     'Surprised'] },
+  { img: BASE + 'tired1.png',     text: 'How does this child feel?', answer: 'Tired',     choices: ['Tired',    'Scared',    'Sad']       },
+  { img: BASE + 'happy1.png',     text: 'How does this child feel?', answer: 'Happy',     choices: ['Happy',    'Angry',     'Scared']    },
+  { img: BASE + 'sad1.png',       text: 'How does this child feel?', answer: 'Sad',       choices: ['Sad',      'Happy',     'Tired']     },
 ];
 
-QUESTIONS.forEach(q => { new Image().src = q.img; });
+/* Preload all images at startup */
+QUESTIONS.forEach(q => { const i = new Image(); i.src = q.img; });
 
 let curQ = 0, score = 0, attempts = 0, answered = false, muted = false;
 
-const sndCorrect = new Audio('Assets/correct.mp3');
-const sndWrong   = new Audio('Assets/wrong.mp3');
-const sndClaps   = new Audio('Assets/free_claps.mp3');
+const sndWrong = new Audio('Assets/wrong.mp3');
+const sndClaps = new Audio('Assets/free_claps.mp3');
 
 function unlockAudio() {
-  [sndCorrect, sndWrong, sndClaps].forEach(s => { s.play().catch(()=>{}); s.pause(); s.currentTime = 0; });
+  [sndWrong, sndClaps].forEach(s => { s.play().catch(()=>{}); s.pause(); s.currentTime = 0; });
   document.removeEventListener('pointerdown', unlockAudio);
 }
 document.addEventListener('pointerdown', unlockAudio);
 
-function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(()=>{}); }
+function play(s) { if (muted) return; window.speechSynthesis?.cancel(); s.currentTime = 0; s.play().catch(()=>{}); }
 
 function speak(text) {
+  sndClaps.pause(); sndClaps.currentTime = 0;
   if (!('speechSynthesis' in window) || muted) return;
   window.speechSynthesis.cancel();
   setTimeout(() => {
     if (muted) return;
+    window.speechSynthesis.resume();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.0;
     const voices = window.speechSynthesis.getVoices();
@@ -216,67 +222,56 @@ function playClaps() {
   setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 3000);
 }
 
-/* ─── HELPERS ─── */
-function getBtn(colour) {
-  return document.querySelector(`.colour-btn[data-colour="${colour}"]`);
+function getBtn(emotion) {
+  return document.querySelector(`.emotion-btn[data-emotion="${emotion}"]`);
 }
 
 function clearBtnStates() {
-  document.querySelectorAll('.colour-btn').forEach(b => b.className = 'colour-btn');
+  document.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('correct','wrong','hint'));
 }
 
-/* ─── LOAD QUESTION ─── */
 function loadQuestion() {
   if (curQ >= QUESTIONS.length) { showEnd(); return; }
   answered = false; attempts = 0;
 
   const q = QUESTIONS[curQ];
-  document.getElementById('q-num').textContent      = curQ + 1;
-  document.getElementById('score-val').textContent  = score;
-  document.getElementById('prog-bar').style.width   = (curQ / QUESTIONS.length * 100) + '%';
+  document.getElementById('q-num').textContent     = curQ + 1;
+  document.getElementById('score-val').textContent = score;
+  document.getElementById('prog-bar').style.width  = (curQ / 8 * 100) + '%';
+  document.getElementById('instruction-txt').textContent = q.text;
+  document.getElementById('q-img').src = q.img;
+  speak(q.text);
 
-  const txt = q.text || `What colour is the ${q.obj}?`;
-  document.getElementById('instruction-txt').textContent = txt;
-  speak(txt);
-
-  /* image — same simple approach as game 2 */
-  const img = document.getElementById('q-img');
-  img.src = q.img;
-
-  /* build colour buttons — Fisher-Yates shuffle for unbiased random position */
-  const wrap = document.getElementById('colour-choices');
+  /* build emotion buttons — Fisher-Yates shuffle */
+  const wrap = document.getElementById('emotion-choices');
   wrap.innerHTML = '';
-  const shuffled = [...q.choices];
-  for (let i = shuffled.length - 1; i > 0; i--) {
+  const choices = [...q.choices];
+  for (let i = choices.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    [choices[i], choices[j]] = [choices[j], choices[i]];
   }
-  shuffled.forEach(colour => {
+  choices.forEach(emotion => {
+    const e = EMOTIONS[emotion];
     const btn = document.createElement('button');
-    btn.className = 'colour-btn';
-    btn.dataset.colour = colour;
-    btn.style.background = COLOUR_HEX[colour];
-    btn.style.color = colour === 'Yellow' ? '#333' : 'white';
-    btn.textContent = colour;
-    btn.addEventListener('touchend', e => { e.preventDefault(); selectColour(colour); }, { passive: false });
-    btn.onclick = () => selectColour(colour);
+    btn.className = 'emotion-btn';
+    btn.dataset.emotion = emotion;
+    btn.style.background = e.bg;
+    btn.innerHTML = `<span class="btn-icon">${e.icon}</span><span>${e.label}</span>`;
+    btn.onclick = () => selectEmotion(emotion);
     wrap.appendChild(btn);
   });
 }
 
-/* ─── SELECT ─── */
-function selectColour(colour) {
+function selectEmotion(emotion) {
   if (answered) return;
-  clearBtnStates();
-  if (colour === QUESTIONS[curQ].answer) registerCorrect(colour);
-  else registerWrong(colour);
+  if (emotion === QUESTIONS[curQ].answer) registerCorrect(emotion);
+  else registerWrong(emotion);
 }
 
-/* ─── CORRECT ─── */
-function registerCorrect(colour) {
+function registerCorrect(emotion) {
   answered = true;
   clearBtnStates();
-  getBtn(colour).classList.add('correct');
+  getBtn(emotion).classList.add('correct');
   score++;
   document.getElementById('score-val').textContent = score;
   window.speechSynthesis?.cancel();
@@ -286,11 +281,10 @@ function registerCorrect(colour) {
   setTimeout(() => { curQ++; loadQuestion(); }, 3200);
 }
 
-/* ─── WRONG ─── */
-function registerWrong(colour) {
+function registerWrong(emotion) {
   if (answered) return;
   attempts++;
-  const wrongBtn   = getBtn(colour);
+  const wrongBtn   = getBtn(emotion);
   const correctBtn = getBtn(QUESTIONS[curQ].answer);
 
   if (attempts === 1) {
@@ -299,7 +293,7 @@ function registerWrong(colour) {
     showToast('❌ Try again!', '#f44336');
     setTimeout(() => {
       wrongBtn.classList.remove('wrong');
-      if (!answered) correctBtn.classList.add('hint');
+      correctBtn.classList.add('hint');
     }, 900);
   } else {
     answered = true;
@@ -315,7 +309,6 @@ function registerWrong(colour) {
   }
 }
 
-/* ─── START / RESTART ─── */
 function startGame() {
   document.getElementById('intro-screen').style.display = 'none';
   document.getElementById('game-screen').style.display  = 'flex';
@@ -330,7 +323,6 @@ function restartGame() {
   loadQuestion();
 }
 
-/* ─── TOAST ─── */
 let toastTimer = null;
 function showToast(msg, bg) {
   const el = document.getElementById('toast');
@@ -340,7 +332,6 @@ function showToast(msg, bg) {
   toastTimer = setTimeout(() => el.classList.remove('show'), 1400);
 }
 
-/* ─── CONFETTI ─── */
 const CC = ['#FFD700','#FF6B6B','#4CAF50','#2196F3','#FF9800','#AB47BC','#26C6DA'];
 function spawnConfetti() {
   for (let i = 0; i < 70; i++) {
@@ -360,7 +351,6 @@ if (!document.querySelector('#cf-style')) {
   document.head.appendChild(s);
 }
 
-/* ─── MUTE ─── */
 function toggleMute() {
   muted = !muted;
   document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
@@ -368,12 +358,11 @@ function toggleMute() {
   else speak(document.getElementById('instruction-txt').textContent);
 }
 
-/* ─── END ─── */
 function showEnd() {
   document.getElementById('game-screen').style.display = 'none';
   document.getElementById('end-screen').style.display  = 'flex';
   document.getElementById('final-score').textContent   = score;
-  document.getElementById('end-stars').textContent = score >= 11 ? '⭐⭐⭐' : score >= 7 ? '⭐⭐' : '⭐';
+  document.getElementById('end-stars').textContent = score >= 7 ? '⭐⭐⭐' : score >= 5 ? '⭐⭐' : '⭐';
   window.speechSynthesis?.cancel(); playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 800);
 }
 </script>
