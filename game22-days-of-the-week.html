@@ -38,7 +38,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#e8
 
 /* MCQ choices as day cards */
 .choices-row{display:flex;gap:10px;width:100%;justify-content:center;flex-wrap:wrap}
-.choice-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;min-width:80px;max-width:130px;padding:10px 6px;border:4px solid transparent;border-radius:16px;font-size:clamp(0.82em,2.5vw,1em);font-weight:800;font-family:inherit;cursor:pointer;color:white;box-shadow:0 4px 14px rgba(0,0,0,0.18);transition:transform 0.1s,border-color 0.2s;gap:4px}
+.choice-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;min-width:80px;max-width:140px;min-height:72px;padding:10px 6px;border:4px solid transparent;border-radius:16px;font-size:clamp(0.82em,2.5vw,1em);font-weight:800;font-family:inherit;cursor:pointer;color:white;box-shadow:0 4px 14px rgba(0,0,0,0.18);transition:transform 0.1s,border-color 0.2s;gap:4px}
 .choice-btn .cb-emoji{font-size:1.5em}
 .choice-btn:active{transform:scale(0.93)}
 .choice-btn.correct{border-color:#4CAF50 !important;background:linear-gradient(135deg,#55efc4,#00b894) !important;box-shadow:0 0 0 6px rgba(76,175,80,0.5);animation:popCorrect 0.35s ease}
@@ -241,14 +241,11 @@ function renderAfterBefore(s,mode){
 
 /* ── Missing ── */
 function renderMissing(s){
-  const correct=DAYS[s.seq.indexOf(null)>-1?s.seq.findIndex(x=>x===null):0];
-  const missingDay=s.seq.find(x=>x===null||false)||DAYS[s.seq.findIndex(x=>x===null)];
   const actualMissing=DAYS[s.seq.findIndex(x=>x===null)];
-  // Build strip
   const strip=s.seq.map((d,i)=>{
-    if(d===null) return `<span class="seq-blank">?</span>`;
-    const part=chip(d);
-    return i<s.seq.length-1?part+`<span class="seq-arrow">&#8594;</span>`:part;
+    const arrow=i<s.seq.length-1?`<span class="seq-arrow">&#8594;</span>`:'';
+    if(d===null) return `<span class="seq-blank" id="seq-blank">?</span>${arrow}`;
+    return chip(d)+arrow;
   }).join('');
   const wrong=DAYS.filter(d=>d!==actualMissing);
   const picked=shuffle(wrong).slice(0,2);
@@ -258,6 +255,14 @@ function renderMissing(s){
     <div class="choices-row" id="id-choices">
       ${choices.map((d,i)=>choiceBtn(d,i)).join('')}
     </div>`;
+}
+
+function fillSeqBlank(day){
+  const el=document.getElementById('seq-blank');
+  if(!el)return;
+  const tmp=document.createElement('template');
+  tmp.innerHTML=chip(day);
+  el.replaceWith(tmp.content.firstChild);
 }
 
 /* ── Answer handler (identify / after / before / missing) ── */
@@ -277,6 +282,7 @@ function selectAnswer(choice){
     idAnswered=true;
     document.querySelectorAll('.choice-btn').forEach(b=>b.style.pointerEvents='none');
     chosenBtn.classList.add('correct');
+    if(s.type==='missing') fillSeqBlank(correct);
     score++;document.getElementById('score-val').textContent=score;
     window.speechSynthesis?.cancel();
     showToast('&#11088; Correct!','#4CAF50');
@@ -296,6 +302,7 @@ function selectAnswer(choice){
       setTimeout(()=>{
         document.querySelectorAll('.choice-btn').forEach(b=>b.classList.remove('correct','wrong','hint'));
         correctBtn.classList.add('correct');
+        if(s.type==='missing') fillSeqBlank(correct);
         showToast('&#128161; Correct answer!','#FF9800');
         setTimeout(()=>nextScreen(),3000);
       },1000);
