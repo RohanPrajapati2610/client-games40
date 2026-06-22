@@ -9,18 +9,18 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fff9c4 0%,#e8f5e9 50%,#e3f2fd 100%);height:100vh;height:100dvh;display:flex;align-items:stretch;justify-content:center;overflow:hidden;user-select:none;-webkit-user-select:none}
-#intro-screen{position:fixed;inset:0;background:linear-gradient(160deg,#e65100,#f57c00,#ffa726);display:flex;align-items:center;justify-content:center;border:5px solid #FFD700;z-index:200;cursor:pointer}
+#intro-screen{position:fixed;inset:0;background:linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc);display:flex;align-items:center;justify-content:center;border:5px solid #FFD700;z-index:200;cursor:pointer}
 #intro-logo{width:220px;height:auto;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.5));animation:logoBounce 2s ease-in-out infinite}
 @keyframes logoBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 #game-screen{display:none;flex-direction:column;width:100%;max-width:860px;height:100%;padding:12px 14px 76px;overflow-y:auto}
 .hdr{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:18px;padding:10px 18px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,0.1);flex-shrink:0}
-.hdr-score{font-size:1.1em;font-weight:bold;color:#F9A825;min-width:70px}
-.hdr-title{font-size:clamp(0.72em,2.4vw,0.95em);color:#E65100;font-weight:bold;text-align:center}
+.hdr-score{font-size:1.1em;font-weight:bold;color:#4CAF50;min-width:70px}
+.hdr-title{font-size:clamp(0.72em,2.4vw,0.95em);color:#6a0dad;font-weight:bold;text-align:center}
 .mute-btn{width:38px;height:38px;border:2px solid #ddd;border-radius:50%;background:white;font-size:1.1em;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .progress-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-shrink:0}
 .progress-label{font-size:0.85em;color:#777;white-space:nowrap}
 .progress-bar-wrap{flex:1;height:10px;background:#e0e0e0;border-radius:5px;overflow:hidden}
-.progress-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#F9A825,#FFD54F);transition:width 0.5s ease}
+.progress-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#4CAF50,#8BC34A);transition:width 0.5s ease}
 .instruction{text-align:center;font-size:clamp(0.92em,3vw,1.15em);color:#333;font-weight:800;margin-bottom:8px;padding:0 6px;line-height:1.4;flex-shrink:0}
 .act-card{background:white;border-radius:24px;padding:18px 14px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;flex-shrink:0}
 /* Identify */
@@ -61,7 +61,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#ff
 #toast{position:fixed;top:18%;left:50%;transform:translateX(-50%) scale(0.7);padding:13px 28px;border-radius:50px;font-size:1.35em;font-weight:bold;color:white;pointer-events:none;opacity:0;transition:opacity 0.2s,transform 0.2s;z-index:500;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
 #toast.show{opacity:1;transform:translateX(-50%) scale(1)}
 .confetti{position:fixed;pointer-events:none;z-index:9998;border-radius:2px}
-#end-screen{display:none;position:fixed;inset:0;background:linear-gradient(160deg,#e65100,#f57c00,#ffa726);flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:200;text-align:center;padding:30px}
+#end-screen{display:none;position:fixed;inset:0;background:linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc);flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:200;text-align:center;padding:30px}
 .end-trophy{font-size:4.5em;animation:trophySpin 1.5s ease-out}
 .end-title{color:#fff;font-size:clamp(1.5em,5vw,2.2em);font-weight:bold;text-shadow:0 3px 10px rgba(0,0,0,0.3)}
 .end-sub{color:rgba(255,255,255,0.9);font-size:1.1em}
@@ -120,38 +120,38 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#ff
 <script>
 /* ── Screens ── */
 const SCREENS = [
-  { type:'identify', img:'Assets/coin-1-rupee.jpg',  isCoin:true,  answer:'&#8377;1',
-    choices:['&#8377;1','&#8377;2','&#8377;5'],
+  { type:'identify', img:'Assets/coin-1-rupee.jpg',  isCoin:true,  answer:'₹1',
+    choices:['₹1','₹2','₹5'],
     instr:'What is the value of this coin? Tap the correct answer!' },
-  { type:'identify', img:'Assets/coin-2-rupee.png',  isCoin:true,  answer:'&#8377;2',
-    choices:['&#8377;1','&#8377;2','&#8377;5'],
+  { type:'identify', img:'Assets/coin-2-rupee.png',  isCoin:true,  answer:'₹2',
+    choices:['₹1','₹2','₹5'],
     instr:'What is the value of this coin? Tap the correct answer!' },
-  { type:'identify', img:'Assets/coin-5-rupee.png',  isCoin:true,  answer:'&#8377;5',
-    choices:['&#8377;2','&#8377;5','&#8377;10'],
+  { type:'identify', img:'Assets/coin-5-rupee.png',  isCoin:true,  answer:'₹5',
+    choices:['₹2','₹5','₹10'],
     instr:'What is the value of this coin? Tap the correct answer!' },
-  { type:'identify', img:'Assets/coin-10-rupee.png', isCoin:true,  answer:'&#8377;10',
-    choices:['&#8377;5','&#8377;10','&#8377;20'],
+  { type:'identify', img:'Assets/coin-10-rupee.png', isCoin:true,  answer:'₹10',
+    choices:['₹5','₹10','₹20'],
     instr:'What is the value of this coin? Tap the correct answer!' },
-  { type:'identify', img:'Assets/coin-20-rupee.png', isCoin:true,  answer:'&#8377;20',
-    choices:['&#8377;10','&#8377;20','&#8377;5'],
+  { type:'identify', img:'Assets/coin-20-rupee.png', isCoin:true,  answer:'₹20',
+    choices:['₹10','₹20','₹5'],
     instr:'What is the value of this coin? Tap the correct answer!' },
-  { type:'identify', img:'Assets/10.png',            isCoin:false, answer:'&#8377;10',
-    choices:['&#8377;10','&#8377;20','&#8377;50'],
+  { type:'identify', img:'Assets/10.png',            isCoin:false, answer:'₹10',
+    choices:['₹10','₹20','₹50'],
     instr:'What is the value of this note? Tap the correct answer!' },
-  { type:'identify', img:'Assets/20.png',            isCoin:false, answer:'&#8377;20',
-    choices:['&#8377;10','&#8377;20','&#8377;50'],
+  { type:'identify', img:'Assets/20.png',            isCoin:false, answer:'₹20',
+    choices:['₹10','₹20','₹50'],
     instr:'What is the value of this note? Tap the correct answer!' },
-  { type:'identify', img:'Assets/50.png',            isCoin:false, answer:'&#8377;50',
-    choices:['&#8377;20','&#8377;50','&#8377;100'],
+  { type:'identify', img:'Assets/50.png',            isCoin:false, answer:'₹50',
+    choices:['₹20','₹50','₹100'],
     instr:'What is the value of this note? Tap the correct answer!' },
-  { type:'identify', img:'Assets/100.png',           isCoin:false, answer:'&#8377;100',
-    choices:['&#8377;50','&#8377;100','&#8377;200'],
+  { type:'identify', img:'Assets/100.png',           isCoin:false, answer:'₹100',
+    choices:['₹50','₹100','₹200'],
     instr:'What is the value of this note? Tap the correct answer!' },
-  { type:'identify', img:'Assets/200.png',           isCoin:false, answer:'&#8377;200',
-    choices:['&#8377;100','&#8377;200','&#8377;500'],
+  { type:'identify', img:'Assets/200.png',           isCoin:false, answer:'₹200',
+    choices:['₹100','₹200','₹500'],
     instr:'What is the value of this note? Tap the correct answer!' },
-  { type:'identify', img:'Assets/500.png',           isCoin:false, answer:'&#8377;500',
-    choices:['&#8377;200','&#8377;500','&#8377;100'],
+  { type:'identify', img:'Assets/500.png',           isCoin:false, answer:'₹500',
+    choices:['₹200','₹500','₹100'],
     instr:'What is the value of this note? Tap the correct answer!' },
 ];
 
