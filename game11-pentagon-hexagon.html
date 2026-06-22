@@ -141,11 +141,11 @@ const SORT_ITEMS_DEF = [
 ];
 
 const SCREENS = [
-  { type:'trace',    shape:SHAPES[0], instr:'Trace the Pentagon! Tap the numbers 1 to 5 in order.' },
+  { type:'trace',    shape:SHAPES[0], instr:'Trace the Pentagon! Tap 2, 3, 4, 5, then back to 1 to close.' },
   { type:'identify', shape:SHAPES[0], instr:'What shape is this house? Tap the correct answer!',
     answer:'Pentagon', choices:['Pentagon','Hexagon','Triangle'] },
   { type:'draw',     shape:SHAPES[0], instr:'Draw and colour your own Pentagon!' },
-  { type:'trace',    shape:SHAPES[1], instr:'Trace the Hexagon! Tap the numbers 1 to 6 in order.' },
+  { type:'trace',    shape:SHAPES[1], instr:'Trace the Hexagon! Tap 2, 3, 4, 5, 6, then back to 1 to close.' },
   { type:'identify', shape:SHAPES[1], instr:'What shape is this honeycomb? Tap the correct answer!',
     answer:'Hexagon', choices:['Square','Pentagon','Hexagon'] },
   { type:'draw',     shape:SHAPES[1], instr:'Draw and colour your own Hexagon!' },
@@ -254,7 +254,7 @@ function renderTrace(s) {
     const lx=(cx+(r+22)*Math.cos(a)).toFixed(1);
     const ly=(cy+(r+22)*Math.sin(a)).toFixed(1);
     labelGroups+=`<g id="vtx-g-${i}" onclick="tapVertex(${i})" style="cursor:pointer;user-select:none">
-      <circle id="vtx-c-${i}" cx="${lx}" cy="${ly}" r="15" fill="${i===0?'#4CAF50':i===1?color:'#ccc'}"/>
+      <circle id="vtx-c-${i}" cx="${lx}" cy="${ly}" r="15" fill="${i<=1?color:'#ccc'}"/>
       <text x="${lx}" y="${(parseFloat(ly)+5).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="bold" fill="white" style="pointer-events:none">${i+1}</text>
     </g>`;
   }
@@ -268,7 +268,7 @@ function renderTrace(s) {
         ${labelGroups}
       </svg>
     </div>
-    <p style="font-size:0.82em;color:#777;text-align:center;margin-top:4px">Tap the numbers in order! 1 &#10230; ${sides}</p>
+    <p style="font-size:0.82em;color:#777;text-align:center;margin-top:4px">Tap 2 &#10230; ${sides}, then tap 1 to close!</p>
     <button class="btn-next" id="trace-next-btn" disabled onclick="finishStep()">I traced it! &#9654;</button>`;
 }
 
@@ -377,15 +377,22 @@ function tapVertex(idx){
   _traceLocked=true; setTimeout(()=>{_traceLocked=false;},350);
   const v=_traceVerts, c=_traceColor, n=_traceSides;
   document.getElementById('vtx-c-'+idx).setAttribute('fill','#4CAF50');
-  _addTraceLine(v[idx-1],v[idx],c);
-  _traceNextIdx++;
-  if(_traceNextIdx<n){
-    document.getElementById('vtx-c-'+_traceNextIdx).setAttribute('fill',c);
-  } else {
+  if(idx===0){
+    // Closing tap: draw last side back to vertex 0
     _addTraceLine(v[n-1],v[0],c);
     showToast('&#11088; Well done!','#4CAF50');
     const btn=document.getElementById('trace-next-btn');
     if(btn) btn.disabled=false;
+  } else {
+    _addTraceLine(v[idx-1],v[idx],c);
+    _traceNextIdx++;
+    if(_traceNextIdx>=n){
+      // All numbered vertices done — wait for closing tap on vertex 0
+      _traceNextIdx=0;
+      document.getElementById('vtx-c-0').setAttribute('fill',c);
+    } else {
+      document.getElementById('vtx-c-'+_traceNextIdx).setAttribute('fill',c);
+    }
   }
 }
 function _addTraceLine(from,to,color){
