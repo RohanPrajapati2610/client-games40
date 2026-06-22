@@ -460,6 +460,7 @@ function clearZoneHighlights(){document.querySelectorAll('.drop-zone').forEach(z
 function nextScreen(){curScreen++;loadScreen();}
 function finishStep(){
   score++;document.getElementById('score-val').textContent=score;
+  showToast('&#11088; Correct!','#4CAF50');
   play(sndClaps);spawnConfetti();
   setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},1800);
 }
