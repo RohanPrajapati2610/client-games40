@@ -238,7 +238,7 @@ function selectOddEven(choice){
 
   if(choice===correct){
     idAnswered=true;
-    document.querySelectorAll('.id-btn').forEach(b=>b.style.pointerEvents='none');
+    document.querySelectorAll('.id-btn').forEach(b=>{b.style.pointerEvents='none';b.classList.remove('hint','wrong');});
     chosenBtn.classList.add('correct');
     score++;document.getElementById('score-val').textContent=score;
     window.speechSynthesis?.cancel();
