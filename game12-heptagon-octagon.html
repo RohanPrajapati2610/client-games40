@@ -427,7 +427,7 @@ function onSortDrop(e){
   if(zone&&parseInt(zone.dataset.sides)===parseInt(el.dataset.sides)){
     zone.appendChild(el);el.classList.add('correct-placed');el.style.cursor='default';
     sortPlaced++;showToast('&#11088; Correct!','#4CAF50');
-    if(sortPlaced===6){score++;document.getElementById('score-val').textContent=score;play(sndClaps);spawnConfetti();setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},2200);}
+    if(sortPlaced===6){score++;document.getElementById('score-val').textContent=score;window.speechSynthesis?.cancel();play(sndClaps);spawnConfetti();setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},3000);}
   } else if(zone){
     el.classList.add('wrong-drop');play(sndWrong);showToast('&#10060; Try again!','#f44336');
     setTimeout(()=>el.classList.remove('wrong-drop'),500);
@@ -444,7 +444,7 @@ function onSortDrop(e){
         if(cz){
           cz.appendChild(el);el.classList.add('correct-placed');el.style.cursor='default';
           sortPlaced++;showToast('&#128161; Correct zone!','#FF9800');
-          if(sortPlaced===6){score++;document.getElementById('score-val').textContent=score;setTimeout(()=>nextScreen(),2200);}
+          if(sortPlaced===6){score++;document.getElementById('score-val').textContent=score;window.speechSynthesis?.cancel();play(sndClaps);spawnConfetti();setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},3000);}
         }
       },800);
     }
@@ -464,7 +464,7 @@ function finishStep(){
   showToast('&#11088; Correct!','#4CAF50');
   window.speechSynthesis?.cancel();
   play(sndClaps);spawnConfetti();
-  setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},1800);
+  setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},3000);
 }
 function startGame(){
   document.getElementById('intro-screen').style.display='none';
