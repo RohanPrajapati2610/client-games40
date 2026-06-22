@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Days of the Week &middot; LY3 &middot; Game 22</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#e8f5e9 0%,#e3f2fd 50%,#fce4ec 100%);height:100vh;height:100dvh;display:flex;align-items:stretch;justify-content:center;overflow:hidden;user-select:none;-webkit-user-select:none}
+#intro-screen{position:fixed;inset:0;background:linear-gradient(160deg,#1565C0,#1976D2,#42A5F5);display:flex;align-items:center;justify-content:center;border:5px solid #FFD700;z-index:200;cursor:pointer}
+#intro-logo{width:220px;height:auto;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.5));animation:logoBounce 2s ease-in-out infinite}
+@keyframes logoBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+#game-screen{display:none;flex-direction:column;width:100%;max-width:860px;height:100%;padding:12px 14px 76px;overflow-y:auto}
+.hdr{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:18px;padding:10px 18px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,0.1);flex-shrink:0}
+.hdr-score{font-size:1.1em;font-weight:bold;color:#1565C0;min-width:70px}
+.hdr-title{font-size:clamp(0.72em,2.4vw,0.95em);color:#1565C0;font-weight:bold;text-align:center}
+.mute-btn{width:38px;height:38px;border:2px solid #ddd;border-radius:50%;background:white;font-size:1.1em;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.progress-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-shrink:0}
+.progress-label{font-size:0.85em;color:#777;white-space:nowrap}
+.progress-bar-wrap{flex:1;height:10px;background:#e0e0e0;border-radius:5px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#1565C0,#42A5F5);transition:width 0.5s ease}
+.instruction{text-align:center;font-size:clamp(0.92em,3vw,1.15em);color:#333;font-weight:800;margin-bottom:8px;padding:0 6px;line-height:1.4;flex-shrink:0}
+.act-card{background:white;border-radius:24px;padding:18px 14px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;flex-shrink:0}
+
+/* Day card */
+.day-card-big{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:20px;padding:18px 36px;color:white;box-shadow:0 6px 20px rgba(0,0,0,0.2);gap:6px}
+.day-card-big .dc-emoji{font-size:2.6em}
+.day-card-big .dc-name{font-size:1.6em;font-weight:800;letter-spacing:0.04em}
+
+/* Sequence strip */
+.seq-strip{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
+.seq-chip{display:inline-flex;flex-direction:column;align-items:center;border-radius:12px;padding:7px 10px;color:white;font-size:0.78em;font-weight:800;min-width:46px;gap:2px}
+.seq-chip .sc-emoji{font-size:1.3em}
+.seq-blank{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;padding:7px 18px;font-size:1.4em;font-weight:800;color:#bbb;border:3px dashed #bbb;min-width:60px;min-height:52px}
+.seq-arrow{font-size:1.2em;color:#bbb;flex-shrink:0}
+
+/* MCQ choices as day cards */
+.choices-row{display:flex;gap:10px;width:100%;justify-content:center;flex-wrap:wrap}
+.choice-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;min-width:80px;max-width:130px;padding:10px 6px;border:4px solid transparent;border-radius:16px;font-size:clamp(0.82em,2.5vw,1em);font-weight:800;font-family:inherit;cursor:pointer;color:white;box-shadow:0 4px 14px rgba(0,0,0,0.18);transition:transform 0.1s,border-color 0.2s;gap:4px}
+.choice-btn .cb-emoji{font-size:1.5em}
+.choice-btn:active{transform:scale(0.93)}
+.choice-btn.correct{border-color:#4CAF50;box-shadow:0 0 0 5px #4CAF5040;animation:popCorrect 0.35s ease}
+.choice-btn.wrong{border-color:#f44336;animation:shakeWrong 0.4s ease}
+.choice-btn.hint{border-color:#FFD700;animation:pulseHint 1s ease-in-out infinite}
+
+/* Order screen */
+.order-label{font-size:0.95em;font-weight:800;color:#555;text-align:center}
+.order-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;width:100%}
+.order-card{display:flex;flex-direction:column;align-items:center;justify-content:center;width:80px;height:80px;border-radius:16px;color:white;font-size:0.78em;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.2);transition:transform 0.1s,opacity 0.2s;gap:3px;border:3px solid transparent}
+.order-card .oc-emoji{font-size:1.5em}
+.order-card:active{transform:scale(0.92)}
+.order-card.order-done{opacity:0.45;cursor:default;border-color:#4CAF50;transform:scale(0.92)}
+.order-card.wrong-tap{animation:shakeWrong 0.4s ease}
+
+/* Buttons */
+.bottom-row{display:flex;justify-content:center;position:fixed;bottom:16px;left:0;right:0;z-index:50;pointer-events:none}
+.btn-restart{pointer-events:all;background:linear-gradient(135deg,#FF9800,#F57C00);color:white;border:none;padding:12px 30px;border-radius:40px;font-size:1em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(255,152,0,0.4)}
+#toast{position:fixed;top:18%;left:50%;transform:translateX(-50%) scale(0.7);padding:13px 28px;border-radius:50px;font-size:1.35em;font-weight:bold;color:white;pointer-events:none;opacity:0;transition:opacity 0.2s,transform 0.2s;z-index:500;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+#toast.show{opacity:1;transform:translateX(-50%) scale(1)}
+.confetti{position:fixed;pointer-events:none;z-index:9998;border-radius:2px}
+#end-screen{display:none;position:fixed;inset:0;background:linear-gradient(160deg,#1565C0,#1976D2,#42A5F5);flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:200;text-align:center;padding:30px}
+.end-trophy{font-size:4.5em;animation:trophySpin 1.5s ease-out}
+.end-title{color:#FFD700;font-size:clamp(1.5em,5vw,2.2em);font-weight:bold;text-shadow:0 3px 10px rgba(0,0,0,0.3)}
+.end-sub{color:rgba(255,255,255,0.9);font-size:1.1em}
+.end-score-box{background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.35);border-radius:20px;padding:16px 40px;color:white;font-size:1.8em;font-weight:bold}
+.end-stars{font-size:2.2em;letter-spacing:4px}
+.btn-play-again{background:#FFD700;color:#333;border:none;padding:15px 44px;border-radius:40px;font-size:1.2em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.2);margin-top:8px}
+@keyframes popCorrect{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+@keyframes shakeWrong{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes pulseHint{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.6)}50%{box-shadow:0 0 0 14px rgba(255,215,0,0)}}
+@keyframes trophySpin{from{transform:rotate(-20deg) scale(0)}60%{transform:rotate(10deg) scale(1.1)}to{transform:rotate(0) scale(1)}}
+@media(max-width:480px){
+  #game-screen{padding:8px 10px 72px}
+  .hdr{padding:8px 12px;margin-bottom:8px}
+  .act-card{padding:12px 8px;gap:12px}
+  .day-card-big{padding:14px 24px}
+  .day-card-big .dc-name{font-size:1.3em}
+  .choice-btn{min-width:72px;padding:8px 4px}
+  .order-card{width:68px;height:68px}
+  .btn-restart{padding:10px 22px;font-size:0.92em}
+}
+</style>
+</head>
+<body>
+
+<div id="intro-screen" onclick="startGame()">
+  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onerror="this.style.display='none'">
+</div>
+<div id="toast"></div>
+<div id="game-screen">
+  <div class="hdr">
+    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 7</div>
+    <div class="hdr-title">Days of the Week &middot; LY3</div>
+    <button class="mute-btn" id="mute-btn" onclick="toggleMute()">&#128266;</button>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Step <span id="step-num">1</span> / 7</span>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
+  </div>
+  <div class="instruction" id="instruction-txt"></div>
+  <div class="act-card" id="act-area"></div>
+  <div class="bottom-row">
+    <button class="btn-restart" onclick="restartGame()">&#128260; &nbsp;Restart</button>
+  </div>
+</div>
+<div id="end-screen">
+  <div class="end-trophy">&#127942;</div>
+  <div class="end-title">Fantastic Work!</div>
+  <div class="end-sub">You learned the Days of the Week!</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 7</div>
+  <div class="end-stars" id="end-stars"></div>
+  <button class="btn-play-again" onclick="restartGame()">&#9654; &nbsp;Play Again</button>
+</div>
+
+<script>
+/* ── Day data ── */
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const DAY_COLOR = {
+  Monday:'#E53935', Tuesday:'#FF6F00', Wednesday:'#F9A825',
+  Thursday:'#2E7D32', Friday:'#1565C0', Saturday:'#6A1B9A', Sunday:'#C62828'
+};
+const DAY_EMOJI = {
+  Monday:'&#128218;', Tuesday:'&#127939;', Wednesday:'&#127912;',
+  Thursday:'&#127925;', Friday:'&#127881;', Saturday:'&#9917;', Sunday:'&#127968;'
+};
+
+/* ── Screens ── */
+const SCREENS = [
+  { type:'identify', day:'Saturday',
+    instr:'What day is shown on the card? Tap the correct answer!' },
+  { type:'after', ref:'Tuesday',
+    instr:'What day comes AFTER Tuesday? Tap the correct answer!' },
+  { type:'after', ref:'Saturday',
+    instr:'What day comes AFTER Saturday? Tap the correct answer!' },
+  { type:'before', ref:'Friday',
+    instr:'What day comes BEFORE Friday? Tap the correct answer!' },
+  { type:'missing', seq:['Monday','Tuesday',null,'Thursday'],
+    instr:'Which day is missing? Tap the correct answer!' },
+  { type:'missing', seq:['Thursday','Friday',null,'Sunday'],
+    instr:'Which day is missing? Tap the correct answer!' },
+  { type:'order',
+    instr:'Tap the days in order from Monday to Sunday!' },
+];
+
+/* ── State ── */
+let curScreen=0, score=0, idAttempts=0, idAnswered=false, muted=false;
+let _orderNext=0;
+
+/* ── Audio ── */
+const sndWrong=new Audio('Assets/wrong.mp3');
+const sndClaps=new Audio('Assets/free_claps.mp3');
+function unlockAudio(){[sndWrong,sndClaps].forEach(s=>{s.play().catch(()=>{});s.pause();s.currentTime=0});document.removeEventListener('pointerdown',unlockAudio)}
+document.addEventListener('pointerdown',unlockAudio);
+function play(s){if(muted)return;s.currentTime=0;s.play().catch(()=>{})}
+function speak(text){
+  if(!('speechSynthesis' in window)||muted)return;
+  sndClaps.pause();sndClaps.currentTime=0;
+  window.speechSynthesis.cancel();
+  setTimeout(()=>{
+    if(muted)return;
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='en-US';u.rate=0.7;u.pitch=1.0;
+    const v=window.speechSynthesis.getVoices();
+    const voice=v.find(x=>x.lang.startsWith('en')&&!x.name.includes('Google'))||v.find(x=>x.lang.startsWith('en'))||v[0];
+    if(voice)u.voice=voice;
+    window.speechSynthesis.speak(u);
+  },150);
+}
+window.speechSynthesis.getVoices();
+window.speechSynthesis.addEventListener('voiceschanged',()=>window.speechSynthesis.getVoices());
+
+/* ── Load Screen ── */
+function loadScreen(){
+  if(curScreen>=SCREENS.length){showEnd();return;}
+  const s=SCREENS[curScreen];
+  idAttempts=0;idAnswered=false;
+  document.getElementById('step-num').textContent=curScreen+1;
+  document.getElementById('prog-bar').style.width=((curScreen/SCREENS.length)*100)+'%';
+  document.getElementById('instruction-txt').textContent=s.instr;
+  speak(s.instr);
+  if(s.type==='identify') renderIdentify(s);
+  else if(s.type==='after')    renderAfterBefore(s,'after');
+  else if(s.type==='before')   renderAfterBefore(s,'before');
+  else if(s.type==='missing')  renderMissing(s);
+  else if(s.type==='order')    renderOrder();
+}
+
+/* ── Day card HTML helpers ── */
+function bigCard(day){
+  return `<div class="day-card-big" style="background:${DAY_COLOR[day]}">
+    <span class="dc-emoji">${DAY_EMOJI[day]}</span>
+    <span class="dc-name">${day}</span>
+  </div>`;
+}
+function chip(day){
+  return `<div class="seq-chip" style="background:${DAY_COLOR[day]}">
+    <span class="sc-emoji">${DAY_EMOJI[day]}</span>
+    <span>${day.slice(0,3)}</span>
+  </div>`;
+}
+function choiceBtn(day, i){
+  return `<button class="choice-btn c${i}" data-choice="${day}"
+    style="background:${DAY_COLOR[day]}"
+    onclick="selectAnswer('${day}')">
+    <span class="cb-emoji">${DAY_EMOJI[day]}</span>
+    <span>${day}</span>
+  </button>`;
+}
+
+/* ── Identify ── */
+function renderIdentify(s){
+  const correct=s.day;
+  const wrong=DAYS.filter(d=>d!==correct);
+  const picked=[wrong[Math.floor(Math.random()*wrong.length)]];
+  let w2; do{w2=wrong[Math.floor(Math.random()*wrong.length)];}while(w2===picked[0]);
+  picked.push(w2);
+  const choices=shuffle([correct,...picked]);
+  document.getElementById('act-area').innerHTML=`
+    ${bigCard(correct)}
+    <div class="choices-row" id="id-choices">
+      ${choices.map((d,i)=>choiceBtn(d,i)).join('')}
+    </div>`;
+}
+
+/* ── After / Before ── */
+function renderAfterBefore(s,mode){
+  const ref=s.ref;
+  const idx=DAYS.indexOf(ref);
+  const correct=mode==='after'?DAYS[(idx+1)%7]:DAYS[(idx+6)%7];
+  const wrong=DAYS.filter(d=>d!==correct&&d!==ref);
+  const picked=shuffle(wrong).slice(0,2);
+  const choices=shuffle([correct,...picked]);
+  document.getElementById('act-area').innerHTML=`
+    ${bigCard(ref)}
+    <div class="choices-row" id="id-choices">
+      ${choices.map((d,i)=>choiceBtn(d,i)).join('')}
+    </div>`;
+}
+
+/* ── Missing ── */
+function renderMissing(s){
+  const correct=DAYS[s.seq.indexOf(null)>-1?s.seq.findIndex(x=>x===null):0];
+  const missingDay=s.seq.find(x=>x===null||false)||DAYS[s.seq.findIndex(x=>x===null)];
+  const actualMissing=DAYS[s.seq.findIndex(x=>x===null)];
+  // Build strip
+  const strip=s.seq.map((d,i)=>{
+    if(d===null) return `<span class="seq-blank">?</span>`;
+    const part=chip(d);
+    return i<s.seq.length-1?part+`<span class="seq-arrow">&#8594;</span>`:part;
+  }).join('');
+  const wrong=DAYS.filter(d=>d!==actualMissing);
+  const picked=shuffle(wrong).slice(0,2);
+  const choices=shuffle([actualMissing,...picked]);
+  document.getElementById('act-area').innerHTML=`
+    <div class="seq-strip">${strip}</div>
+    <div class="choices-row" id="id-choices">
+      ${choices.map((d,i)=>choiceBtn(d,i)).join('')}
+    </div>`;
+}
+
+/* ── Answer handler (identify / after / before / missing) ── */
+function selectAnswer(choice){
+  if(idAnswered)return;
+  const s=SCREENS[curScreen];
+  let correct;
+  if(s.type==='identify') correct=s.day;
+  else if(s.type==='after'){const idx=DAYS.indexOf(s.ref);correct=DAYS[(idx+1)%7];}
+  else if(s.type==='before'){const idx=DAYS.indexOf(s.ref);correct=DAYS[(idx+6)%7];}
+  else if(s.type==='missing') correct=DAYS[s.seq.findIndex(x=>x===null)];
+
+  const correctBtn=document.querySelector(`#id-choices [data-choice="${correct}"]`);
+  const chosenBtn=document.querySelector(`#id-choices [data-choice="${choice}"]`);
+
+  if(choice===correct){
+    idAnswered=true;
+    document.querySelectorAll('.choice-btn').forEach(b=>b.style.pointerEvents='none');
+    chosenBtn.classList.add('correct');
+    score++;document.getElementById('score-val').textContent=score;
+    window.speechSynthesis?.cancel();
+    showToast('&#11088; Correct!','#4CAF50');
+    spawnConfetti();
+    sndClaps.currentTime=0;sndClaps.play().catch(()=>{});
+    setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},3000);
+  } else {
+    idAttempts++;
+    chosenBtn.classList.add('wrong');
+    play(sndWrong);
+    if(idAttempts===1){
+      showToast('&#10060; Try again!','#f44336');
+      setTimeout(()=>{chosenBtn.classList.remove('wrong');if(!idAnswered)correctBtn.classList.add('hint');},900);
+    } else {
+      idAnswered=true;
+      showToast('&#10060; Wrong!','#f44336');
+      setTimeout(()=>{
+        document.querySelectorAll('.choice-btn').forEach(b=>b.classList.remove('correct','wrong','hint'));
+        correctBtn.classList.add('correct');
+        showToast('&#128161; Correct answer!','#FF9800');
+        setTimeout(()=>nextScreen(),3000);
+      },1000);
+    }
+  }
+}
+
+/* ── Order screen ── */
+function renderOrder(){
+  _orderNext=0;
+  const shuffled=shuffle([...DAYS]);
+  const cards=shuffled.map(day=>`
+    <div class="order-card" data-day="${day}" onclick="tapOrderDay('${day}')"
+      style="background:${DAY_COLOR[day]}">
+      <span class="oc-emoji">${DAY_EMOJI[day]}</span>
+      <span>${day.slice(0,3)}</span>
+    </div>`).join('');
+  document.getElementById('act-area').innerHTML=`
+    <div class="order-label">Tap from <b>Monday</b> &#8594; <b>Sunday</b></div>
+    <div class="order-grid">${cards}</div>`;
+}
+
+function tapOrderDay(day){
+  if(DAYS[_orderNext]!==day){
+    const el=document.querySelector(`.order-card[data-day="${day}"]`);
+    el.classList.add('wrong-tap');play(sndWrong);
+    showToast('&#10060; Try again!','#f44336');
+    setTimeout(()=>el.classList.remove('wrong-tap'),400);
+    return;
+  }
+  const el=document.querySelector(`.order-card[data-day="${day}"]`);
+  el.classList.add('order-done');
+  el.onclick=null;
+  _orderNext++;
+  if(_orderNext===7){
+    score++;document.getElementById('score-val').textContent=score;
+    showToast('&#11088; Well done!','#4CAF50');
+    window.speechSynthesis?.cancel();
+    play(sndClaps);spawnConfetti();
+    setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},3000);
+  }
+}
+
+/* ── Helpers ── */
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+/* ── Navigation ── */
+function nextScreen(){curScreen++;loadScreen();}
+
+function startGame(){
+  document.getElementById('intro-screen').style.display='none';
+  document.getElementById('game-screen').style.display='flex';
+  curScreen=0;score=0;
+  document.getElementById('score-val').textContent=0;
+  loadScreen();
+}
+function restartGame(){
+  window.speechSynthesis?.cancel();
+  document.getElementById('end-screen').style.display='none';
+  document.getElementById('game-screen').style.display='flex';
+  curScreen=0;score=0;
+  document.getElementById('score-val').textContent=0;
+  loadScreen();
+}
+
+/* ── Toast / Confetti ── */
+let toastTimer=null;
+function showToast(msg,bg){
+  const el=document.getElementById('toast');
+  el.innerHTML=msg;el.style.background=bg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),1400);
+}
+const CC=['#FFD700','#FF6B6B','#4CAF50','#2196F3','#FF9800','#AB47BC','#26C6DA'];
+function spawnConfetti(){
+  for(let i=0;i<60;i++) setTimeout(()=>{
+    const el=document.createElement('div');el.className='confetti';
+    const sz=6+Math.random()*9;
+    el.style.cssText=`left:${Math.random()*100}vw;top:-12px;width:${sz}px;height:${sz}px;background:${CC[Math.floor(Math.random()*CC.length)]};border-radius:${Math.random()>.4?'50%':'2px'};animation:cfFall ${1.4+Math.random()*1.8}s linear forwards`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),3500);
+  },i*22);
+}
+if(!document.querySelector('#cf-style')){const s=document.createElement('style');s.id='cf-style';s.textContent='@keyframes cfFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(540deg);opacity:0}}';document.head.appendChild(s);}
+
+function toggleMute(){
+  muted=!muted;
+  document.getElementById('mute-btn').innerHTML=muted?'&#128263;':'&#128266;';
+  if(muted){window.speechSynthesis?.cancel();sndClaps.pause();}
+  else speak(document.getElementById('instruction-txt').textContent);
+}
+function showEnd(){
+  document.getElementById('game-screen').style.display='none';
+  document.getElementById('end-screen').style.display='flex';
+  document.getElementById('final-score').textContent=score;
+  document.getElementById('end-stars').innerHTML=score>=6?'&#11088;&#11088;&#11088;':score>=4?'&#11088;&#11088;':'&#11088;';
+  window.speechSynthesis?.cancel();
+  sndClaps.currentTime=0;sndClaps.play().catch(()=>{});
+  setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;},3000);
+  spawnConfetti();setTimeout(spawnConfetti,800);
+}
+</script>
+</body>
+</html>
