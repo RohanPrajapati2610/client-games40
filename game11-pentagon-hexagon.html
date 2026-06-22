@@ -155,7 +155,7 @@ const SCREENS = [
 let curScreen=0, score=0, idAttempts=0, idAnswered=false, muted=false;
 let sortPlaced=0, sortItems=[];
 let drawColor='#E53935', isErasing=false;
-let _traceVerts=[], _traceNextIdx=0, _traceSides=0, _traceColor='';
+let _traceVerts=[], _traceNextIdx=1, _traceSides=0, _traceColor='', _traceLocked=false;
 
 /* ── Audio ── */
 const sndWrong = new Audio('Assets/wrong.mp3');
@@ -252,11 +252,11 @@ function renderTrace(s) {
     const lx=(cx+(r+22)*Math.cos(a)).toFixed(1);
     const ly=(cy+(r+22)*Math.sin(a)).toFixed(1);
     labelGroups+=`<g id="vtx-g-${i}" onclick="tapVertex(${i})" style="cursor:pointer;user-select:none">
-      <circle id="vtx-c-${i}" cx="${lx}" cy="${ly}" r="15" fill="${i===0?color:'#ccc'}"/>
+      <circle id="vtx-c-${i}" cx="${lx}" cy="${ly}" r="15" fill="${i===0?'#4CAF50':i===1?color:'#ccc'}"/>
       <text x="${lx}" y="${(parseFloat(ly)+5).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="bold" fill="white" style="pointer-events:none">${i+1}</text>
     </g>`;
   }
-  _traceVerts=verts; _traceNextIdx=0; _traceSides=sides; _traceColor=color;
+  _traceVerts=verts; _traceNextIdx=1; _traceSides=sides; _traceColor=color; _traceLocked=false;
   document.getElementById('act-area').innerHTML=`
     <div class="shape-badge" style="background:${color}">${s.shape.label} &mdash; ${sides} sides</div>
     <div class="trace-wrap" style="width:${sz}px;height:${sz}px">
@@ -371,10 +371,11 @@ function renderSort() {
 
 /* ── Trace: tap-to-connect ── */
 function tapVertex(idx){
-  if(idx!==_traceNextIdx)return;
+  if(_traceLocked||idx!==_traceNextIdx)return;
+  _traceLocked=true; setTimeout(()=>{_traceLocked=false;},350);
   const v=_traceVerts, c=_traceColor, n=_traceSides;
   document.getElementById('vtx-c-'+idx).setAttribute('fill','#4CAF50');
-  if(idx>0) _addTraceLine(v[idx-1],v[idx],c);
+  _addTraceLine(v[idx-1],v[idx],c);
   _traceNextIdx++;
   if(_traceNextIdx<n){
     document.getElementById('vtx-c-'+_traceNextIdx).setAttribute('fill',c);
