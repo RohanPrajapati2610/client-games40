@@ -25,13 +25,13 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .act-card{background:white;border-radius:24px;padding:18px 14px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;flex-shrink:0}
 .shape-badge{color:white;font-size:1.3em;font-weight:800;padding:8px 28px;border-radius:50px;letter-spacing:0.05em}
 /* Trace */
-.trace-wrap{position:relative;width:280px;height:280px;flex-shrink:0}
+.trace-wrap{position:relative;width:min(280px,80vw);height:min(280px,80vw);flex-shrink:0}
 .trace-wrap svg{position:absolute;top:0;left:0;width:100%;height:100%}
 .trace-wrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
 /* Identify */
 .illus-wrap{width:100%;display:flex;justify-content:center}
 .id-choices{display:flex;gap:10px;width:100%;justify-content:center}
-.id-btn{flex:1;max-width:150px;padding:14px 6px;border:4px solid transparent;border-radius:18px;font-size:clamp(0.88em,2.6vw,1.05em);font-weight:800;font-family:inherit;cursor:pointer;color:white;box-shadow:0 4px 14px rgba(0,0,0,0.2);transition:transform 0.1s,border-color 0.2s}
+.id-btn{flex:1;min-width:0;max-width:150px;padding:14px 6px;border:4px solid transparent;border-radius:18px;font-size:clamp(0.8em,2.6vw,1.05em);font-weight:800;font-family:inherit;cursor:pointer;color:white;box-shadow:0 4px 14px rgba(0,0,0,0.2);transition:transform 0.1s,border-color 0.2s;word-break:break-word;text-align:center}
 .id-btn:active{transform:scale(0.93)}
 .id-btn.c0{background:linear-gradient(135deg,#7B1FA2,#AB47BC)}
 .id-btn.c1{background:linear-gradient(135deg,#1565C0,#42A5F5)}
@@ -40,7 +40,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .id-btn.wrong{border-color:#f44336;animation:shakeWrong 0.4s ease}
 .id-btn.hint{border-color:#FFD700;animation:pulseHint 1s ease-in-out infinite}
 /* Draw */
-.draw-canvas-wrap{position:relative;width:280px;height:280px;border-radius:14px;border:2px solid #e0e0e0;overflow:hidden;background:white}
+.draw-canvas-wrap{position:relative;width:min(280px,80vw);height:min(280px,80vw);border-radius:14px;border:2px solid #e0e0e0;overflow:hidden;background:white}
 .draw-guide{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
 #draw-canvas{position:absolute;top:0;left:0;display:block;touch-action:none;cursor:crosshair;width:100%;height:100%}
 .palette{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
@@ -81,7 +81,19 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 @keyframes shakeWrong{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 @keyframes pulseHint{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.6)}50%{box-shadow:0 0 0 14px rgba(255,215,0,0)}}
 @keyframes trophySpin{from{transform:rotate(-20deg) scale(0)}60%{transform:rotate(10deg) scale(1.1)}to{transform:rotate(0) scale(1)}}
-@media(max-width:480px){.act-card{padding:14px 10px;gap:10px}.id-btn{padding:12px 4px}.trace-wrap{width:240px;height:240px}#draw-canvas{width:240px;height:240px}.sort-item{width:58px;height:58px}#sort-ghost{width:58px;height:58px}}
+@media(max-width:480px){
+  #game-screen{padding:8px 10px 72px}
+  .hdr{padding:8px 12px;margin-bottom:8px}
+  .act-card{padding:12px 8px;gap:10px}
+  .shape-badge{font-size:1.1em;padding:6px 18px}
+  .id-btn{padding:10px 3px;max-width:110px}
+  .sort-item{width:58px;height:58px}
+  #sort-ghost{width:58px;height:58px}
+  .sort-tray{gap:7px}
+  .drop-zone{min-height:100px;padding:6px;gap:4px}
+  .btn-next{padding:11px 24px;font-size:0.95em}
+  .btn-restart{padding:10px 22px;font-size:0.92em}
+}
 </style>
 </head>
 <body>
@@ -261,7 +273,7 @@ function renderTrace(s) {
   _traceVerts=verts; _traceNextIdx=1; _traceSides=sides; _traceColor=color; _traceLocked=false;
   document.getElementById('act-area').innerHTML=`
     <div class="shape-badge" style="background:${color}">${s.shape.label} &mdash; ${sides} sides</div>
-    <div class="trace-wrap" style="width:${sz}px;height:${sz}px">
+    <div class="trace-wrap">
       <svg id="trace-svg" viewBox="0 0 ${vsz} ${vsz}" style="width:100%;height:100%;position:absolute;top:0;left:0">
         <polygon points="${pts}" fill="${s.shape.light}" stroke="${color}" stroke-width="3" stroke-dasharray="10,6" opacity="0.45"/>
         <g id="trace-lines"></g>
