@@ -93,12 +93,12 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#ff
 <div id="toast"></div>
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 7</div>
+    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 12</div>
     <div class="hdr-title">Currency &middot; LY3</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">&#128266;</button>
   </div>
   <div class="progress-row">
-    <span class="progress-label">Step <span id="step-num">1</span> / 7</span>
+    <span class="progress-label">Step <span id="step-num">1</span> / 12</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
   <div class="instruction" id="instruction-txt"></div>
@@ -111,7 +111,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#ff
   <div class="end-trophy">&#127942;</div>
   <div class="end-title">Fantastic Work!</div>
   <div class="end-sub">You learned about Indian Currency!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 7</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 12</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">&#9654; &nbsp;Play Again</button>
 </div>
@@ -123,17 +123,32 @@ const SCREENS = [
   { type:'identify', img:'Assets/coin-1-rupee.jpg',  isCoin:true,  answer:'&#8377;1',
     choices:['&#8377;1','&#8377;2','&#8377;5'],
     instr:'What is the value of this coin? Tap the correct answer!' },
+  { type:'identify', img:'Assets/coin-2-rupee.png',  isCoin:true,  answer:'&#8377;2',
+    choices:['&#8377;1','&#8377;2','&#8377;5'],
+    instr:'What is the value of this coin? Tap the correct answer!' },
   { type:'identify', img:'Assets/coin-5-rupee.png',  isCoin:true,  answer:'&#8377;5',
     choices:['&#8377;2','&#8377;5','&#8377;10'],
     instr:'What is the value of this coin? Tap the correct answer!' },
   { type:'identify', img:'Assets/coin-10-rupee.png', isCoin:true,  answer:'&#8377;10',
     choices:['&#8377;5','&#8377;10','&#8377;20'],
     instr:'What is the value of this coin? Tap the correct answer!' },
+  { type:'identify', img:'Assets/coin-20-rupee.png', isCoin:true,  answer:'&#8377;20',
+    choices:['&#8377;10','&#8377;20','&#8377;5'],
+    instr:'What is the value of this coin? Tap the correct answer!' },
   { type:'identify', img:'Assets/10.png',            isCoin:false, answer:'&#8377;10',
     choices:['&#8377;10','&#8377;20','&#8377;50'],
     instr:'What is the value of this note? Tap the correct answer!' },
+  { type:'identify', img:'Assets/20.png',            isCoin:false, answer:'&#8377;20',
+    choices:['&#8377;10','&#8377;20','&#8377;50'],
+    instr:'What is the value of this note? Tap the correct answer!' },
+  { type:'identify', img:'Assets/50.png',            isCoin:false, answer:'&#8377;50',
+    choices:['&#8377;20','&#8377;50','&#8377;100'],
+    instr:'What is the value of this note? Tap the correct answer!' },
   { type:'identify', img:'Assets/100.png',           isCoin:false, answer:'&#8377;100',
     choices:['&#8377;50','&#8377;100','&#8377;200'],
+    instr:'What is the value of this note? Tap the correct answer!' },
+  { type:'identify', img:'Assets/200.png',           isCoin:false, answer:'&#8377;200',
+    choices:['&#8377;100','&#8377;200','&#8377;500'],
     instr:'What is the value of this note? Tap the correct answer!' },
   { type:'identify', img:'Assets/500.png',           isCoin:false, answer:'&#8377;500',
     choices:['&#8377;200','&#8377;500','&#8377;100'],
@@ -385,7 +400,7 @@ function showEnd(){
   document.getElementById('game-screen').style.display='none';
   document.getElementById('end-screen').style.display='flex';
   document.getElementById('final-score').textContent=score;
-  document.getElementById('end-stars').innerHTML=score>=6?'&#11088;&#11088;&#11088;':score>=4?'&#11088;&#11088;':'&#11088;';
+  document.getElementById('end-stars').innerHTML=score>=10?'&#11088;&#11088;&#11088;':score>=7?'&#11088;&#11088;':'&#11088;';
   window.speechSynthesis?.cancel();
   sndClaps.currentTime=0;sndClaps.play().catch(()=>{});
   setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;},3000);
