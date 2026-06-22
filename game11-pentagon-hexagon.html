@@ -241,7 +241,7 @@ function loadScreen() {
 }
 
 function renderTrace(s) {
-  const sz=280, cx=140, cy=140, r=112;
+  const sz=280, vsz=320, cx=vsz/2, cy=vsz/2, r=112;
   const sides=s.shape.sides, color=s.shape.color;
   const pts=polyPts(sides,cx,cy,r);
   const verts=[];
@@ -260,14 +260,14 @@ function renderTrace(s) {
   document.getElementById('act-area').innerHTML=`
     <div class="shape-badge" style="background:${color}">${s.shape.label} &mdash; ${sides} sides</div>
     <div class="trace-wrap" style="width:${sz}px;height:${sz}px">
-      <svg id="trace-svg" viewBox="0 0 ${sz} ${sz}" style="width:100%;height:100%;position:absolute;top:0;left:0">
+      <svg id="trace-svg" viewBox="0 0 ${vsz} ${vsz}" style="width:100%;height:100%;position:absolute;top:0;left:0">
         <polygon points="${pts}" fill="${s.shape.light}" stroke="${color}" stroke-width="3" stroke-dasharray="10,6" opacity="0.45"/>
         <g id="trace-lines"></g>
         ${labelGroups}
       </svg>
     </div>
     <p style="font-size:0.82em;color:#777;text-align:center;margin-top:4px">Tap the numbers in order! 1 &#10230; ${sides}</p>
-    <button class="btn-next" id="trace-next-btn" disabled onclick="nextScreen()">I traced it! &#9654;</button>`;
+    <button class="btn-next" id="trace-next-btn" disabled onclick="finishStep()">I traced it! &#9654;</button>`;
 }
 
 function renderIdentify(s) {
@@ -329,7 +329,7 @@ function renderDraw(s) {
     <div class="palette">${swatches}</div>
     <div class="tool-row">
       <button class="btn-eraser" id="eraser-btn" onclick="toggleEraser()">&#9003; Eraser</button>
-      <button class="btn-next" id="draw-next-btn" disabled onclick="nextScreen()">Done! &#9654;</button>
+      <button class="btn-next" id="draw-next-btn" disabled onclick="finishStep()">Done! &#9654;</button>
     </div>`;
   drawColor=DRAW_COLORS[0]; isErasing=false;
   initDrawCanvas(document.getElementById('draw-canvas'), s.shape.sides, cx, cy, r, sz);
@@ -381,6 +381,7 @@ function tapVertex(idx){
     document.getElementById('vtx-c-'+_traceNextIdx).setAttribute('fill',c);
   } else {
     _addTraceLine(v[n-1],v[0],c);
+    showToast('&#11088; Well done!','#4CAF50');
     const btn=document.getElementById('trace-next-btn');
     if(btn) btn.disabled=false;
   }
@@ -475,6 +476,10 @@ function clearZoneHighlights(){document.querySelectorAll('.drop-zone').forEach(z
 
 /* ── Navigation ── */
 function nextScreen(){curScreen++;loadScreen();}
+function finishStep(){
+  play(sndClaps);spawnConfetti();
+  setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},1800);
+}
 
 function startGame(){
   document.getElementById('intro-screen').style.display='none';
