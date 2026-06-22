@@ -55,6 +55,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .sort-zone-label{font-size:0.82em;font-weight:800;color:#6a0dad}
 .drop-zone{width:100%;min-height:120px;border:3px dashed #bbb;border-radius:16px;display:flex;flex-wrap:wrap;align-items:flex-start;align-content:flex-start;gap:6px;padding:8px;background:#fafafa;transition:border-color 0.2s,background 0.2s}
 .drop-zone.over{border-color:#7b1fa2;background:#f3e5f5}
+.drop-zone.hint{border-color:#FFD700;animation:pulseHint 1s ease-in-out 3}
 .sort-tray{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:6px 0;width:100%}
 .sort-item{width:68px;height:68px;cursor:grab;display:flex;align-items:center;justify-content:center;border-radius:12px;background:white;box-shadow:0 3px 10px rgba(0,0,0,0.15);touch-action:none;flex-shrink:0}
 .sort-item.correct-placed{box-shadow:0 0 0 3px #4CAF50;cursor:default}
@@ -156,6 +157,7 @@ let curScreen=0, score=0, idAttempts=0, idAnswered=false, muted=false;
 let sortPlaced=0, sortItems=[];
 let drawColor='#E53935', isErasing=false;
 let _traceVerts=[], _traceNextIdx=1, _traceSides=0, _traceColor='', _traceLocked=false;
+let _sortAttempts=new Map();
 
 /* ── Audio ── */
 const sndWrong = new Audio('Assets/wrong.mp3');
@@ -347,7 +349,7 @@ function toggleEraser(){
 }
 
 function renderSort() {
-  sortPlaced=0;
+  sortPlaced=0; _sortAttempts=new Map();
   const items=[...SORT_ITEMS_DEF];
   for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[items[i],items[j]]=[items[j],items[i]];}
   const trayHTML=items.map(it=>`
@@ -446,26 +448,37 @@ function startSortDrag(e,el){
 function onSortMove(e){e.preventDefault();moveGhost(e.clientX,e.clientY);highlightZone(e.clientX,e.clientY);}
 function onSortDrop(e){
   e.preventDefault();
-  cleanSortListeners(_dragEl);
+  const el=_dragEl; _dragEl=null;
+  cleanSortListeners(el);
   ghost.style.display='none';
   clearZoneHighlights();
+  if(!el)return;
   const zone=getZoneAt(e.clientX,e.clientY);
-  if(zone&&parseInt(zone.dataset.sides)===_dragSides){
-    zone.appendChild(_dragEl);
-    _dragEl.classList.add('correct-placed');
-    _dragEl.removeEventListener('pointerdown',startSortDrag);
-    _dragEl.style.cursor='default';
-    sortPlaced++;
-    showToast('&#11088; Correct!','#4CAF50');
-    play(sndClaps);
-    if(sortPlaced===6) setTimeout(()=>nextScreen(),2200);
+  if(zone&&parseInt(zone.dataset.sides)===parseInt(el.dataset.sides)){
+    zone.appendChild(el);el.classList.add('correct-placed');el.style.cursor='default';
+    sortPlaced++;showToast('&#11088; Correct!','#4CAF50');play(sndClaps);
+    if(sortPlaced===6)setTimeout(()=>nextScreen(),2200);
   } else if(zone){
-    _dragEl.classList.add('wrong-drop');
-    play(sndWrong);
-    showToast('&#10060; Try again!','#f44336');
-    setTimeout(()=>_dragEl&&_dragEl.classList.remove('wrong-drop'),500);
+    el.classList.add('wrong-drop');play(sndWrong);showToast('&#10060; Try again!','#f44336');
+    setTimeout(()=>el.classList.remove('wrong-drop'),500);
+    const attempts=(_sortAttempts.get(el)||0)+1;
+    _sortAttempts.set(el,attempts);
+    if(attempts===1){
+      setTimeout(()=>{
+        const cz=document.getElementById('zone-'+el.dataset.sides);
+        if(cz){cz.classList.add('hint');setTimeout(()=>cz.classList.remove('hint'),2100);}
+      },700);
+    } else {
+      setTimeout(()=>{
+        const cz=document.getElementById('zone-'+el.dataset.sides);
+        if(cz){
+          cz.appendChild(el);el.classList.add('correct-placed');el.style.cursor='default';
+          sortPlaced++;showToast('&#128161; Correct zone!','#FF9800');
+          if(sortPlaced===6)setTimeout(()=>nextScreen(),2200);
+        }
+      },800);
+    }
   }
-  _dragEl=null;
 }
 function onSortCancel(){ghost.style.display='none';clearZoneHighlights();cleanSortListeners(_dragEl);_dragEl=null;}
 function cleanSortListeners(el){if(!el)return;el.removeEventListener('pointermove',onSortMove);el.removeEventListener('pointerup',onSortDrop);el.removeEventListener('pointercancel',onSortCancel);}
