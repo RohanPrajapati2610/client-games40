@@ -125,11 +125,11 @@ const SORT_ITEMS_DEF=[
   {sides:8,color:'#B71C1C'},{sides:8,color:'#E65100'},{sides:8,color:'#2E7D32'},
 ];
 const SCREENS=[
-  {type:'trace',    shape:SHAPES[0],instr:'Trace the Heptagon! It has 7 sides and 7 corners.'},
+  {type:'trace',    shape:SHAPES[0],instr:'Trace the Heptagon! Tap the numbers 1 to 7 in order.'},
   {type:'identify', shape:SHAPES[0],instr:'What shape is this medal? Tap the correct answer!',
    answer:'Heptagon',choices:['Heptagon','Octagon','Hexagon']},
   {type:'draw',     shape:SHAPES[0],instr:'Draw and colour your own Heptagon!'},
-  {type:'trace',    shape:SHAPES[1],instr:'Trace the Octagon! It has 8 sides and 8 corners.'},
+  {type:'trace',    shape:SHAPES[1],instr:'Trace the Octagon! Tap the numbers 1 to 8 in order.'},
   {type:'identify', shape:SHAPES[1],instr:'What shape is this stop sign? Tap the correct answer!',
    answer:'Octagon',choices:['Hexagon','Heptagon','Octagon']},
   {type:'draw',     shape:SHAPES[1],instr:'Draw and colour your own Octagon!'},
@@ -139,6 +139,7 @@ const SCREENS=[
 let curScreen=0,score=0,idAttempts=0,idAnswered=false,muted=false;
 let sortPlaced=0;
 let drawColor='#E53935',isErasing=false;
+let _traceVerts=[],_traceNextIdx=0,_traceSides=0,_traceColor='';
 
 const sndWrong=new Audio('Assets/wrong.mp3');
 const sndClaps=new Audio('Assets/free_claps.mp3');
@@ -204,26 +205,32 @@ function loadScreen(){
 
 function renderTrace(s){
   const sz=280,cx=140,cy=140,r=112;
-  const pts=polyPts(s.shape.sides,cx,cy,r);
-  let labels='';
-  for(let i=0;i<s.shape.sides;i++){
-    const a=(-90+360*i/s.shape.sides)*Math.PI/180;
-    const lx=(cx+(r+20)*Math.cos(a)).toFixed(1);
-    const ly=(cy+(r+20)*Math.sin(a)).toFixed(1);
-    labels+=`<circle cx="${lx}" cy="${ly}" r="13" fill="${s.shape.color}"/>
-    <text x="${lx}" y="${(parseFloat(ly)+5).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="bold" fill="white">${i+1}</text>`;
+  const sides=s.shape.sides,color=s.shape.color;
+  const pts=polyPts(sides,cx,cy,r);
+  const verts=[];
+  let labelGroups='';
+  for(let i=0;i<sides;i++){
+    const a=(-90+360*i/sides)*Math.PI/180;
+    verts.push({x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)});
+    const lx=(cx+(r+22)*Math.cos(a)).toFixed(1);
+    const ly=(cy+(r+22)*Math.sin(a)).toFixed(1);
+    labelGroups+=`<g id="vtx-g-${i}" onclick="tapVertex(${i})" style="cursor:pointer;user-select:none">
+      <circle id="vtx-c-${i}" cx="${lx}" cy="${ly}" r="15" fill="${i===0?color:'#ccc'}"/>
+      <text x="${lx}" y="${(parseFloat(ly)+5).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="bold" fill="white" style="pointer-events:none">${i+1}</text>
+    </g>`;
   }
+  _traceVerts=verts;_traceNextIdx=0;_traceSides=sides;_traceColor=color;
   document.getElementById('act-area').innerHTML=`
-    <div class="shape-badge" style="background:${s.shape.color}">${s.shape.label} &mdash; ${s.shape.sides} sides</div>
+    <div class="shape-badge" style="background:${color}">${s.shape.label} &mdash; ${sides} sides</div>
     <div class="trace-wrap" style="width:${sz}px;height:${sz}px">
-      <svg viewBox="0 0 ${sz} ${sz}">
-        <polygon points="${pts}" fill="${s.shape.light}" stroke="${s.shape.color}" stroke-width="4" stroke-dasharray="12,7"/>
-        ${labels}
+      <svg id="trace-svg" viewBox="0 0 ${sz} ${sz}" style="width:100%;height:100%;position:absolute;top:0;left:0">
+        <polygon points="${pts}" fill="${s.shape.light}" stroke="${color}" stroke-width="3" stroke-dasharray="10,6" opacity="0.45"/>
+        <g id="trace-lines"></g>
+        ${labelGroups}
       </svg>
-      <canvas id="trace-canvas" width="${sz}" height="${sz}"></canvas>
     </div>
+    <p style="font-size:0.82em;color:#777;text-align:center;margin-top:4px">Tap the numbers in order! 1 &#10230; ${sides}</p>
     <button class="btn-next" id="trace-next-btn" disabled onclick="nextScreen()">I traced it! &#9654;</button>`;
-  initTraceCanvas(document.getElementById('trace-canvas'),s.shape.color);
 }
 
 function renderIdentify(s){
@@ -313,22 +320,29 @@ function renderSort(){
 }
 
 /* ── Canvas ── */
-function initTraceCanvas(canvas,color='#6A1B9A'){
-  const ctx=canvas.getContext('2d');let drawing=false;
-  canvas.addEventListener('pointerdown',e=>{
-    e.preventDefault();drawing=true;canvas.setPointerCapture(e.pointerId);
-    const p=canvasXY(canvas,e);
-    ctx.strokeStyle=color+'99';ctx.lineWidth=18;ctx.lineCap='round';ctx.lineJoin='round';
-    ctx.beginPath();ctx.moveTo(p.x,p.y);
-  },{passive:false});
-  canvas.addEventListener('pointermove',e=>{
-    if(!drawing)return;e.preventDefault();
-    const p=canvasXY(canvas,e);ctx.lineTo(p.x,p.y);ctx.stroke();ctx.beginPath();ctx.moveTo(p.x,p.y);
+/* ── Trace: tap-to-connect ── */
+function tapVertex(idx){
+  if(idx!==_traceNextIdx)return;
+  const v=_traceVerts,c=_traceColor,n=_traceSides;
+  document.getElementById('vtx-c-'+idx).setAttribute('fill','#4CAF50');
+  if(idx>0)_addTraceLine(v[idx-1],v[idx],c);
+  _traceNextIdx++;
+  if(_traceNextIdx<n){
+    document.getElementById('vtx-c-'+_traceNextIdx).setAttribute('fill',c);
+  } else {
+    _addTraceLine(v[n-1],v[0],c);
     const btn=document.getElementById('trace-next-btn');
-    if(btn) btn.disabled=false;
-  },{passive:false});
-  canvas.addEventListener('pointerup',()=>{drawing=false;});
-  canvas.addEventListener('pointercancel',()=>{drawing=false;});
+    if(btn)btn.disabled=false;
+  }
+}
+function _addTraceLine(from,to,color){
+  const g=document.getElementById('trace-lines');
+  if(!g)return;
+  const l=document.createElementNS('http://www.w3.org/2000/svg','line');
+  l.setAttribute('x1',from.x.toFixed(1));l.setAttribute('y1',from.y.toFixed(1));
+  l.setAttribute('x2',to.x.toFixed(1));l.setAttribute('y2',to.y.toFixed(1));
+  l.setAttribute('stroke',color);l.setAttribute('stroke-width','5');l.setAttribute('stroke-linecap','round');
+  g.appendChild(l);
 }
 
 function initDrawCanvas(canvas,sides,cx,cy,r,sz){
