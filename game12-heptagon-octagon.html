@@ -37,9 +37,9 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .id-btn.correct{border-color:#4CAF50;box-shadow:0 0 0 5px #4CAF5040;animation:popCorrect 0.35s ease}
 .id-btn.wrong{border-color:#f44336;animation:shakeWrong 0.4s ease}
 .id-btn.hint{border-color:#FFD700;animation:pulseHint 1s ease-in-out infinite}
-.draw-canvas-wrap{position:relative;width:280px;height:280px;border-radius:14px;border:2px solid #e0e0e0;overflow:hidden}
-.draw-guide{position:absolute;top:0;left:0;width:100%;height:100%}
-#draw-canvas{position:absolute;top:0;left:0;display:block;touch-action:none;cursor:crosshair;width:100%;height:100%;background:transparent}
+.draw-canvas-wrap{position:relative;width:280px;height:280px;border-radius:14px;border:2px solid #e0e0e0;overflow:hidden;background:white}
+.draw-guide{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+#draw-canvas{position:absolute;top:0;left:0;display:block;touch-action:none;cursor:crosshair;width:100%;height:100%}
 .palette{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
 .swatch{width:38px;height:38px;border-radius:50%;cursor:pointer;border:4px solid transparent;transition:transform 0.1s,border-color 0.1s;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
 .swatch.active{border-color:#333;transform:scale(1.2)}
@@ -277,11 +277,10 @@ function renderDraw(s){
   document.getElementById('act-area').innerHTML=`
     <div class="shape-badge" style="background:${s.shape.color}">${s.shape.label}</div>
     <div class="draw-canvas-wrap">
-      <svg class="draw-guide" viewBox="0 0 ${sz} ${sz}">
-        <rect width="${sz}" height="${sz}" fill="white"/>
-        <polygon points="${polyPts(s.shape.sides,cx,cy,r)}" fill="none" stroke="#E0E0E0" stroke-width="3" stroke-dasharray="8,5"/>
-      </svg>
       <canvas id="draw-canvas" width="${sz}" height="${sz}"></canvas>
+      <svg class="draw-guide" viewBox="0 0 ${sz} ${sz}">
+        <polygon points="${polyPts(s.shape.sides,cx,cy,r)}" fill="none" stroke="#BDBDBD" stroke-width="4" stroke-dasharray="9,5"/>
+      </svg>
     </div>
     <div class="palette">${swatches}</div>
     <div class="tool-row">
@@ -360,14 +359,14 @@ function initDrawCanvas(canvas,sides,cx,cy,r,sz){
   canvas.addEventListener('pointerdown',e=>{
     e.preventDefault();drawing=true;canvas.setPointerCapture(e.pointerId);
     const p=canvasXY(canvas,e);
-    if(isErasing){ctx.globalCompositeOperation='destination-out';ctx.strokeStyle='rgba(0,0,0,1)';ctx.lineWidth=28;}
-    else{ctx.globalCompositeOperation='source-over';ctx.strokeStyle=drawColor;ctx.lineWidth=16;}
+    ctx.globalCompositeOperation='source-over';
+    ctx.strokeStyle=isErasing?'white':drawColor;ctx.lineWidth=isErasing?28:16;
     ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();ctx.moveTo(p.x,p.y);
   },{passive:false});
   canvas.addEventListener('pointermove',e=>{
     if(!drawing)return;e.preventDefault();
-    if(isErasing){ctx.globalCompositeOperation='destination-out';ctx.strokeStyle='rgba(0,0,0,1)';ctx.lineWidth=28;}
-    else{ctx.globalCompositeOperation='source-over';ctx.strokeStyle=drawColor;ctx.lineWidth=16;}
+    ctx.globalCompositeOperation='source-over';
+    ctx.strokeStyle=isErasing?'white':drawColor;ctx.lineWidth=isErasing?28:16;
     const p=canvasXY(canvas,e);ctx.lineTo(p.x,p.y);ctx.stroke();ctx.beginPath();ctx.moveTo(p.x,p.y);
     const btn=document.getElementById('draw-next-btn');if(btn&&!isErasing)btn.disabled=false;
   },{passive:false});
