@@ -92,7 +92,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 <div id="toast"></div>
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 2</div>
+    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 7</div>
     <div class="hdr-title">Pentagon &amp; Hexagon &middot; LY4</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">&#128266;</button>
   </div>
@@ -110,7 +110,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   <div class="end-trophy">&#127942;</div>
   <div class="end-title">Fantastic Work!</div>
   <div class="end-sub">You learned Pentagon &amp; Hexagon!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 2</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 7</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">&#9654; &nbsp;Play Again</button>
 </div>
@@ -463,7 +463,7 @@ function onSortDrop(e){
   if(zone&&parseInt(zone.dataset.sides)===parseInt(el.dataset.sides)){
     zone.appendChild(el);el.classList.add('correct-placed');el.style.cursor='default';
     sortPlaced++;showToast('&#11088; Correct!','#4CAF50');play(sndClaps);
-    if(sortPlaced===6)setTimeout(()=>nextScreen(),2200);
+    if(sortPlaced===6){score++;document.getElementById('score-val').textContent=score;setTimeout(()=>nextScreen(),2200);}
   } else if(zone){
     el.classList.add('wrong-drop');play(sndWrong);showToast('&#10060; Try again!','#f44336');
     setTimeout(()=>el.classList.remove('wrong-drop'),500);
@@ -480,7 +480,7 @@ function onSortDrop(e){
         if(cz){
           cz.appendChild(el);el.classList.add('correct-placed');el.style.cursor='default';
           sortPlaced++;showToast('&#128161; Correct zone!','#FF9800');
-          if(sortPlaced===6)setTimeout(()=>nextScreen(),2200);
+          if(sortPlaced===6){score++;document.getElementById('score-val').textContent=score;setTimeout(()=>nextScreen(),2200);}
         }
       },800);
     }
@@ -496,6 +496,7 @@ function clearZoneHighlights(){document.querySelectorAll('.drop-zone').forEach(z
 /* ── Navigation ── */
 function nextScreen(){curScreen++;loadScreen();}
 function finishStep(){
+  score++; document.getElementById('score-val').textContent=score;
   play(sndClaps);spawnConfetti();
   setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},1800);
 }
@@ -546,7 +547,7 @@ function showEnd(){
   document.getElementById('game-screen').style.display='none';
   document.getElementById('end-screen').style.display='flex';
   document.getElementById('final-score').textContent=score;
-  document.getElementById('end-stars').innerHTML=score>=2?'&#11088;&#11088;&#11088;':score>=1?'&#11088;&#11088;':'&#11088;';
+  document.getElementById('end-stars').innerHTML=score>=6?'&#11088;&#11088;&#11088;':score>=4?'&#11088;&#11088;':'&#11088;';
   window.speechSynthesis?.cancel();
   sndClaps.currentTime=0;sndClaps.play().catch(()=>{});setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;},3000);
   spawnConfetti(); setTimeout(spawnConfetti,800);
