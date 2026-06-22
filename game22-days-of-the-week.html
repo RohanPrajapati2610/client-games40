@@ -41,7 +41,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#e8
 .choice-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;min-width:80px;max-width:140px;min-height:72px;padding:10px 6px;border:4px solid transparent;border-radius:16px;font-size:clamp(0.82em,2.5vw,1em);font-weight:800;font-family:inherit;cursor:pointer;color:white;box-shadow:0 4px 14px rgba(0,0,0,0.18);transition:transform 0.1s,border-color 0.2s;gap:4px}
 .choice-btn .cb-emoji{font-size:1.5em}
 .choice-btn:active{transform:scale(0.93)}
-.choice-btn.correct{border-color:#4CAF50 !important;background:linear-gradient(135deg,#55efc4,#00b894) !important;box-shadow:0 0 0 6px rgba(76,175,80,0.5);animation:popCorrect 0.35s ease}
+.choice-btn.correct{border-color:#4CAF50 !important;background:linear-gradient(135deg,#55efc4,#00b894) !important;box-shadow:0 0 0 6px rgba(76,175,80,0.5) !important;animation:popCorrect 0.35s ease !important;transform:none !important}
 .choice-btn.wrong{border-color:#f44336;animation:shakeWrong 0.4s ease}
 .choice-btn.hint{border-color:#FFD700;box-shadow:0 0 0 6px rgba(255,215,0,0.7);animation:pulseHint 0.8s ease-in-out infinite;transform:scale(1.06)}
 
@@ -288,7 +288,7 @@ function selectAnswer(choice){
 
   if(choice===correct){
     idAnswered=true;
-    document.querySelectorAll('.choice-btn').forEach(b=>{b.style.pointerEvents='none';b.classList.remove('hint','wrong');});
+    document.querySelectorAll('.choice-btn').forEach(b=>{b.style.pointerEvents='none';b.classList.remove('hint','wrong');void b.offsetWidth;});
     chosenBtn.classList.add('correct');
     if(s.type==='missing') fillSeqBlank(correct);
     score++;document.getElementById('score-val').textContent=score;
