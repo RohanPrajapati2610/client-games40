@@ -179,6 +179,7 @@ document.addEventListener('pointerdown',unlockAudio);
 function play(s){if(muted)return;s.currentTime=0;s.play().catch(()=>{})}
 function speak(text){
   if(!('speechSynthesis' in window)||muted)return;
+  sndClaps.pause(); sndClaps.currentTime=0;
   window.speechSynthesis.cancel();
   setTimeout(()=>{
     if(muted)return;
@@ -510,6 +511,7 @@ function nextScreen(){curScreen++;loadScreen();}
 function finishStep(){
   score++; document.getElementById('score-val').textContent=score;
   showToast('&#11088; Correct!','#4CAF50');
+  window.speechSynthesis?.cancel();
   play(sndClaps);spawnConfetti();
   setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},1800);
 }
