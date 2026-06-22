@@ -243,8 +243,13 @@ function renderAfterBefore(s,mode){
 }
 
 /* ── Missing ── */
+function getMissingDay(seq){
+  const nullIdx=seq.findIndex(x=>x===null);
+  const dayBefore=seq[nullIdx-1];
+  return DAYS[(DAYS.indexOf(dayBefore)+1)%7];
+}
 function renderMissing(s){
-  const actualMissing=DAYS[s.seq.findIndex(x=>x===null)];
+  const actualMissing=getMissingDay(s.seq);
   const strip=s.seq.map((d,i)=>{
     const arrow=i<s.seq.length-1?`<span class="seq-arrow">&#8594;</span>`:'';
     if(d===null) return `<span class="seq-blank" id="seq-blank">?</span>${arrow}`;
@@ -276,7 +281,7 @@ function selectAnswer(choice){
   if(s.type==='identify') correct=s.day;
   else if(s.type==='after'){const idx=DAYS.indexOf(s.ref);correct=DAYS[(idx+1)%7];}
   else if(s.type==='before'){const idx=DAYS.indexOf(s.ref);correct=DAYS[(idx+6)%7];}
-  else if(s.type==='missing') correct=DAYS[s.seq.findIndex(x=>x===null)];
+  else if(s.type==='missing') correct=getMissingDay(s.seq);
 
   const correctBtn=document.querySelector(`#id-choices [data-choice="${correct}"]`);
   const chosenBtn=document.querySelector(`#id-choices [data-choice="${choice}"]`);
