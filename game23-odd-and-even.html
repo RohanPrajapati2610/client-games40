@@ -50,6 +50,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#e8
 .sort-zone-label.even-lbl{background:#4CAF50}
 .drop-zone{width:100%;min-height:110px;border:3px dashed #bbb;border-radius:16px;display:flex;flex-wrap:wrap;align-items:flex-start;align-content:flex-start;gap:6px;padding:8px;background:#fafafa;transition:border-color 0.2s,background 0.2s}
 .drop-zone.over{border-color:#FF9800;background:#fff8e1}
+.drop-zone.hint{border-color:#FFD700 !important;box-shadow:0 0 0 4px rgba(255,215,0,0.6);animation:pulseHint 0.8s ease-in-out infinite}
 .sort-tray{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:4px 0;width:100%}
 .sort-tile{width:64px;height:64px;cursor:grab;display:flex;align-items:center;justify-content:center;border-radius:14px;background:white;box-shadow:0 3px 10px rgba(0,0,0,0.15);touch-action:none;flex-shrink:0;font-size:1.9em;font-weight:800;color:#333;border:3px solid #ddd;transition:opacity 0.15s}
 .sort-tile.wrong-drop{animation:shakeWrong 0.4s ease}
@@ -157,7 +158,7 @@ function numColor(n){return NUM_COLORS[(n-1)%NUM_COLORS.length];}
 
 /* ── State ── */
 let curScreen=0, score=0, idAttempts=0, idAnswered=false, muted=false;
-let sortPlaced=0, sortDone=false;
+let sortPlaced=0, sortDone=false, _sortAttempts=new Map();
 let tapCorrectLeft=0, tapDone=false;
 
 /* ── Audio ── */
@@ -188,7 +189,7 @@ function loadScreen(){
   if(curScreen>=SCREENS.length){showEnd();return;}
   cleanupSort();
   const s=SCREENS[curScreen];
-  idAttempts=0;idAnswered=false;sortPlaced=0;sortDone=false;tapDone=false;tapCorrectLeft=0;
+  idAttempts=0;idAnswered=false;sortPlaced=0;sortDone=false;_sortAttempts=new Map();tapDone=false;tapCorrectLeft=0;
   document.getElementById('step-num').textContent=curScreen+1;
   document.getElementById('prog-bar').style.width=((curScreen/SCREENS.length)*100)+'%';
   document.getElementById('instruction-txt').textContent=s.instr;
@@ -355,6 +356,35 @@ function onDragEnd(e){
     play(sndWrong);
     showToast('&#10060; Wrong group!','#f44336');
     setTimeout(()=>capturedEl.classList.remove('wrong-drop'),400);
+    const attempts=(_sortAttempts.get(capturedEl)||0)+1;
+    _sortAttempts.set(capturedEl,attempts);
+    if(attempts===1){
+      setTimeout(()=>{
+        const cz=document.getElementById('zone-'+correct);
+        if(cz){cz.classList.add('hint');setTimeout(()=>cz.classList.remove('hint'),2200);}
+      },500);
+    } else {
+      setTimeout(()=>{
+        const cz=document.getElementById('zone-'+correct);
+        if(cz){
+          const placed=document.createElement('div');
+          placed.className=`placed-tile ${correct}-placed`;
+          placed.textContent=capturedEl.dataset.num;
+          cz.appendChild(placed);
+          capturedEl.remove();
+          sortPlaced++;
+          showToast('&#128161; Correct zone!','#FF9800');
+          if(sortPlaced===SCREENS[curScreen].numbers.length){
+            sortDone=true;cleanupSort();
+            score++;document.getElementById('score-val').textContent=score;
+            window.speechSynthesis?.cancel();
+            showToast('&#11088; All sorted!','#4CAF50');
+            play(sndClaps);spawnConfetti();
+            setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},3000);
+          }
+        }
+      },800);
+    }
   }
 }
 function moveGhost(x,y){_ghostEl.style.left=x+'px';_ghostEl.style.top=y+'px';}
