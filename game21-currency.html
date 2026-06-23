@@ -31,17 +31,14 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .price-tag{background:linear-gradient(135deg,#FFD700,#FF9800);color:#333;font-size:clamp(1.3em,5.5vw,2em);font-weight:800;padding:8px 28px;border-radius:30px;box-shadow:0 4px 14px rgba(255,152,0,0.35);letter-spacing:0.02em}
 
 /* Choice buttons with images */
-.id-choices{display:flex;gap:10px;width:100%;justify-content:center}
-.id-btn{flex:1;min-width:0;max-width:160px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px 12px;border:4px solid transparent;border-radius:18px;font-size:clamp(0.9em,2.8vw,1.1em);font-weight:800;font-family:inherit;cursor:pointer;color:white;box-shadow:0 4px 14px rgba(0,0,0,0.2);transition:transform 0.1s,border-color 0.2s;text-align:center}
+.id-choices{display:flex;gap:12px;width:100%;justify-content:center}
+.id-btn{flex:1;min-width:0;max-width:160px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 8px 14px;border:3px solid #e0e0e0;border-radius:18px;font-size:clamp(0.95em,3vw,1.15em);font-weight:800;font-family:inherit;cursor:pointer;color:#333;background:white;box-shadow:0 3px 12px rgba(0,0,0,0.1);transition:transform 0.1s,border-color 0.2s,box-shadow 0.2s;text-align:center}
 .id-btn:active{transform:scale(0.93)}
-.id-btn.c0{background:linear-gradient(135deg,#7B1FA2,#AB47BC)}
-.id-btn.c1{background:linear-gradient(135deg,#1565C0,#42A5F5)}
-.id-btn.c2{background:linear-gradient(135deg,#2E7D32,#66BB6A)}
 .id-btn.correct{border-color:#4CAF50 !important;box-shadow:0 0 0 5px #4CAF5040 !important;animation:popCorrect 0.35s ease !important;transform:none !important}
-.id-btn.wrong{border-color:#f44336;animation:shakeWrong 0.4s ease}
-.id-btn.hint{border-color:#FFD700;animation:pulseHint 1s ease-in-out infinite}
-.btn-coin-img{width:clamp(56px,16vw,80px);height:clamp(56px,16vw,80px);object-fit:cover;border-radius:50%;border:3px solid rgba(255,255,255,0.5)}
-.btn-note-img{width:100%;max-width:120px;height:auto;border-radius:8px;object-fit:contain;border:2px solid rgba(255,255,255,0.4)}
+.id-btn.wrong{border-color:#f44336 !important;box-shadow:0 0 0 4px rgba(244,67,54,0.25) !important;animation:shakeWrong 0.4s ease}
+.id-btn.hint{border-color:#FFD700 !important;box-shadow:0 0 0 5px rgba(255,215,0,0.4) !important;animation:pulseHint 1s ease-in-out infinite}
+.btn-coin-img{width:clamp(60px,18vw,86px);height:clamp(60px,18vw,86px);object-fit:cover;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.btn-note-img{width:100%;max-width:130px;height:auto;border-radius:8px;object-fit:contain;box-shadow:0 2px 8px rgba(0,0,0,0.12)}
 
 /* Sort */
 .sort-zones{display:flex;gap:10px;width:100%}
@@ -125,60 +122,60 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 <script>
 /* ── Screens ── */
 const SCREENS = [
-  { type:'buy', emoji:'&#9917;', objName:'Football', price:'&#8377;100',
-    answer:'&#8377;100',
+  { type:'buy', emoji:'&#9917;', objName:'Football', price:'₹100',
+    answer:'₹100',
     choices:[
-      {label:'&#8377;50',  img:'Assets/50.png',  isCoin:false},
-      {label:'&#8377;100', img:'Assets/100.png', isCoin:false},
-      {label:'&#8377;200', img:'Assets/200.png', isCoin:false},
+      {label:'₹50',  img:'Assets/50.png',  isCoin:false},
+      {label:'₹100', img:'Assets/100.png', isCoin:false},
+      {label:'₹200', img:'Assets/200.png', isCoin:false},
     ],
     instr:'Look at the price tag. Tap the correct note to buy it!' },
-  { type:'buy', emoji:'&#127849;', objName:'Chocolate', price:'&#8377;50',
-    answer:'&#8377;50',
+  { type:'buy', emoji:'&#127849;', objName:'Chocolate', price:'₹50',
+    answer:'₹50',
     choices:[
-      {label:'&#8377;20',  img:'Assets/20.png',  isCoin:false},
-      {label:'&#8377;50',  img:'Assets/50.png',  isCoin:false},
-      {label:'&#8377;100', img:'Assets/100.png', isCoin:false},
+      {label:'₹20',  img:'Assets/20.png',  isCoin:false},
+      {label:'₹50',  img:'Assets/50.png',  isCoin:false},
+      {label:'₹100', img:'Assets/100.png', isCoin:false},
     ],
     instr:'Look at the price tag. Tap the correct note to buy it!' },
-  { type:'buy', emoji:'&#129302;', objName:'Robot Toy', price:'&#8377;200',
-    answer:'&#8377;200',
+  { type:'buy', emoji:'&#129302;', objName:'Robot Toy', price:'₹200',
+    answer:'₹200',
     choices:[
-      {label:'&#8377;100', img:'Assets/100.png', isCoin:false},
-      {label:'&#8377;200', img:'Assets/200.png', isCoin:false},
-      {label:'&#8377;500', img:'Assets/500.png', isCoin:false},
+      {label:'₹100', img:'Assets/100.png', isCoin:false},
+      {label:'₹200', img:'Assets/200.png', isCoin:false},
+      {label:'₹500', img:'Assets/500.png', isCoin:false},
     ],
     instr:'Look at the price tag. Tap the correct note to buy it!' },
-  { type:'buy', emoji:'&#127890;', objName:'Backpack', price:'&#8377;500',
-    answer:'&#8377;500',
+  { type:'buy', emoji:'&#127890;', objName:'Backpack', price:'₹500',
+    answer:'₹500',
     choices:[
-      {label:'&#8377;100', img:'Assets/100.png', isCoin:false},
-      {label:'&#8377;200', img:'Assets/200.png', isCoin:false},
-      {label:'&#8377;500', img:'Assets/500.png', isCoin:false},
+      {label:'₹100', img:'Assets/100.png', isCoin:false},
+      {label:'₹200', img:'Assets/200.png', isCoin:false},
+      {label:'₹500', img:'Assets/500.png', isCoin:false},
     ],
     instr:'Look at the price tag. Tap the correct note to buy it!' },
-  { type:'buy', emoji:'&#9999;&#65039;', objName:'Pencil', price:'&#8377;5',
-    answer:'&#8377;5',
+  { type:'buy', emoji:'&#9999;&#65039;', objName:'Pencil', price:'₹5',
+    answer:'₹5',
     choices:[
-      {label:'&#8377;1', img:'Assets/coin-1-rupee.jpg', isCoin:true},
-      {label:'&#8377;2', img:'Assets/coin-2-rupee.png', isCoin:true},
-      {label:'&#8377;5', img:'Assets/coin-5-rupee.png', isCoin:true},
+      {label:'₹1', img:'Assets/coin-1-rupee.jpg', isCoin:true},
+      {label:'₹2', img:'Assets/coin-2-rupee.png', isCoin:true},
+      {label:'₹5', img:'Assets/coin-5-rupee.png', isCoin:true},
     ],
     instr:'Look at the price tag. Tap the correct coin to buy it!' },
-  { type:'buy', emoji:'&#127846;', objName:'Ice Cream', price:'&#8377;10',
-    answer:'&#8377;10',
+  { type:'buy', emoji:'&#127846;', objName:'Ice Cream', price:'₹10',
+    answer:'₹10',
     choices:[
-      {label:'&#8377;5',  img:'Assets/coin-5-rupee.png',  isCoin:true},
-      {label:'&#8377;10', img:'Assets/coin-10-rupee.png', isCoin:true},
-      {label:'&#8377;20', img:'Assets/coin-20-rupee.png', isCoin:true},
+      {label:'₹5',  img:'Assets/coin-5-rupee.png',  isCoin:true},
+      {label:'₹10', img:'Assets/coin-10-rupee.png', isCoin:true},
+      {label:'₹20', img:'Assets/coin-20-rupee.png', isCoin:true},
     ],
     instr:'Look at the price tag. Tap the correct coin to buy it!' },
-  { type:'buy', emoji:'&#127880;', objName:'Balloon', price:'&#8377;2',
-    answer:'&#8377;2',
+  { type:'buy', emoji:'&#127880;', objName:'Balloon', price:'₹2',
+    answer:'₹2',
     choices:[
-      {label:'&#8377;1', img:'Assets/coin-1-rupee.jpg', isCoin:true},
-      {label:'&#8377;2', img:'Assets/coin-2-rupee.png', isCoin:true},
-      {label:'&#8377;5', img:'Assets/coin-5-rupee.png', isCoin:true},
+      {label:'₹1', img:'Assets/coin-1-rupee.jpg', isCoin:true},
+      {label:'₹2', img:'Assets/coin-2-rupee.png', isCoin:true},
+      {label:'₹5', img:'Assets/coin-5-rupee.png', isCoin:true},
     ],
     instr:'Look at the price tag. Tap the correct coin to buy it!' },
   { type:'sort', instr:'Sort the coins and notes into the correct groups!' },
