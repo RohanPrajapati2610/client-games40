@@ -164,6 +164,9 @@ const SORT_ITEMS_DEF = [
   { kind:'note', img:'Assets/500.png',           label:'500 rupee note' },
 ];
 
+/* ── Preload all images ── */
+[...SCREENS.map(s=>s.img), ...SORT_ITEMS_DEF.map(s=>s.img)].forEach(src=>{new Image().src=src;});
+
 /* ── State ── */
 let curScreen=0, score=0, idAttempts=0, idAnswered=false, muted=false;
 let sortPlaced=0;
