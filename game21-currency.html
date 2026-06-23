@@ -23,19 +23,26 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .progress-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#4CAF50,#8BC34A);transition:width 0.5s ease}
 .instruction{text-align:center;font-size:clamp(0.92em,3vw,1.15em);color:#333;font-weight:800;margin-bottom:8px;padding:0 6px;line-height:1.4;flex-shrink:0}
 .act-card{background:white;border-radius:24px;padding:18px 14px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;flex-shrink:0;margin-top:auto;margin-bottom:auto}
-/* Identify */
-.currency-display{display:flex;justify-content:center;align-items:center}
-.coin-img{width:min(200px,62vw);height:min(200px,62vw);object-fit:cover;border-radius:50%;box-shadow:0 6px 24px rgba(0,0,0,0.25);border:4px solid #FFD700}
-.note-img{width:min(340px,88vw);height:auto;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,0.2)}
+
+/* Object + price display */
+.obj-display{display:flex;flex-direction:column;align-items:center;gap:6px}
+.obj-emoji{font-size:clamp(3em,14vw,5.5em);line-height:1}
+.obj-name{font-size:clamp(1em,3.5vw,1.3em);font-weight:800;color:#555}
+.price-tag{background:linear-gradient(135deg,#FFD700,#FF9800);color:#333;font-size:clamp(1.3em,5.5vw,2em);font-weight:800;padding:8px 28px;border-radius:30px;box-shadow:0 4px 14px rgba(255,152,0,0.35);letter-spacing:0.02em}
+
+/* Choice buttons with images */
 .id-choices{display:flex;gap:10px;width:100%;justify-content:center}
-.id-btn{flex:1;min-width:0;max-width:150px;padding:14px 6px;border:4px solid transparent;border-radius:18px;font-size:clamp(0.9em,2.8vw,1.15em);font-weight:800;font-family:inherit;cursor:pointer;color:white;box-shadow:0 4px 14px rgba(0,0,0,0.2);transition:transform 0.1s,border-color 0.2s;text-align:center;word-break:break-word}
+.id-btn{flex:1;min-width:0;max-width:160px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px 12px;border:4px solid transparent;border-radius:18px;font-size:clamp(0.9em,2.8vw,1.1em);font-weight:800;font-family:inherit;cursor:pointer;color:white;box-shadow:0 4px 14px rgba(0,0,0,0.2);transition:transform 0.1s,border-color 0.2s;text-align:center}
 .id-btn:active{transform:scale(0.93)}
 .id-btn.c0{background:linear-gradient(135deg,#7B1FA2,#AB47BC)}
 .id-btn.c1{background:linear-gradient(135deg,#1565C0,#42A5F5)}
 .id-btn.c2{background:linear-gradient(135deg,#2E7D32,#66BB6A)}
-.id-btn.correct{border-color:#4CAF50;box-shadow:0 0 0 5px #4CAF5040;animation:popCorrect 0.35s ease}
+.id-btn.correct{border-color:#4CAF50 !important;box-shadow:0 0 0 5px #4CAF5040 !important;animation:popCorrect 0.35s ease !important;transform:none !important}
 .id-btn.wrong{border-color:#f44336;animation:shakeWrong 0.4s ease}
 .id-btn.hint{border-color:#FFD700;animation:pulseHint 1s ease-in-out infinite}
+.btn-coin-img{width:clamp(56px,16vw,80px);height:clamp(56px,16vw,80px);object-fit:cover;border-radius:50%;border:3px solid rgba(255,255,255,0.5)}
+.btn-note-img{width:100%;max-width:120px;height:auto;border-radius:8px;object-fit:contain;border:2px solid rgba(255,255,255,0.4)}
+
 /* Sort */
 .sort-zones{display:flex;gap:10px;width:100%}
 .sort-zone-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
@@ -52,10 +59,8 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 #sort-ghost{position:fixed;pointer-events:none;z-index:1000;width:80px;height:80px;display:none;align-items:center;justify-content:center;opacity:0.85;transform:translate(-50%,-50%);background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,0.25)}
 #sort-ghost.is-coin img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 #sort-ghost.is-note img{width:100%;height:100%;object-fit:contain;padding:6px}
-/* Buttons */
-.btn-next{background:linear-gradient(135deg,#4CAF50,#2E7D32);color:white;border:none;padding:13px 34px;border-radius:40px;font-size:1.05em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(76,175,80,0.4);transition:transform 0.1s,opacity 0.2s}
-.btn-next:active{transform:scale(0.95)}
-.btn-next:disabled{opacity:0.35;cursor:not-allowed;transform:none}
+
+/* Bottom */
 .bottom-row{display:flex;justify-content:center;position:fixed;bottom:16px;left:0;right:0;z-index:50;pointer-events:none}
 .btn-restart{pointer-events:all;background:linear-gradient(135deg,#FF9800,#F57C00);color:white;border:none;padding:12px 30px;border-radius:40px;font-size:1em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(255,152,0,0.4)}
 #toast{position:fixed;top:18%;left:50%;transform:translateX(-50%) scale(0.7);padding:13px 28px;border-radius:50px;font-size:1.35em;font-weight:bold;color:white;pointer-events:none;opacity:0;transition:opacity 0.2s,transform 0.2s;z-index:500;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
@@ -76,7 +81,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   #game-screen{padding:8px 10px 72px}
   .hdr{padding:8px 12px;margin-bottom:8px}
   .act-card{padding:12px 8px;gap:12px}
-  .id-btn{padding:10px 3px;max-width:110px}
+  .id-btn{padding:8px 4px 10px;gap:4px}
   .sort-item{width:68px;height:68px}
   #sort-ghost{width:68px;height:68px}
   .sort-tray{gap:7px}
@@ -93,12 +98,12 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 <div id="toast"></div>
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 11</div>
+    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 8</div>
     <div class="hdr-title">Currency &middot; LY3</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">&#128266;</button>
   </div>
   <div class="progress-row">
-    <span class="progress-label">Step <span id="step-num">1</span> / 11</span>
+    <span class="progress-label">Step <span id="step-num">1</span> / 8</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
   <div class="instruction" id="instruction-txt"></div>
@@ -111,7 +116,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   <div class="end-trophy">&#127942;</div>
   <div class="end-title">Fantastic Work!</div>
   <div class="end-sub">You learned about Indian Currency!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 11</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 8</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">&#9654; &nbsp;Play Again</button>
 </div>
@@ -120,39 +125,63 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 <script>
 /* ── Screens ── */
 const SCREENS = [
-  { type:'identify', img:'Assets/coin-1-rupee.jpg',  isCoin:true,  answer:'₹1',
-    choices:['₹1','₹2','₹5'],
-    instr:'What is the value of this coin? Tap the correct answer!' },
-  { type:'identify', img:'Assets/coin-2-rupee.png',  isCoin:true,  answer:'₹2',
-    choices:['₹1','₹2','₹5'],
-    instr:'What is the value of this coin? Tap the correct answer!' },
-  { type:'identify', img:'Assets/coin-5-rupee.png',  isCoin:true,  answer:'₹5',
-    choices:['₹2','₹5','₹10'],
-    instr:'What is the value of this coin? Tap the correct answer!' },
-  { type:'identify', img:'Assets/coin-10-rupee.png', isCoin:true,  answer:'₹10',
-    choices:['₹5','₹10','₹20'],
-    instr:'What is the value of this coin? Tap the correct answer!' },
-  { type:'identify', img:'Assets/coin-20-rupee.png', isCoin:true,  answer:'₹20',
-    choices:['₹10','₹20','₹5'],
-    instr:'What is the value of this coin? Tap the correct answer!' },
-  { type:'identify', img:'Assets/10.png',            isCoin:false, answer:'₹10',
-    choices:['₹10','₹20','₹50'],
-    instr:'What is the value of this note? Tap the correct answer!' },
-  { type:'identify', img:'Assets/20.png',            isCoin:false, answer:'₹20',
-    choices:['₹10','₹20','₹50'],
-    instr:'What is the value of this note? Tap the correct answer!' },
-  { type:'identify', img:'Assets/50.png',            isCoin:false, answer:'₹50',
-    choices:['₹20','₹50','₹100'],
-    instr:'What is the value of this note? Tap the correct answer!' },
-  { type:'identify', img:'Assets/100.png',           isCoin:false, answer:'₹100',
-    choices:['₹50','₹100','₹200'],
-    instr:'What is the value of this note? Tap the correct answer!' },
-  { type:'identify', img:'Assets/200.png',           isCoin:false, answer:'₹200',
-    choices:['₹100','₹200','₹500'],
-    instr:'What is the value of this note? Tap the correct answer!' },
-  { type:'identify', img:'Assets/500.png',           isCoin:false, answer:'₹500',
-    choices:['₹200','₹500','₹100'],
-    instr:'What is the value of this note? Tap the correct answer!' },
+  { type:'buy', emoji:'&#9917;', objName:'Football', price:'&#8377;100',
+    answer:'&#8377;100',
+    choices:[
+      {label:'&#8377;50',  img:'Assets/50.png',  isCoin:false},
+      {label:'&#8377;100', img:'Assets/100.png', isCoin:false},
+      {label:'&#8377;200', img:'Assets/200.png', isCoin:false},
+    ],
+    instr:'Look at the price tag. Tap the correct note to buy it!' },
+  { type:'buy', emoji:'&#127849;', objName:'Chocolate', price:'&#8377;50',
+    answer:'&#8377;50',
+    choices:[
+      {label:'&#8377;20',  img:'Assets/20.png',  isCoin:false},
+      {label:'&#8377;50',  img:'Assets/50.png',  isCoin:false},
+      {label:'&#8377;100', img:'Assets/100.png', isCoin:false},
+    ],
+    instr:'Look at the price tag. Tap the correct note to buy it!' },
+  { type:'buy', emoji:'&#129302;', objName:'Robot Toy', price:'&#8377;200',
+    answer:'&#8377;200',
+    choices:[
+      {label:'&#8377;100', img:'Assets/100.png', isCoin:false},
+      {label:'&#8377;200', img:'Assets/200.png', isCoin:false},
+      {label:'&#8377;500', img:'Assets/500.png', isCoin:false},
+    ],
+    instr:'Look at the price tag. Tap the correct note to buy it!' },
+  { type:'buy', emoji:'&#127890;', objName:'Backpack', price:'&#8377;500',
+    answer:'&#8377;500',
+    choices:[
+      {label:'&#8377;100', img:'Assets/100.png', isCoin:false},
+      {label:'&#8377;200', img:'Assets/200.png', isCoin:false},
+      {label:'&#8377;500', img:'Assets/500.png', isCoin:false},
+    ],
+    instr:'Look at the price tag. Tap the correct note to buy it!' },
+  { type:'buy', emoji:'&#9999;&#65039;', objName:'Pencil', price:'&#8377;5',
+    answer:'&#8377;5',
+    choices:[
+      {label:'&#8377;1', img:'Assets/coin-1-rupee.jpg', isCoin:true},
+      {label:'&#8377;2', img:'Assets/coin-2-rupee.png', isCoin:true},
+      {label:'&#8377;5', img:'Assets/coin-5-rupee.png', isCoin:true},
+    ],
+    instr:'Look at the price tag. Tap the correct coin to buy it!' },
+  { type:'buy', emoji:'&#127846;', objName:'Ice Cream', price:'&#8377;10',
+    answer:'&#8377;10',
+    choices:[
+      {label:'&#8377;5',  img:'Assets/coin-5-rupee.png',  isCoin:true},
+      {label:'&#8377;10', img:'Assets/coin-10-rupee.png', isCoin:true},
+      {label:'&#8377;20', img:'Assets/coin-20-rupee.png', isCoin:true},
+    ],
+    instr:'Look at the price tag. Tap the correct coin to buy it!' },
+  { type:'buy', emoji:'&#127880;', objName:'Balloon', price:'&#8377;2',
+    answer:'&#8377;2',
+    choices:[
+      {label:'&#8377;1', img:'Assets/coin-1-rupee.jpg', isCoin:true},
+      {label:'&#8377;2', img:'Assets/coin-2-rupee.png', isCoin:true},
+      {label:'&#8377;5', img:'Assets/coin-5-rupee.png', isCoin:true},
+    ],
+    instr:'Look at the price tag. Tap the correct coin to buy it!' },
+  { type:'sort', instr:'Sort the coins and notes into the correct groups!' },
 ];
 
 const SORT_ITEMS_DEF = [
@@ -165,10 +194,11 @@ const SORT_ITEMS_DEF = [
 ];
 
 /* ── Preload all images ── */
-[...SCREENS.map(s=>s.img), ...SORT_ITEMS_DEF.map(s=>s.img)].forEach(src=>{new Image().src=src;});
+const _allImgs=[...SCREENS.filter(s=>s.choices).flatMap(s=>s.choices.map(c=>c.img)),...SORT_ITEMS_DEF.map(s=>s.img)];
+[..._allImgs].forEach(src=>{new Image().src=src;});
 
 /* ── State ── */
-let curScreen=0, score=0, idAttempts=0, idAnswered=false, muted=false;
+let curScreen=0,score=0,idAttempts=0,idAnswered=false,muted=false;
 let sortPlaced=0;
 let _sortAttempts=new Map();
 
@@ -204,20 +234,28 @@ function loadScreen(){
   document.getElementById('prog-bar').style.width=((curScreen/SCREENS.length)*100)+'%';
   document.getElementById('instruction-txt').textContent=s.instr;
   speak(s.instr);
-  if(s.type==='identify') renderIdentify(s);
+  if(s.type==='buy') renderBuy(s);
   else if(s.type==='sort') renderSort();
 }
 
-/* ── Identify ── */
-function renderIdentify(s){
-  const shuffled=[...s.choices];
-  for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
-  const btns=shuffled.map((c,i)=>`<button class="id-btn c${i}" data-choice="${c}" onclick="selectID('${c}')">${c}</button>`).join('');
-  const imgTag=s.isCoin
-    ?`<img src="${s.img}" class="coin-img" alt="coin">`
-    :`<img src="${s.img}" class="note-img" alt="note">`;
+/* ── Buy (show object + price, pick correct currency) ── */
+function renderBuy(s){
+  const shuffled=shuffle([...s.choices]);
+  const btns=shuffled.map((c,i)=>{
+    const imgTag=c.isCoin
+      ?`<img src="${c.img}" class="btn-coin-img" alt="${c.label}">`
+      :`<img src="${c.img}" class="btn-note-img" alt="${c.label}">`;
+    return `<button class="id-btn c${i}" data-choice="${c.label}" onclick="selectID('${c.label}')">
+      ${imgTag}
+      <span>${c.label}</span>
+    </button>`;
+  }).join('');
   document.getElementById('act-area').innerHTML=`
-    <div class="currency-display">${imgTag}</div>
+    <div class="obj-display">
+      <div class="obj-emoji">${s.emoji}</div>
+      <div class="obj-name">${s.objName}</div>
+      <div class="price-tag">&#128176; ${s.price}</div>
+    </div>
     <div class="id-choices" id="id-choices">${btns}</div>`;
 }
 
@@ -229,7 +267,7 @@ function selectID(choice){
   const chosenBtn=document.querySelector(`#id-choices [data-choice="${choice}"]`);
   if(choice===correct){
     idAnswered=true;
-    clearIDBtns();
+    document.querySelectorAll('.id-btn').forEach(b=>{b.style.pointerEvents='none';b.classList.remove('hint','wrong');void b.offsetWidth;});
     chosenBtn.classList.add('correct');
     score++;document.getElementById('score-val').textContent=score;
     window.speechSynthesis?.cancel();
@@ -248,7 +286,7 @@ function selectID(choice){
       idAnswered=true;
       showToast('&#10060; Wrong!','#f44336');
       setTimeout(()=>{
-        clearIDBtns();
+        document.querySelectorAll('.id-btn').forEach(b=>{b.classList.remove('correct','wrong','hint');void b.offsetWidth;});
         correctBtn.classList.add('correct');
         showToast('&#128161; Correct answer!','#FF9800');
         setTimeout(()=>nextScreen(),3000);
@@ -256,7 +294,6 @@ function selectID(choice){
     }
   }
 }
-function clearIDBtns(){document.querySelectorAll('.id-btn').forEach(b=>b.classList.remove('correct','wrong','hint'));}
 
 /* ── Sort ── */
 function renderSort(){
@@ -353,6 +390,9 @@ function getZoneAt(x,y){for(const z of document.querySelectorAll('.drop-zone')){
 function highlightZone(x,y){clearZoneHighlights();const z=getZoneAt(x,y);if(z)z.classList.add('over');}
 function clearZoneHighlights(){document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('over'));}
 
+/* ── Helpers ── */
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
 /* ── Navigation ── */
 function nextScreen(){curScreen++;loadScreen();}
 
@@ -402,7 +442,7 @@ function showEnd(){
   document.getElementById('game-screen').style.display='none';
   document.getElementById('end-screen').style.display='flex';
   document.getElementById('final-score').textContent=score;
-  document.getElementById('end-stars').innerHTML=score>=9?'&#11088;&#11088;&#11088;':score>=6?'&#11088;&#11088;':'&#11088;';
+  document.getElementById('end-stars').innerHTML=score>=7?'&#11088;&#11088;&#11088;':score>=5?'&#11088;&#11088;':'&#11088;';
   window.speechSynthesis?.cancel();
   sndClaps.currentTime=0;sndClaps.play().catch(()=>{});
   setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;},3000);
