@@ -29,8 +29,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .img-equation{display:flex;align-items:center;justify-content:center;gap:clamp(8px,2.5vw,18px);width:100%;flex-wrap:nowrap}
 .img-eq-op{font-size:clamp(2em,8vw,3em);font-weight:900;color:#6c5ce7;line-height:1;flex-shrink:0}
 .img-eq-q{font-size:clamp(2em,8vw,3em);font-weight:900;color:#6c5ce7;min-width:44px;text-align:center;border-bottom:4px solid #6c5ce7;padding-bottom:2px;transition:color 0.3s,border-color 0.3s;flex-shrink:0}
-.fruit-svg-group{flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.fruit-svg-group svg{width:clamp(110px,36vw,190px);height:auto}
+.fruit-svg-group{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:clamp(140px,40vw,210px);height:clamp(140px,40vw,210px)}
 
 /* Choice buttons */
 .choices-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;width:100%}
@@ -164,9 +163,10 @@ function loadScreen(){
   document.getElementById('instruction-txt').textContent=instr;
   speak(instr);
 
-  // Real group images
-  document.getElementById('img-total').innerHTML=`<img src="${s.imgA}" alt="${s.name}" style="width:clamp(110px,36vw,180px);height:auto;object-fit:contain;display:block">`;
-  document.getElementById('img-remove').innerHTML=`<img src="${s.imgB}" alt="${s.name}" style="width:clamp(90px,28vw,150px);height:auto;object-fit:contain;display:block">`;
+  // Real group images — both same fixed box size
+  const imgStyle='width:clamp(140px,40vw,210px);height:clamp(140px,40vw,210px);object-fit:contain;display:block';
+  document.getElementById('img-total').innerHTML=`<img src="${s.imgA}" alt="${s.name}" style="${imgStyle}">`;
+  document.getElementById('img-remove').innerHTML=`<img src="${s.imgB}" alt="${s.name}" style="${imgStyle}">`;
   document.getElementById('eq-ans').textContent='?';
   document.getElementById('eq-ans').style.color='#6c5ce7';
   document.getElementById('eq-ans').style.borderColor='#6c5ce7';
