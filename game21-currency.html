@@ -233,7 +233,7 @@ function loadScreen(){
     ? `A ${s.objName} costs ${s.price}. Tap the correct currency to buy it!`
     : s.instr;
   document.getElementById('instruction-txt').textContent=instr;
-  speak(instr);
+  speak(instr.replace(/₹(\d+)/g,'$1 rupees'));
   if(s.type==='buy') renderBuy(s);
 }
 
