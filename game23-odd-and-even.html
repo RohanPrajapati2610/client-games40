@@ -102,11 +102,9 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
       <div class="images-row" id="images-row">
         <div class="img-box">
           <img id="img-left" class="grp-img" src="" alt="">
-          <div class="num-label" id="lbl-left"></div>
         </div>
         <div class="img-box">
           <img id="img-right" class="grp-img" src="" alt="">
-          <div class="num-label" id="lbl-right"></div>
         </div>
       </div>
       <div class="divider"></div>
@@ -327,8 +325,6 @@ function loadQuestion(){
 
   document.getElementById('img-left').src=q.imgL;
   document.getElementById('img-right').src=q.imgR;
-  document.getElementById('lbl-left').textContent=q.numL;
-  document.getElementById('lbl-right').textContent=q.numR;
 
   setTimeout(syncCanvas,120);
 }
