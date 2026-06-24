@@ -23,22 +23,23 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .progress-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#4CAF50,#8BC34A);transition:width 0.5s ease}
 .instruction{text-align:center;font-size:clamp(0.95em,3vw,1.2em);color:#333;font-weight:800;margin-bottom:8px;padding:0 6px;line-height:1.4;flex-shrink:0}
 
-.q-card{background:white;border-radius:24px;padding:22px 16px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;flex-shrink:0;margin-top:auto;margin-bottom:auto}
+.q-card{background:white;border-radius:24px;padding:22px 16px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;flex-shrink:0;margin-top:auto;margin-bottom:auto}
 
-/* Equation display */
+/* Equation */
 .equation{display:flex;align-items:center;justify-content:center;gap:12px}
-.eq-num{font-size:clamp(2em,8vw,3em);font-weight:800;color:#333;min-width:48px;text-align:center}
-.eq-op{font-size:clamp(1.8em,7vw,2.8em);font-weight:800;color:#6c5ce7}
-.eq-q{font-size:clamp(2em,8vw,3em);font-weight:800;color:#6c5ce7;min-width:48px;text-align:center;border-bottom:4px solid #6c5ce7;padding-bottom:2px}
+.eq-num{font-size:clamp(1.8em,7vw,2.8em);font-weight:800;color:#333;min-width:40px;text-align:center}
+.eq-op{font-size:clamp(1.6em,6vw,2.4em);font-weight:800;color:#6c5ce7}
+.eq-q{font-size:clamp(1.8em,7vw,2.8em);font-weight:800;color:#6c5ce7;min-width:40px;text-align:center;border-bottom:4px solid #6c5ce7;padding-bottom:2px;transition:color 0.3s,border-color 0.3s}
 
-/* Dot visualization */
-.dot-wrap{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:4px 8px;max-width:320px}
-.dot{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.8em;font-weight:800;color:white}
-.dot.removed{background:#e53935;position:relative}
-.dot.removed::after{content:'✕';font-size:11px;line-height:1}
-.dot.remaining{background:#43A047}
+/* Fruit image visualization */
+.fruit-wrap{display:flex;flex-wrap:wrap;gap:clamp(4px,2vw,10px);justify-content:center;padding:4px 8px;max-width:380px}
+.fruit-item{position:relative;width:clamp(38px,10vw,54px);height:clamp(38px,10vw,54px);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.fruit-item img{width:100%;height:100%;object-fit:contain;display:block}
+.fruit-item.removed img{opacity:0.25}
+.fruit-item.removed::after{content:'✕';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:clamp(1.3em,4.5vw,1.8em);font-weight:900;color:#e53935;pointer-events:none}
+.fruit-item.remaining img{opacity:1}
 
-/* Choice buttons — matching games 1-20 purple style */
+/* Choice buttons */
 .choices-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;width:100%}
 .choice-btn{width:82px;height:82px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);border:4px solid transparent;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.6em;font-weight:800;color:white;cursor:pointer;box-shadow:0 4px 14px rgba(108,92,231,0.35);transition:transform 0.1s,border-color 0.2s;font-family:inherit}
 .choice-btn:active{transform:scale(0.93)}
@@ -68,11 +69,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 @media(max-width:480px){
   #game-screen{padding:8px 10px 72px}
   .hdr{padding:8px 12px;margin-bottom:8px}
-  .q-card{padding:16px 10px;gap:14px}
-  .eq-num,.eq-q{font-size:2em}
-  .eq-op{font-size:1.8em}
-  .dot{width:22px;height:22px}
-  .dot.removed::after{font-size:9px}
+  .q-card{padding:16px 10px;gap:12px}
   .choice-btn{width:72px;height:72px;font-size:1.4em}
   .choices-row{gap:10px}
   .btn-restart{padding:10px 22px;font-size:0.92em}
@@ -98,7 +95,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   <div class="instruction" id="instruction-txt"></div>
   <div class="q-card" id="q-card">
     <div class="equation" id="equation"></div>
-    <div class="dot-wrap" id="dot-wrap"></div>
+    <div class="fruit-wrap" id="fruit-wrap"></div>
     <div class="choices-row" id="choices-row"></div>
   </div>
   <div class="bottom-row">
@@ -117,14 +114,17 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 <script>
 /* ── Questions ── */
 const SCREENS = [
-  {a:5, b:2, ans:3, choices:[3,1,4],   instr:'5 minus 2 equals how many? Tap the answer!'},
-  {a:4, b:1, ans:3, choices:[2,3,5],   instr:'4 minus 1 equals how many? Tap the answer!'},
-  {a:6, b:3, ans:3, choices:[3,4,2],   instr:'6 minus 3 equals how many? Tap the answer!'},
-  {a:8, b:4, ans:4, choices:[3,4,5],   instr:'8 minus 4 equals how many? Tap the answer!'},
-  {a:7, b:2, ans:5, choices:[4,5,6],   instr:'7 minus 2 equals how many? Tap the answer!'},
-  {a:10,b:3, ans:7, choices:[6,7,8],   instr:'10 minus 3 equals how many? Tap the answer!'},
-  {a:9, b:5, ans:4, choices:[3,4,5],   instr:'9 minus 5 equals how many? Tap the answer!'},
+  { a:5,  b:2, ans:3, choices:[3,1,4], img:'Assets/new%20assets/apple.png',       name:'apples'       },
+  { a:4,  b:1, ans:3, choices:[2,3,5], img:'Assets/banana.png',                   name:'bananas'      },
+  { a:6,  b:3, ans:3, choices:[3,4,2], img:'Assets/new%20assets/orange.png',      name:'oranges'      },
+  { a:8,  b:4, ans:4, choices:[3,4,5], img:'Assets/new%20assets/strawberry.png',  name:'strawberries' },
+  { a:7,  b:2, ans:5, choices:[4,5,6], img:'Assets/new%20assets/mango.png',       name:'mangoes'      },
+  { a:10, b:3, ans:7, choices:[6,7,8], img:'Assets/new%20assets/flower.png',      name:'flowers'      },
+  { a:9,  b:5, ans:4, choices:[3,4,5], img:'Assets/cherry.png',                   name:'cherries'     },
 ];
+
+/* ── Preload ── */
+SCREENS.forEach(s=>{new Image().src=s.img;});
 
 /* ── State ── */
 let curScreen=0, score=0, attempts=0, answered=false, muted=false;
@@ -157,10 +157,13 @@ function loadScreen(){
   if(curScreen>=SCREENS.length){showEnd();return;}
   const s=SCREENS[curScreen];
   attempts=0;answered=false;
+
   document.getElementById('step-num').textContent=curScreen+1;
   document.getElementById('prog-bar').style.width=((curScreen/SCREENS.length)*100)+'%';
-  document.getElementById('instruction-txt').textContent=s.instr;
-  speak(s.instr);
+
+  const instr=`There are ${s.a} ${s.name}. Take away ${s.b}. How many are left?`;
+  document.getElementById('instruction-txt').textContent=instr;
+  speak(instr);
 
   // Equation
   document.getElementById('equation').innerHTML=`
@@ -168,14 +171,15 @@ function loadScreen(){
     <span class="eq-op">&minus;</span>
     <span class="eq-num">${s.b}</span>
     <span class="eq-op">=</span>
-    <span class="eq-q">?</span>`;
+    <span class="eq-q" id="eq-ans">?</span>`;
 
-  // Dots: first b dots = removed (red ✕), rest = remaining (green)
-  let dots='';
+  // Fruit images: first b = crossed out, rest = normal
+  let html='';
   for(let i=0;i<s.a;i++){
-    dots+=`<div class="dot ${i<s.b?'removed':'remaining'}"></div>`;
+    const cls=i<s.b?'removed':'remaining';
+    html+=`<div class="fruit-item ${cls}"><img src="${s.img}" alt="${s.name}"></div>`;
   }
-  document.getElementById('dot-wrap').innerHTML=dots;
+  document.getElementById('fruit-wrap').innerHTML=html;
 
   // Choices
   const shuffled=shuffle([...s.choices]);
@@ -196,9 +200,8 @@ function selectAnswer(val){
     answered=true;
     document.querySelectorAll('.choice-btn').forEach(b=>{b.style.pointerEvents='none';b.classList.remove('hint','wrong');void b.offsetWidth;});
     chosenBtn.classList.add('correct');
-    // Fill ? with answer
-    document.querySelector('.eq-q').textContent=correct;
-    document.querySelector('.eq-q').style.borderColor='#4CAF50';
+    const eqAns=document.getElementById('eq-ans');
+    eqAns.textContent=correct;eqAns.style.borderColor='#4CAF50';eqAns.style.color='#4CAF50';
     score++;document.getElementById('score-val').textContent=score;
     window.speechSynthesis?.cancel();
     showToast('&#11088; Correct!','#4CAF50');
@@ -218,8 +221,8 @@ function selectAnswer(val){
       setTimeout(()=>{
         document.querySelectorAll('.choice-btn').forEach(b=>{b.classList.remove('correct','wrong','hint');void b.offsetWidth;});
         correctBtn.classList.add('correct');
-        document.querySelector('.eq-q').textContent=correct;
-        document.querySelector('.eq-q').style.borderColor='#FF9800';
+        const eqAns=document.getElementById('eq-ans');
+        eqAns.textContent=correct;eqAns.style.borderColor='#FF9800';eqAns.style.color='#FF9800';
         showToast('&#128161; The answer is '+correct+'!','#FF9800');
         setTimeout(()=>nextScreen(),3000);
       },1000);
