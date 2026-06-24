@@ -149,44 +149,43 @@ const SCREENS = [
   { type:'buy', emoji:'&#127890;', objName:'Backpack', price:'₹500',
     answer:'₹500',
     choices:[
-      {label:'₹100', img:'Assets/100.png', isCoin:false},
       {label:'₹200', img:'Assets/200.png', isCoin:false},
       {label:'₹500', img:'Assets/500.png', isCoin:false},
+      {label:'₹100', img:'Assets/100.png', isCoin:false},
     ],
     instr:'Look at the price tag. Tap the correct note to buy it!' },
   { type:'buy', emoji:'&#9999;&#65039;', objName:'Pencil', price:'₹5',
     answer:'₹5',
     choices:[
-      {label:'₹1', img:'Assets/coin-1-rupee.jpg', isCoin:true},
-      {label:'₹2', img:'Assets/coin-2-rupee.png', isCoin:true},
-      {label:'₹5', img:'Assets/coin-5-rupee.png', isCoin:true},
+      {label:'₹5',  img:'Assets/coin-5-rupee.png', isCoin:true},
+      {label:'₹10', img:'Assets/10.png',           isCoin:false},
+      {label:'₹20', img:'Assets/20.png',           isCoin:false},
     ],
     instr:'Look at the price tag. Tap the correct coin to buy it!' },
   { type:'buy', emoji:'&#127846;', objName:'Ice Cream', price:'₹10',
     answer:'₹10',
     choices:[
-      {label:'₹5',  img:'Assets/coin-5-rupee.png',  isCoin:true},
-      {label:'₹10', img:'Assets/coin-10-rupee.png', isCoin:true},
-      {label:'₹20', img:'Assets/coin-20-rupee.png', isCoin:true},
+      {label:'₹5',  img:'Assets/coin-5-rupee.png', isCoin:true},
+      {label:'₹10', img:'Assets/10.png',           isCoin:false},
+      {label:'₹20', img:'Assets/20.png',           isCoin:false},
     ],
-    instr:'Look at the price tag. Tap the correct coin to buy it!' },
-  { type:'buy', emoji:'&#127880;', objName:'Balloon', price:'₹2',
-    answer:'₹2',
+    instr:'Look at the price tag. Tap the correct note to buy it!' },
+  { type:'buy', emoji:'&#127880;', objName:'Balloon', price:'₹20',
+    answer:'₹20',
     choices:[
-      {label:'₹1', img:'Assets/coin-1-rupee.jpg', isCoin:true},
-      {label:'₹2', img:'Assets/coin-2-rupee.png', isCoin:true},
-      {label:'₹5', img:'Assets/coin-5-rupee.png', isCoin:true},
+      {label:'₹10', img:'Assets/10.png', isCoin:false},
+      {label:'₹20', img:'Assets/20.png', isCoin:false},
+      {label:'₹50', img:'Assets/50.png', isCoin:false},
     ],
-    instr:'Look at the price tag. Tap the correct coin to buy it!' },
-  { type:'sort', instr:'Sort the coins and notes into the correct groups!' },
+    instr:'Look at the price tag. Tap the correct note to buy it!' },
+  { type:'sort', instr:'Sort the coin and notes into the correct groups!' },
 ];
 
 const SORT_ITEMS_DEF = [
-  { kind:'coin', img:'Assets/coin-1-rupee.jpg',  label:'1 rupee coin' },
-  { kind:'coin', img:'Assets/coin-2-rupee.png',  label:'2 rupee coin' },
-  { kind:'coin', img:'Assets/coin-20-rupee.png', label:'20 rupee coin' },
-  { kind:'note', img:'Assets/50.png',            label:'50 rupee note' },
-  { kind:'note', img:'Assets/200.png',           label:'200 rupee note' },
+  { kind:'coin', img:'Assets/coin-5-rupee.png', label:'5 rupee coin' },
+  { kind:'note', img:'Assets/10.png',           label:'10 rupee note' },
+  { kind:'note', img:'Assets/50.png',           label:'50 rupee note' },
+  { kind:'note', img:'Assets/200.png',          label:'200 rupee note' },
   { kind:'note', img:'Assets/500.png',           label:'500 rupee note' },
 ];
 
@@ -346,7 +345,7 @@ function onSortDrop(e){
   if(zone&&zone.dataset.kind===el.dataset.kind){
     zone.appendChild(el);el.classList.add('correct-placed');el.style.cursor='default';
     sortPlaced++;showToast('&#11088; Correct!','#4CAF50');
-    if(sortPlaced===6){
+    if(sortPlaced===4){
       score++;document.getElementById('score-val').textContent=score;
       window.speechSynthesis?.cancel();
       play(sndClaps);spawnConfetti();
@@ -368,7 +367,7 @@ function onSortDrop(e){
         if(cz){
           cz.appendChild(el);el.classList.add('correct-placed');el.style.cursor='default';
           sortPlaced++;showToast('&#128161; Correct zone!','#FF9800');
-          if(sortPlaced===6){
+          if(sortPlaced===4){
             score++;document.getElementById('score-val').textContent=score;
             window.speechSynthesis?.cancel();
             play(sndClaps);spawnConfetti();
