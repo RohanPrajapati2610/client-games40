@@ -25,15 +25,11 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 
 .q-card{background:white;border-radius:24px;padding:22px 16px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;flex-shrink:0;margin-top:auto;margin-bottom:auto}
 
-/* Visual equation with images */
-.img-equation{display:flex;align-items:center;justify-content:center;gap:clamp(8px,3vw,18px);flex-wrap:wrap;width:100%}
-.img-eq-op{font-size:clamp(1.8em,7vw,2.8em);font-weight:900;color:#6c5ce7;line-height:1}
-.img-eq-q{font-size:clamp(1.8em,7vw,2.8em);font-weight:900;color:#6c5ce7;min-width:44px;text-align:center;border-bottom:4px solid #6c5ce7;padding-bottom:2px;transition:color 0.3s,border-color 0.3s}
-.fruit-group{display:flex;flex-wrap:wrap;gap:clamp(3px,1.5vw,8px);justify-content:center;max-width:200px}
-.fruit-item{position:relative;width:clamp(34px,9vw,50px);height:clamp(34px,9vw,50px);flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.fruit-item img{width:100%;height:100%;object-fit:contain;display:block}
-.fruit-item.removed img{opacity:0.22}
-.fruit-item.removed::after{content:'✕';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:clamp(1.2em,4vw,1.7em);font-weight:900;color:#e53935;pointer-events:none}
+/* Visual equation with group images */
+.img-equation{display:flex;align-items:center;justify-content:center;gap:clamp(10px,3vw,22px);width:100%;flex-wrap:nowrap}
+.img-eq-op{font-size:clamp(2em,8vw,3em);font-weight:900;color:#6c5ce7;line-height:1;flex-shrink:0}
+.img-eq-q{font-size:clamp(2em,8vw,3em);font-weight:900;color:#6c5ce7;min-width:44px;text-align:center;border-bottom:4px solid #6c5ce7;padding-bottom:2px;transition:color 0.3s,border-color 0.3s;flex-shrink:0}
+.group-img{width:clamp(100px,28vw,160px);height:clamp(100px,28vw,160px);object-fit:contain;display:block;flex-shrink:0}
 
 /* Choice buttons */
 .choices-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;width:100%}
@@ -80,20 +76,20 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 <div id="toast"></div>
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 7</div>
+    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 6</div>
     <div class="hdr-title">Subtraction &middot; LY4</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">&#128266;</button>
   </div>
   <div class="progress-row">
-    <span class="progress-label">Q <span id="step-num">1</span> / 7</span>
+    <span class="progress-label">Q <span id="step-num">1</span> / 6</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
   <div class="instruction" id="instruction-txt"></div>
   <div class="q-card" id="q-card">
-    <div class="img-equation" id="img-equation">
-      <div class="fruit-group" id="fruit-total"></div>
+    <div class="img-equation">
+      <img class="group-img" id="img-total" src="" alt="">
       <div class="img-eq-op">&minus;</div>
-      <div class="fruit-group" id="fruit-remove"></div>
+      <img class="group-img" id="img-remove" src="" alt="">
       <div class="img-eq-op">=</div>
       <div class="img-eq-q" id="eq-ans">?</div>
     </div>
@@ -107,7 +103,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   <div class="end-trophy">&#127942;</div>
   <div class="end-title">Brilliant Work!</div>
   <div class="end-sub">You can subtract numbers!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 7</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 6</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">&#9654; &nbsp;Play Again</button>
 </div>
@@ -115,17 +111,16 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 <script>
 /* ── Questions ── */
 const SCREENS = [
-  { a:5,  b:2, ans:3, choices:[3,1,4], img:'Assets/new%20assets/apple.png',       name:'apples'       },
-  { a:4,  b:1, ans:3, choices:[2,3,5], img:'Assets/banana.png',                   name:'bananas'      },
-  { a:6,  b:3, ans:3, choices:[3,4,2], img:'Assets/new%20assets/orange.png',      name:'oranges'      },
-  { a:8,  b:4, ans:4, choices:[3,4,5], img:'Assets/new%20assets/strawberry.png',  name:'strawberries' },
-  { a:7,  b:2, ans:5, choices:[4,5,6], img:'Assets/new%20assets/mango.png',       name:'mangoes'      },
-  { a:10, b:3, ans:7, choices:[6,7,8], img:'Assets/new%20assets/flower.png',      name:'flowers'      },
-  { a:9,  b:5, ans:4, choices:[3,4,5], img:'Assets/cherry.png',                   name:'cherries'     },
+  { imgA:'Assets/new%20assets/apples.png',       imgB:'Assets/new%20assets/apple.png',        a:8, b:3, ans:5, name:'apples',       choices:[4,5,6] },
+  { imgA:'Assets/new%20assets/oranges.png',      imgB:'Assets/new%20assets/orange.png',       a:6, b:2, ans:4, name:'oranges',      choices:[3,4,5] },
+  { imgA:'Assets/new%20assets/mangoes.png',      imgB:'Assets/new%20assets/mango.png',        a:5, b:2, ans:3, name:'mangoes',      choices:[2,3,4] },
+  { imgA:'Assets/new%20assets/flowers.png',      imgB:'Assets/new%20assets/flower.png',       a:7, b:3, ans:4, name:'flowers',      choices:[3,4,5] },
+  { imgA:'Assets/new%20assets/strawberries.png', imgB:'Assets/new%20assets/strawberry.png',   a:4, b:1, ans:3, name:'strawberries', choices:[2,3,4] },
+  { imgA:'Assets/new%20assets/cupcakes.png',     imgB:'Assets/new%20assets/cupcake.png',      a:6, b:2, ans:4, name:'cupcakes',     choices:[3,4,5] },
 ];
 
 /* ── Preload ── */
-SCREENS.forEach(s=>{new Image().src=s.img;});
+SCREENS.forEach(s=>{new Image().src=s.imgA; new Image().src=s.imgB;});
 
 /* ── State ── */
 let curScreen=0, score=0, attempts=0, answered=false, muted=false;
@@ -166,16 +161,11 @@ function loadScreen(){
   document.getElementById('instruction-txt').textContent=instr;
   speak(instr);
 
-  // Left group: all a fruits
-  let totalHtml='';
-  for(let i=0;i<s.a;i++) totalHtml+=`<div class="fruit-item"><img src="${s.img}" alt="${s.name}"></div>`;
-  document.getElementById('fruit-total').innerHTML=totalHtml;
-
-  // Right group: b fruits with X (being removed)
-  let removeHtml='';
-  for(let i=0;i<s.b;i++) removeHtml+=`<div class="fruit-item removed"><img src="${s.img}" alt="${s.name}"></div>`;
-  document.getElementById('fruit-remove').innerHTML=removeHtml;
-
+  // Two group images
+  document.getElementById('img-total').src=s.imgA;
+  document.getElementById('img-total').alt=s.name;
+  document.getElementById('img-remove').src=s.imgB;
+  document.getElementById('img-remove').alt=s.name;
   document.getElementById('eq-ans').textContent='?';
   document.getElementById('eq-ans').style.color='#6c5ce7';
   document.getElementById('eq-ans').style.borderColor='#6c5ce7';
@@ -279,7 +269,7 @@ function showEnd(){
   document.getElementById('game-screen').style.display='none';
   document.getElementById('end-screen').style.display='flex';
   document.getElementById('final-score').textContent=score;
-  document.getElementById('end-stars').innerHTML=score>=6?'&#11088;&#11088;&#11088;':score>=4?'&#11088;&#11088;':'&#11088;';
+  document.getElementById('end-stars').innerHTML=score>=5?'&#11088;&#11088;&#11088;':score>=3?'&#11088;&#11088;':'&#11088;';
   window.speechSynthesis?.cancel();
   sndClaps.currentTime=0;sndClaps.play().catch(()=>{});
   setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;},3000);
