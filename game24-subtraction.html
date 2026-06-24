@@ -30,6 +30,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .img-eq-op{font-size:clamp(2em,8vw,3em);font-weight:900;color:#6c5ce7;line-height:1;flex-shrink:0}
 .img-eq-q{font-size:clamp(2em,8vw,3em);font-weight:900;color:#6c5ce7;min-width:44px;text-align:center;border-bottom:4px solid #6c5ce7;padding-bottom:2px;transition:color 0.3s,border-color 0.3s;flex-shrink:0}
 .fruit-svg-group{flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.fruit-svg-group svg{width:clamp(110px,36vw,190px);height:auto}
 
 /* Choice buttons */
 .choices-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;width:100%}
@@ -76,12 +77,12 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 <div id="toast"></div>
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 6</div>
+    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 8</div>
     <div class="hdr-title">Subtraction &middot; LY4</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">&#128266;</button>
   </div>
   <div class="progress-row">
-    <span class="progress-label">Q <span id="step-num">1</span> / 6</span>
+    <span class="progress-label">Q <span id="step-num">1</span> / 8</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
   <div class="instruction" id="instruction-txt"></div>
@@ -103,7 +104,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   <div class="end-trophy">&#127942;</div>
   <div class="end-title">Brilliant Work!</div>
   <div class="end-sub">You can subtract numbers!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 6</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 8</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">&#9654; &nbsp;Play Again</button>
 </div>
@@ -117,6 +118,8 @@ const SCREENS = [
   { fruit:'flower',     a:7, b:3, ans:4, name:'flowers',      choices:[3,4,5] },
   { fruit:'strawberry', a:4, b:1, ans:3, name:'strawberries', choices:[2,3,4] },
   { fruit:'cupcake',    a:6, b:2, ans:4, name:'cupcakes',     choices:[3,4,5] },
+  { fruit:'banana',     a:9, b:4, ans:5, name:'bananas',      choices:[4,5,6] },
+  { fruit:'watermelon', a:5, b:3, ans:2, name:'watermelons',  choices:[1,2,3] },
 ];
 
 /* ── SVG Fruit Stamps (30×30 each) ── */
@@ -171,18 +174,36 @@ const STAMP = {
     <circle cx="15" cy="7" r="3.5" fill="#e53935"/>
     <path d="M15 4 Q17 1 19 2" stroke="#43a047" stroke-width="1.5" fill="none" stroke-linecap="round"/>
   </g>`,
+  banana: (x,y)=>`<g transform="translate(${x},${y})">
+    <path d="M7 23 Q4 12 10 7 Q16 2 23 5 Q26 7 25 11 Q20 8 15 10 Q9 13 8 22Z" fill="#FDD835"/>
+    <path d="M8 22 Q9 13 15 10 Q20 8 25 11 Q24 15 20 18 Q14 22 9 23Z" fill="#F9A825"/>
+    <circle cx="7" cy="23" r="2.2" fill="#795548"/>
+    <circle cx="25" cy="11" r="2" fill="#795548"/>
+    <path d="M10 9 Q14 6 20 7" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  </g>`,
+  watermelon: (x,y)=>`<g transform="translate(${x},${y})">
+    <path d="M4 27 Q15 1 26 27Z" fill="#388e3c"/>
+    <path d="M6 27 Q15 4 24 27Z" fill="#66bb6a"/>
+    <path d="M8 27 Q15 8 22 27Z" fill="#e53935"/>
+    <circle cx="12" cy="21" r="1.3" fill="#1b5e20"/>
+    <circle cx="15" cy="16" r="1.3" fill="#1b5e20"/>
+    <circle cx="18" cy="21" r="1.3" fill="#1b5e20"/>
+    <path d="M10 27 Q15 10 20 27" stroke="rgba(255,255,255,0.25)" stroke-width="1" fill="none"/>
+  </g>`,
 };
 
 /* ── Build group SVG ── */
 function makeSVG(fruitType, count){
-  const cell=32, pad=4;
+  const cell=50, pad=5, src=30;
+  const sc=(cell/src).toFixed(3);
   const cols=count<=3?count:count<=6?3:4;
   const rows=Math.ceil(count/cols);
   const W=cols*cell+pad*2, H=rows*cell+pad*2;
   let items='';
   for(let i=0;i<count;i++){
     const c=i%cols, r=Math.floor(i/cols);
-    items+=STAMP[fruitType](pad+c*cell, pad+r*cell);
+    const tx=pad+c*cell, ty=pad+r*cell;
+    items+=`<g transform="translate(${tx},${ty}) scale(${sc})">${STAMP[fruitType](0,0)}</g>`;
   }
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="display:block">${items}</svg>`;
 }
@@ -332,7 +353,7 @@ function showEnd(){
   document.getElementById('game-screen').style.display='none';
   document.getElementById('end-screen').style.display='flex';
   document.getElementById('final-score').textContent=score;
-  document.getElementById('end-stars').innerHTML=score>=5?'&#11088;&#11088;&#11088;':score>=3?'&#11088;&#11088;':'&#11088;';
+  document.getElementById('end-stars').innerHTML=score>=7?'&#11088;&#11088;&#11088;':score>=5?'&#11088;&#11088;':'&#11088;';
   window.speechSynthesis?.cancel();
   sndClaps.currentTime=0;sndClaps.play().catch(()=>{});
   setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;},3000);
