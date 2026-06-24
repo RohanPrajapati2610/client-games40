@@ -229,8 +229,11 @@ function loadScreen(){
   idAttempts=0;idAnswered=false;
   document.getElementById('step-num').textContent=curScreen+1;
   document.getElementById('prog-bar').style.width=((curScreen/SCREENS.length)*100)+'%';
-  document.getElementById('instruction-txt').textContent=s.instr;
-  speak(s.instr);
+  const instr = s.type==='buy'
+    ? `A ${s.objName} costs ${s.price}. Tap the correct currency to buy it!`
+    : s.instr;
+  document.getElementById('instruction-txt').textContent=instr;
+  speak(instr);
   if(s.type==='buy') renderBuy(s);
 }
 
