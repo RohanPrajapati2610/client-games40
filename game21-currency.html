@@ -25,8 +25,8 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .act-card{background:white;border-radius:24px;padding:18px 14px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;flex-shrink:0;margin-top:auto;margin-bottom:auto}
 
 /* Object + price display */
-.obj-display{display:flex;flex-direction:column;align-items:center;gap:6px}
-.obj-emoji{font-size:clamp(3em,14vw,5.5em);line-height:1}
+.obj-display{display:flex;flex-direction:column;align-items:center;gap:8px}
+.obj-img{width:min(130px,36vw);height:min(130px,36vw);object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.15))}
 .obj-name{font-size:clamp(1em,3.5vw,1.3em);font-weight:800;color:#555}
 .price-tag{background:linear-gradient(135deg,#FFD700,#FF9800);color:#333;font-size:clamp(1.3em,5.5vw,2em);font-weight:800;padding:8px 28px;border-radius:30px;box-shadow:0 4px 14px rgba(255,152,0,0.35);letter-spacing:0.02em}
 
@@ -122,7 +122,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 <script>
 /* ── Screens ── */
 const SCREENS = [
-  { type:'buy', emoji:'&#9917;', objName:'Football', price:'₹100',
+  { type:'buy', objImg:'Assets/football.png',       objName:'Football',  price:'₹100',
     answer:'₹100',
     choices:[
       {label:'₹50',  img:'Assets/50.png',  isCoin:false},
@@ -130,7 +130,7 @@ const SCREENS = [
       {label:'₹200', img:'Assets/200.png', isCoin:false},
     ],
     instr:'Look at the price tag. Tap the correct note to buy it!' },
-  { type:'buy', emoji:'&#127849;', objName:'Chocolate', price:'₹50',
+  { type:'buy', objImg:'Assets/cup%20cake.png',    objName:'Cup Cake',  price:'₹50',
     answer:'₹50',
     choices:[
       {label:'₹20',  img:'Assets/20.png',  isCoin:false},
@@ -138,7 +138,7 @@ const SCREENS = [
       {label:'₹100', img:'Assets/100.png', isCoin:false},
     ],
     instr:'Look at the price tag. Tap the correct note to buy it!' },
-  { type:'buy', emoji:'&#129302;', objName:'Robot Toy', price:'₹200',
+  { type:'buy', objImg:'Assets/doll.png',          objName:'Doll',      price:'₹200',
     answer:'₹200',
     choices:[
       {label:'₹100', img:'Assets/100.png', isCoin:false},
@@ -146,7 +146,7 @@ const SCREENS = [
       {label:'₹500', img:'Assets/500.png', isCoin:false},
     ],
     instr:'Look at the price tag. Tap the correct note to buy it!' },
-  { type:'buy', emoji:'&#127890;', objName:'Backpack', price:'₹500',
+  { type:'buy', objImg:'Assets/car.png',           objName:'Car',       price:'₹500',
     answer:'₹500',
     choices:[
       {label:'₹200', img:'Assets/200.png', isCoin:false},
@@ -154,23 +154,23 @@ const SCREENS = [
       {label:'₹100', img:'Assets/100.png', isCoin:false},
     ],
     instr:'Look at the price tag. Tap the correct note to buy it!' },
-  { type:'buy', emoji:'&#9999;&#65039;', objName:'Pencil', price:'₹5',
-    answer:'₹5',
+  { type:'buy', objImg:'Assets/banana.png',        objName:'Banana',    price:'₹5',
+    answer:'₹5-coin',
     choices:[
-      {label:'₹5',  img:'Assets/coin-5-rupee.png', isCoin:true},
-      {label:'₹10', img:'Assets/10.png',           isCoin:false},
-      {label:'₹20', img:'Assets/20.png',           isCoin:false},
+      {label:'₹5-coin', img:'Assets/coin-5-rupee.png', isCoin:true},
+      {label:'₹5-note', img:'Assets/5.png',            isCoin:false},
+      {label:'₹10',     img:'Assets/10.png',           isCoin:false},
     ],
     instr:'Look at the price tag. Tap the correct coin to buy it!' },
-  { type:'buy', emoji:'&#127846;', objName:'Ice Cream', price:'₹10',
+  { type:'buy', objImg:'Assets/ice_cream.png',     objName:'Ice Cream', price:'₹10',
     answer:'₹10',
     choices:[
-      {label:'₹5',  img:'Assets/coin-5-rupee.png', isCoin:true},
-      {label:'₹10', img:'Assets/10.png',           isCoin:false},
-      {label:'₹20', img:'Assets/20.png',           isCoin:false},
+      {label:'₹5-coin', img:'Assets/coin-5-rupee.png', isCoin:true},
+      {label:'₹10',     img:'Assets/10.png',           isCoin:false},
+      {label:'₹20',     img:'Assets/20.png',           isCoin:false},
     ],
     instr:'Look at the price tag. Tap the correct note to buy it!' },
-  { type:'buy', emoji:'&#127880;', objName:'Balloon', price:'₹20',
+  { type:'buy', objImg:'Assets/balloon.png',       objName:'Balloon',   price:'₹20',
     answer:'₹20',
     choices:[
       {label:'₹10', img:'Assets/10.png', isCoin:false},
@@ -178,20 +178,21 @@ const SCREENS = [
       {label:'₹50', img:'Assets/50.png', isCoin:false},
     ],
     instr:'Look at the price tag. Tap the correct note to buy it!' },
-  { type:'sort', instr:'Sort the coin and notes into the correct groups!' },
+  { type:'buy', objImg:'Assets/apple.jpg',         objName:'Apple',     price:'₹5',
+    answer:'₹5-note',
+    choices:[
+      {label:'₹5-note', img:'Assets/5.png',            isCoin:false},
+      {label:'₹5-coin', img:'Assets/coin-5-rupee.png', isCoin:true},
+      {label:'₹10',     img:'Assets/10.png',           isCoin:false},
+    ],
+    instr:'Look at the price tag. Tap the correct note to buy it!' },
 ];
 
-const SORT_ITEMS_DEF = [
-  { kind:'coin', img:'Assets/coin-5-rupee.png', label:'5 rupee coin' },
-  { kind:'note', img:'Assets/10.png',           label:'10 rupee note' },
-  { kind:'note', img:'Assets/50.png',           label:'50 rupee note' },
-  { kind:'note', img:'Assets/200.png',          label:'200 rupee note' },
-  { kind:'note', img:'Assets/500.png',           label:'500 rupee note' },
-];
+const SORT_ITEMS_DEF = [];
 
 /* ── Preload all images ── */
-const _allImgs=[...SCREENS.filter(s=>s.choices).flatMap(s=>s.choices.map(c=>c.img)),...SORT_ITEMS_DEF.map(s=>s.img)];
-[..._allImgs].forEach(src=>{new Image().src=src;});
+const _allImgs=[...SCREENS.map(s=>s.objImg),...SCREENS.filter(s=>s.choices).flatMap(s=>s.choices.map(c=>c.img))];
+_allImgs.forEach(src=>{new Image().src=src;});
 
 /* ── State ── */
 let curScreen=0,score=0,idAttempts=0,idAnswered=false,muted=false;
@@ -231,7 +232,6 @@ function loadScreen(){
   document.getElementById('instruction-txt').textContent=s.instr;
   speak(s.instr);
   if(s.type==='buy') renderBuy(s);
-  else if(s.type==='sort') renderSort();
 }
 
 /* ── Buy (show object + price, pick correct currency) ── */
@@ -247,7 +247,7 @@ function renderBuy(s){
   }).join('');
   document.getElementById('act-area').innerHTML=`
     <div class="obj-display">
-      <div class="obj-emoji">${s.emoji}</div>
+      <img src="${s.objImg}" class="obj-img" alt="${s.objName}">
       <div class="obj-name">${s.objName}</div>
       <div class="price-tag">&#128176; ${s.price}</div>
     </div>
