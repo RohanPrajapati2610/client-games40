@@ -25,11 +25,11 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 
 .q-card{background:white;border-radius:24px;padding:22px 16px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;flex-shrink:0;margin-top:auto;margin-bottom:auto}
 
-/* Visual equation with SVG fruit groups */
-.img-equation{display:flex;align-items:center;justify-content:center;gap:clamp(8px,2.5vw,18px);width:100%;flex-wrap:nowrap}
-.img-eq-op{font-size:clamp(2em,8vw,3em);font-weight:900;color:#6c5ce7;line-height:1;flex-shrink:0}
-.img-eq-q{font-size:clamp(2em,8vw,3em);font-weight:900;color:#6c5ce7;min-width:44px;text-align:center;border-bottom:4px solid #6c5ce7;padding-bottom:2px;transition:color 0.3s,border-color 0.3s;flex-shrink:0}
-.fruit-svg-group{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:clamp(140px,40vw,210px);height:clamp(140px,40vw,210px)}
+/* Visual equation with group images */
+.img-equation{display:flex;align-items:center;justify-content:center;gap:clamp(6px,2vw,16px);width:100%;flex-wrap:nowrap}
+.img-eq-op{font-size:clamp(1.6em,6vw,2.8em);font-weight:900;color:#6c5ce7;line-height:1;flex-shrink:0}
+.img-eq-q{font-size:clamp(1.6em,6vw,2.8em);font-weight:900;color:#6c5ce7;min-width:36px;text-align:center;border-bottom:4px solid #6c5ce7;padding-bottom:2px;transition:color 0.3s,border-color 0.3s;flex-shrink:0}
+.fruit-svg-group{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:clamp(120px,36vw,210px);height:clamp(120px,36vw,210px)}
 
 /* Choice buttons */
 .choices-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;width:100%}
@@ -58,13 +58,21 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 @keyframes pulseHint{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.6)}50%{box-shadow:0 0 0 12px rgba(255,215,0,0)}}
 @keyframes trophySpin{from{transform:rotate(-20deg) scale(0)}60%{transform:rotate(10deg) scale(1.1)}to{transform:rotate(0) scale(1)}}
 
+@media(max-width:768px){
+  .hdr-title{display:none}
+}
 @media(max-width:480px){
   #game-screen{padding:8px 10px 72px}
-  .hdr{padding:8px 12px;margin-bottom:8px}
-  .q-card{padding:16px 10px;gap:12px}
-  .choice-btn{width:72px;height:72px;font-size:1.4em}
-  .choices-row{gap:10px}
+  .hdr{padding:8px 12px;margin-bottom:6px}
+  .q-card{padding:12px 8px;gap:10px}
+  .fruit-svg-group{width:clamp(100px,38vw,160px);height:clamp(100px,38vw,160px)}
+  .img-eq-op{font-size:clamp(1.4em,5vw,2em)}
+  .img-eq-q{font-size:clamp(1.4em,5vw,2em);min-width:28px}
+  .img-equation{gap:clamp(4px,1.5vw,10px)}
+  .choice-btn{width:70px;height:70px;font-size:1.3em}
+  .choices-row{gap:8px}
   .btn-restart{padding:10px 22px;font-size:0.92em}
+  .instruction{font-size:clamp(0.85em,2.8vw,1em);margin-bottom:6px}
 }
 </style>
 </head>
@@ -164,9 +172,9 @@ function loadScreen(){
   speak(instr);
 
   // Real group images — both same fixed box size
-  const imgStyle='width:clamp(140px,40vw,210px);height:clamp(140px,40vw,210px);object-fit:contain;display:block';
-  document.getElementById('img-total').innerHTML=`<img src="${s.imgA}" alt="${s.name}" style="${imgStyle}">`;
-  document.getElementById('img-remove').innerHTML=`<img src="${s.imgB}" alt="${s.name}" style="${imgStyle}">`;
+  const imgStyle='width:100%;height:100%;object-fit:contain;display:block';
+  document.getElementById('img-total').innerHTML=`<img src="${s.imgA}" alt="${s.name}" style="${imgStyle}" onerror="this.style.opacity=0.3">`;
+  document.getElementById('img-remove').innerHTML=`<img src="${s.imgB}" alt="${s.name}" style="${imgStyle}" onerror="this.style.opacity=0.3">`;
   document.getElementById('eq-ans').textContent='?';
   document.getElementById('eq-ans').style.color='#6c5ce7';
   document.getElementById('eq-ans').style.borderColor='#6c5ce7';
