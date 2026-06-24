@@ -9,70 +9,55 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fce4ec 0%,#e8f5e9 50%,#e3f2fd 100%);height:100vh;height:100dvh;display:flex;align-items:stretch;justify-content:center;overflow:hidden;user-select:none;-webkit-user-select:none}
+
 #intro-screen{position:fixed;inset:0;background:linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc);display:flex;align-items:center;justify-content:center;border:5px solid #FFD700;z-index:200;cursor:pointer}
 #intro-logo{width:220px;height:auto;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.5));animation:logoBounce 2s ease-in-out infinite}
 @keyframes logoBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
 #game-screen{display:none;flex-direction:column;width:100%;max-width:860px;height:100%;padding:12px 14px 76px;overflow-y:auto}
 .hdr{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:18px;padding:10px 18px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,0.1);flex-shrink:0}
 .hdr-score{font-size:1.1em;font-weight:bold;color:#4CAF50;min-width:70px}
 .hdr-title{font-size:clamp(0.72em,2.4vw,0.95em);color:#6a0dad;font-weight:bold;text-align:center}
 .mute-btn{width:38px;height:38px;border:2px solid #ddd;border-radius:50%;background:white;font-size:1.1em;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
 .progress-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-shrink:0}
 .progress-label{font-size:0.85em;color:#777;white-space:nowrap}
 .progress-bar-wrap{flex:1;height:10px;background:#e0e0e0;border-radius:5px;overflow:hidden}
 .progress-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#4CAF50,#8BC34A);transition:width 0.5s ease}
-.instruction{text-align:center;font-size:clamp(0.92em,3vw,1.15em);color:#333;font-weight:800;margin-bottom:8px;padding:0 6px;line-height:1.4;flex-shrink:0}
-.act-card{background:white;border-radius:24px;padding:18px 14px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;flex-shrink:0;margin-top:auto;margin-bottom:auto}
 
-/* Identify */
-.num-display{display:flex;flex-direction:column;align-items:center;gap:10px}
-.big-num{font-size:5em;font-weight:800;color:#333;line-height:1.1;text-align:center}
-.dot-grid{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px}
-.dot-pair{display:flex;gap:4px;align-items:center;background:#f5f5f5;border-radius:10px;padding:6px 8px}
-.dot{width:18px;height:18px;border-radius:50%}
-.dot.even-dot{background:#4CAF50}
-.dot.odd-dot{background:#9C27B0}
-.dot.lonely{background:#FF5722;width:20px;height:20px;box-shadow:0 0 0 3px rgba(255,87,34,0.35)}
-.id-choices{display:flex;gap:14px;width:100%;justify-content:center}
-.id-btn{flex:1;max-width:160px;padding:18px 10px;border:4px solid transparent;border-radius:18px;font-size:1.4em;font-weight:800;font-family:inherit;cursor:pointer;color:white;box-shadow:0 4px 14px rgba(0,0,0,0.2);transition:transform 0.1s,border-color 0.2s;text-align:center}
-.id-btn:active{transform:scale(0.93)}
-.id-btn.odd-btn{background:linear-gradient(135deg,#7B1FA2,#AB47BC)}
-.id-btn.even-btn{background:linear-gradient(135deg,#2E7D32,#66BB6A)}
-.id-btn.correct{border-color:#4CAF50 !important;background:linear-gradient(135deg,#55efc4,#00b894) !important;box-shadow:0 0 0 6px rgba(76,175,80,0.5) !important;animation:popCorrect 0.35s ease !important;transform:none !important}
-.id-btn.wrong{border-color:#f44336;animation:shakeWrong 0.4s ease}
-.id-btn.hint{border-color:#FFD700;box-shadow:0 0 0 6px rgba(255,215,0,0.7);animation:pulseHint 0.8s ease-in-out infinite;transform:scale(1.06)}
+.question-txt{text-align:center;font-size:clamp(1em,3.5vw,1.3em);color:#333;font-weight:800;margin-bottom:8px;padding:0 6px;flex-shrink:0}
+.draw-tip{text-align:center;font-size:clamp(0.8em,2.5vw,0.92em);color:#888;margin-bottom:10px;flex-shrink:0}
 
-/* Sort */
-.sort-zones{display:flex;gap:10px;width:100%}
-.sort-zone-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
-.sort-zone-label{font-size:1em;font-weight:800;padding:5px 14px;border-radius:10px;color:white}
-.sort-zone-label.odd-lbl{background:#9C27B0}
-.sort-zone-label.even-lbl{background:#4CAF50}
-.drop-zone{width:100%;min-height:110px;border:3px dashed #bbb;border-radius:16px;display:flex;flex-wrap:wrap;align-items:flex-start;align-content:flex-start;gap:6px;padding:8px;background:#fafafa;transition:border-color 0.2s,background 0.2s}
-.drop-zone.over{border-color:#FF9800;background:#fff8e1}
-.drop-zone.hint{border-color:#FFD700 !important;box-shadow:0 0 0 4px rgba(255,215,0,0.6);animation:pulseHint 0.8s ease-in-out infinite}
-.sort-tray{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:4px 0;width:100%}
-.sort-tile{width:64px;height:64px;cursor:grab;display:flex;align-items:center;justify-content:center;border-radius:14px;background:white;box-shadow:0 3px 10px rgba(0,0,0,0.15);touch-action:none;flex-shrink:0;font-size:1.9em;font-weight:800;color:#333;border:3px solid #ddd;transition:opacity 0.15s}
-.sort-tile.wrong-drop{animation:shakeWrong 0.4s ease}
-.placed-tile{width:54px;height:54px;display:flex;align-items:center;justify-content:center;border-radius:12px;font-size:1.5em;font-weight:800;color:white;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
-.placed-tile.odd-placed{background:#9C27B0}
-.placed-tile.even-placed{background:#4CAF50}
-#sort-ghost{position:fixed;pointer-events:none;z-index:1000;width:64px;height:64px;display:none;align-items:center;justify-content:center;opacity:0.85;transform:translate(-50%,-50%);background:white;border-radius:14px;box-shadow:0 4px 14px rgba(0,0,0,0.3);font-size:1.9em;font-weight:800;color:#333;border:3px solid #9C27B0}
+.scene-card{background:white;border-radius:24px;padding:18px 14px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;flex-shrink:0;margin-top:auto;margin-bottom:auto}
 
-/* Tap */
-.tap-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;width:100%}
-.tap-card{width:70px;height:70px;display:flex;align-items:center;justify-content:center;border-radius:14px;font-size:1.9em;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.15);transition:transform 0.1s;border:3px solid rgba(255,255,255,0.3);color:white}
-.tap-card:active{transform:scale(0.9)}
-.tap-card.tapped-correct{border-color:#FFD700;box-shadow:0 0 0 4px rgba(255,215,0,0.5);opacity:0.55;cursor:default;animation:popCorrect 0.3s ease}
-.tap-card.tapped-wrong{animation:shakeWrong 0.4s ease}
-.tap-counter{font-size:0.92em;color:#888;font-weight:bold;text-align:center}
+/* Two-image row */
+.scene-wrap{position:relative;width:100%;max-width:640px;touch-action:none;border-radius:16px}
+.images-row{display:flex;gap:12px;width:100%;align-items:center;justify-content:center;padding:4px}
+.img-box{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.grp-img{width:100%;height:clamp(120px,32vw,190px);object-fit:contain;display:block;pointer-events:none;-webkit-user-drag:none}
+.num-label{font-size:clamp(1.4em,5vw,2em);font-weight:900;color:#444;line-height:1}
 
-/* Buttons */
+/* Canvas sits over the images-row */
+#draw-canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair;touch-action:none;border-radius:16px}
+
+/* Divider line between the two images */
+.divider{position:absolute;top:6%;bottom:6%;left:50%;width:3px;background:#e0e0e0;border-radius:2px;pointer-events:none;transform:translateX(-50%)}
+
+/* Hint guide ring */
+#hint-guide{position:absolute;border-radius:50%;border:4px dashed #FFD700;pointer-events:none;display:none;animation:hintGlowAnim 0.8s ease-in-out infinite;z-index:10;transform:translate(-50%,-50%)}
+#hint-guide.show{display:block}
+@keyframes hintGlowAnim{0%,100%{box-shadow:0 0 10px 3px rgba(255,215,0,0.5);border-color:#FFD700}50%{box-shadow:0 0 24px 8px rgba(255,215,0,0.9);border-color:#FFC200}}
+#hint-label{display:none;position:absolute;background:#FFD700;color:#333;font-size:0.82em;font-weight:bold;padding:5px 13px;border-radius:20px;box-shadow:0 3px 10px rgba(0,0,0,0.2);white-space:nowrap;z-index:20;pointer-events:none;animation:arrowBounce 0.65s ease-in-out infinite;transform:translateX(-50%)}
+#hint-label.show{display:block}
+@keyframes arrowBounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
 .bottom-row{display:flex;justify-content:center;position:fixed;bottom:16px;left:0;right:0;z-index:50;pointer-events:none}
 .btn-restart{pointer-events:all;background:linear-gradient(135deg,#FF9800,#F57C00);color:white;border:none;padding:12px 30px;border-radius:40px;font-size:1em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(255,152,0,0.4)}
+
 #toast{position:fixed;top:18%;left:50%;transform:translateX(-50%) scale(0.7);padding:13px 28px;border-radius:50px;font-size:1.35em;font-weight:bold;color:white;pointer-events:none;opacity:0;transition:opacity 0.2s,transform 0.2s;z-index:500;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
 #toast.show{opacity:1;transform:translateX(-50%) scale(1)}
 .confetti{position:fixed;pointer-events:none;z-index:9998;border-radius:2px}
+
 #end-screen{display:none;position:fixed;inset:0;background:linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc);flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:200;text-align:center;padding:30px}
 .end-trophy{font-size:4.5em;animation:trophySpin 1.5s ease-out}
 .end-title{color:#FFD700;font-size:clamp(1.5em,5vw,2.2em);font-weight:bold;text-shadow:0 3px 10px rgba(0,0,0,0.3)}
@@ -81,23 +66,14 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .end-stars{font-size:2.2em;letter-spacing:4px}
 .btn-play-again{background:#FFD700;color:#333;border:none;padding:15px 44px;border-radius:40px;font-size:1.2em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.2);margin-top:8px}
 
-@keyframes popCorrect{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
-@keyframes shakeWrong{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-@keyframes pulseHint{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.6)}50%{box-shadow:0 0 0 14px rgba(255,215,0,0)}}
 @keyframes trophySpin{from{transform:rotate(-20deg) scale(0)}60%{transform:rotate(10deg) scale(1.1)}to{transform:rotate(0) scale(1)}}
 
 @media(max-width:480px){
   #game-screen{padding:8px 10px 72px}
   .hdr{padding:8px 12px;margin-bottom:8px}
-  .act-card{padding:12px 8px;gap:12px}
-  .big-num{font-size:4em}
-  .dot{width:15px;height:15px}
-  .dot.lonely{width:17px;height:17px}
-  .id-btn{padding:14px 6px;max-width:130px;font-size:1.2em}
-  .sort-tile{width:54px;height:54px;font-size:1.6em}
-  .placed-tile{width:46px;height:46px;font-size:1.3em}
-  #sort-ghost{width:54px;height:54px;font-size:1.6em}
-  .tap-card{width:60px;height:60px;font-size:1.6em}
+  .scene-card{padding:12px 8px}
+  .grp-img{height:clamp(100px,28vw,160px)}
+  .num-label{font-size:clamp(1.2em,4vw,1.6em)}
   .btn-restart{padding:10px 22px;font-size:0.92em}
 }
 </style>
@@ -108,58 +84,70 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onerror="this.style.display='none'">
 </div>
 <div id="toast"></div>
-<div id="sort-ghost"></div>
+
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 7</div>
+    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 8</div>
     <div class="hdr-title">Odd &amp; Even &middot; LY4</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">&#128266;</button>
   </div>
   <div class="progress-row">
-    <span class="progress-label">Step <span id="step-num">1</span> / 7</span>
+    <span class="progress-label">Q <span id="q-num">1</span> / 8</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
-  <div class="instruction" id="instruction-txt"></div>
-  <div class="act-card" id="act-area"></div>
+  <div class="question-txt" id="question-txt"></div>
+  <div class="draw-tip">&#9999;&#65039; Draw a circle around the correct group!</div>
+  <div class="scene-card">
+    <div class="scene-wrap" id="scene-wrap">
+      <div class="images-row" id="images-row">
+        <div class="img-box">
+          <img id="img-left" class="grp-img" src="" alt="">
+          <div class="num-label" id="lbl-left"></div>
+        </div>
+        <div class="img-box">
+          <img id="img-right" class="grp-img" src="" alt="">
+          <div class="num-label" id="lbl-right"></div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <canvas id="draw-canvas"></canvas>
+      <div id="hint-guide"></div>
+      <div id="hint-label">&#9999;&#65039; Circle here!</div>
+    </div>
+  </div>
   <div class="bottom-row">
     <button class="btn-restart" onclick="restartGame()">&#128260; &nbsp;Restart</button>
   </div>
 </div>
+
 <div id="end-screen">
   <div class="end-trophy">&#127942;</div>
   <div class="end-title">Amazing Work!</div>
   <div class="end-sub">You know Odd &amp; Even numbers!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 7</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 8</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">&#9654; &nbsp;Play Again</button>
 </div>
 
 <script>
-/* ── Screen data ── */
-const SCREENS = [
-  {type:'identify', num:4, answer:'even',
-   instr:'Is 4 an ODD or EVEN number? Tap the correct answer!'},
-  {type:'identify', num:7, answer:'odd',
-   instr:'Is 7 an ODD or EVEN number? Tap the correct answer!'},
-  {type:'identify', num:10, answer:'even',
-   instr:'Is 10 an ODD or EVEN number? Tap the correct answer!'},
-  {type:'identify', num:3, answer:'odd',
-   instr:'Is 3 an ODD or EVEN number? Tap the correct answer!'},
-  {type:'sort', numbers:[1,2,3,4,5,6],
-   instr:'Sort these numbers into ODD and EVEN groups!'},
-  {type:'tap', find:'odd', numbers:[1,2,3,4,5,6,7,8],
-   instr:'Tap all the ODD numbers!'},
-  {type:'tap', find:'even', numbers:[2,3,4,5,6,7,8,10],
-   instr:'Tap all the EVEN numbers!'},
+/* ── Questions ── */
+const QUESTIONS = [
+  { imgL:'Assets/3%20oranges.png',              imgR:'Assets/6oranges.png',                   numL:3, numR:6, text:'Circle the ODD group!',  correct:'left',  hintCx:0.25, hintCy:0.45 },
+  { imgL:'Assets/4books.png',                   imgR:'Assets/7books.png',                     numL:4, numR:7, text:'Circle the ODD group!',  correct:'right', hintCx:0.75, hintCy:0.45 },
+  { imgL:'Assets/6pencils.png',                 imgR:'Assets/1pencil.png',                    numL:6, numR:1, text:'Circle the EVEN group!', correct:'left',  hintCx:0.25, hintCy:0.45 },
+  { imgL:'Assets/6pineapples.png',              imgR:'Assets/5%20pineapples.png',             numL:6, numR:5, text:'Circle the ODD group!',  correct:'right', hintCx:0.75, hintCy:0.45 },
+  { imgL:'Assets/3kiwis.png',                   imgR:'Assets/2%20kiwis.png',                  numL:3, numR:2, text:'Circle the ODD group!',  correct:'left',  hintCx:0.25, hintCy:0.45 },
+  { imgL:'Assets/5%20mangoes.png',              imgR:'Assets/2%20mangoes.png',                numL:5, numR:2, text:'Circle the EVEN group!', correct:'right', hintCx:0.75, hintCy:0.45 },
+  { imgL:'Assets/new%20assets/strawberry.png',  imgR:'Assets/new%20assets/strawberries.png',  numL:3, numR:6, text:'Circle the ODD group!',  correct:'left',  hintCx:0.25, hintCy:0.45 },
+  { imgL:'Assets/new%20assets/cupcakes.png',    imgR:'Assets/new%20assets/cupcake.png',       numL:5, numR:2, text:'Circle the EVEN group!', correct:'right', hintCx:0.75, hintCy:0.45 },
 ];
 
-const NUM_COLORS=['#E53935','#FF6F00','#F9A825','#2E7D32','#1565C0','#6A1B9A','#00838F','#AD1457','#558B2F','#4527A0'];
-function numColor(n){return NUM_COLORS[(n-1)%NUM_COLORS.length];}
+/* Preload */
+QUESTIONS.forEach(q=>{ new Image().src=q.imgL; new Image().src=q.imgR; });
 
 /* ── State ── */
-let curScreen=0, score=0, idAttempts=0, idAnswered=false, muted=false;
-let sortPlaced=0, sortDone=false, _sortAttempts=new Map();
-let tapCorrectLeft=0, tapDone=false;
+let curQ=0, score=0, attempts=0, answered=false, muted=false;
+let isDrawing=false, pathPts=[];
 
 /* ── Audio ── */
 const sndWrong=new Audio('Assets/wrong.mp3');
@@ -183,271 +171,197 @@ function speak(text){
 }
 window.speechSynthesis.getVoices();
 window.speechSynthesis.addEventListener('voiceschanged',()=>window.speechSynthesis.getVoices());
+function playClaps(){if(muted)return;sndClaps.currentTime=0;sndClaps.play().catch(()=>{});setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;},3000)}
 
-/* ── Load Screen ── */
-function loadScreen(){
-  if(curScreen>=SCREENS.length){showEnd();return;}
-  cleanupSort();
-  const s=SCREENS[curScreen];
-  idAttempts=0;idAnswered=false;sortPlaced=0;sortDone=false;_sortAttempts=new Map();tapDone=false;tapCorrectLeft=0;
-  document.getElementById('step-num').textContent=curScreen+1;
-  document.getElementById('prog-bar').style.width=((curScreen/SCREENS.length)*100)+'%';
-  document.getElementById('instruction-txt').textContent=s.instr;
-  speak(s.instr);
-  if(s.type==='identify') renderIdentify(s);
-  else if(s.type==='sort') renderSort(s);
-  else if(s.type==='tap') renderTap(s);
+/* ── Canvas helpers ── */
+function cv(){return document.getElementById('draw-canvas')}
+function ctx(){return cv().getContext('2d')}
+function syncCanvas(){
+  const wrap=document.getElementById('scene-wrap');
+  const row=document.getElementById('images-row');
+  const c=cv();
+  c.width=row.offsetWidth||wrap.offsetWidth||320;
+  c.height=row.offsetHeight||wrap.offsetHeight||180;
+  // position canvas to exactly cover images-row
+  c.style.top=row.offsetTop+'px';
+  c.style.height=row.offsetHeight+'px';
+  c.style.left='0';
+  c.style.width='100%';
+  clearCanvas();
 }
+function clearCanvas(){const c=cv();ctx().clearRect(0,0,c.width,c.height)}
 
-/* ── Dot display ── */
-function renderDots(n, answer){
-  const pairs=Math.floor(n/2);
-  let html='<div class="dot-grid">';
-  for(let i=0;i<pairs;i++){
-    html+=`<div class="dot-pair">
-      <div class="dot ${answer}-dot"></div>
-      <div class="dot ${answer}-dot"></div>
-    </div>`;
-  }
-  if(n%2===1){
-    html+=`<div class="dot-pair"><div class="dot lonely"></div></div>`;
-  }
-  html+='</div>';
-  return html;
+/* ── Drawing ── */
+function getXY(e){
+  const r=cv().getBoundingClientRect();
+  const src=e.touches?e.touches[0]:e;
+  return{x:src.clientX-r.left,y:src.clientY-r.top};
 }
-
-/* ── Identify ── */
-function renderIdentify(s){
-  document.getElementById('act-area').innerHTML=`
-    <div class="num-display">
-      <div class="big-num">${s.num}</div>
-      ${renderDots(s.num, s.answer)}
-    </div>
-    <div class="id-choices" id="id-choices">
-      <button class="id-btn odd-btn" data-choice="odd" onclick="selectOddEven('odd')">ODD</button>
-      <button class="id-btn even-btn" data-choice="even" onclick="selectOddEven('even')">EVEN</button>
-    </div>`;
-}
-
-function selectOddEven(choice){
-  if(idAnswered)return;
-  const s=SCREENS[curScreen];
-  const correct=s.answer;
-  const correctBtn=document.querySelector(`#id-choices [data-choice="${correct}"]`);
-  const chosenBtn=document.querySelector(`#id-choices [data-choice="${choice}"]`);
-
-  if(choice===correct){
-    idAnswered=true;
-    document.querySelectorAll('.id-btn').forEach(b=>{b.style.pointerEvents='none';b.classList.remove('hint','wrong');void b.offsetWidth;});
-    chosenBtn.classList.add('correct');
-    score++;document.getElementById('score-val').textContent=score;
-    window.speechSynthesis?.cancel();
-    showToast('&#11088; Correct!','#4CAF50');
-    spawnConfetti();
-    sndClaps.currentTime=0;sndClaps.play().catch(()=>{});
-    setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},3000);
-  } else {
-    idAttempts++;
-    chosenBtn.classList.add('wrong');
-    play(sndWrong);
-    if(idAttempts===1){
-      showToast('&#10060; Try again!','#f44336');
-      setTimeout(()=>{chosenBtn.classList.remove('wrong');if(!idAnswered)correctBtn.classList.add('hint');},900);
-    } else {
-      idAnswered=true;
-      showToast('&#10060; Wrong!','#f44336');
-      setTimeout(()=>{
-        document.querySelectorAll('.id-btn').forEach(b=>b.classList.remove('correct','wrong','hint'));
-        correctBtn.classList.add('correct');
-        const label=correct.charAt(0).toUpperCase()+correct.slice(1);
-        showToast('&#128161; It is '+label+'!','#FF9800');
-        setTimeout(()=>nextScreen(),3000);
-      },1000);
-    }
-  }
-}
-
-/* ── Sort ── */
-let _dragNum=null, _dragEl=null;
-const _ghostEl=document.getElementById('sort-ghost');
-
-function cleanupSort(){
-  document.removeEventListener('pointermove',onDragMove);
-  document.removeEventListener('pointerup',onDragEnd);
-  if(_ghostEl)_ghostEl.style.display='none';
-  _dragNum=null;_dragEl=null;
-}
-
-function renderSort(s){
-  const tilesHtml=s.numbers.map(n=>`
-    <div class="sort-tile" data-num="${n}" data-correct="${n%2===0?'even':'odd'}"
-      onpointerdown="startDrag(event,${n})" style="touch-action:none">${n}</div>`).join('');
-  document.getElementById('act-area').innerHTML=`
-    <div class="sort-zones">
-      <div class="sort-zone-wrap">
-        <div class="sort-zone-label odd-lbl">&#9899; ODD</div>
-        <div class="drop-zone" id="zone-odd" data-zone="odd"></div>
-      </div>
-      <div class="sort-zone-wrap">
-        <div class="sort-zone-label even-lbl">&#9898; EVEN</div>
-        <div class="drop-zone" id="zone-even" data-zone="even"></div>
-      </div>
-    </div>
-    <div class="sort-tray" id="sort-tray">${tilesHtml}</div>`;
-  document.addEventListener('pointermove',onDragMove,{passive:false});
-  document.addEventListener('pointerup',onDragEnd);
-}
-
-function startDrag(e,num){
-  if(sortDone)return;
-  const el=e.currentTarget;
+function onDown(e){
+  if(answered)return;
   e.preventDefault();
-  _dragNum=num;_dragEl=el;
-  _ghostEl.textContent=num;
-  _ghostEl.style.display='flex';
-  moveGhost(e.clientX,e.clientY);
-  el.style.opacity='0.3';
-  el.setPointerCapture(e.pointerId);
+  isDrawing=true;pathPts=[];
+  const p=getXY(e);pathPts.push(p);
+  const c=ctx();c.beginPath();c.moveTo(p.x,p.y);
+  cv().setPointerCapture(e.pointerId);
 }
-function onDragMove(e){
-  if(!_dragEl)return;
+function onMove(e){
+  if(!isDrawing||answered)return;
   e.preventDefault();
-  moveGhost(e.clientX,e.clientY);
-  document.querySelectorAll('.drop-zone').forEach(z=>{
-    const r=z.getBoundingClientRect();
-    const over=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;
-    z.classList.toggle('over',over);
-  });
+  const p=getXY(e);pathPts.push(p);
+  const c=ctx();
+  c.lineTo(p.x,p.y);
+  c.strokeStyle='rgba(60,160,80,0.85)';c.lineWidth=7;c.lineCap='round';c.lineJoin='round';
+  c.stroke();c.beginPath();c.moveTo(p.x,p.y);
 }
-function onDragEnd(e){
-  if(!_dragEl)return;
-  document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('over'));
-  _ghostEl.style.display='none';
-  _dragEl.style.opacity='1';
-
-  let targetZone=null;
-  document.querySelectorAll('.drop-zone').forEach(z=>{
-    const r=z.getBoundingClientRect();
-    if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom) targetZone=z;
-  });
-
-  const correct=_dragEl.dataset.correct;
-  const capturedEl=_dragEl;
-  _dragNum=null;_dragEl=null;
-
-  if(targetZone&&targetZone.dataset.zone===correct){
-    const placed=document.createElement('div');
-    placed.className=`placed-tile ${correct}-placed`;
-    placed.textContent=capturedEl.dataset.num;
-    targetZone.appendChild(placed);
-    capturedEl.remove();
-    sortPlaced++;
-    if(sortPlaced===SCREENS[curScreen].numbers.length){
-      sortDone=true;
-      cleanupSort();
-      score++;document.getElementById('score-val').textContent=score;
-      window.speechSynthesis?.cancel();
-      showToast('&#11088; All sorted!','#4CAF50');
-      play(sndClaps);spawnConfetti();
-      setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},3000);
-    }
-  } else if(targetZone){
-    capturedEl.classList.add('wrong-drop');
-    play(sndWrong);
-    showToast('&#10060; Wrong group!','#f44336');
-    setTimeout(()=>capturedEl.classList.remove('wrong-drop'),400);
-    const attempts=(_sortAttempts.get(capturedEl)||0)+1;
-    _sortAttempts.set(capturedEl,attempts);
-    if(attempts===1){
-      setTimeout(()=>{
-        const cz=document.getElementById('zone-'+correct);
-        if(cz){cz.classList.add('hint');setTimeout(()=>cz.classList.remove('hint'),2200);}
-      },500);
-    } else {
-      setTimeout(()=>{
-        const cz=document.getElementById('zone-'+correct);
-        if(cz){
-          const placed=document.createElement('div');
-          placed.className=`placed-tile ${correct}-placed`;
-          placed.textContent=capturedEl.dataset.num;
-          cz.appendChild(placed);
-          capturedEl.remove();
-          sortPlaced++;
-          showToast('&#128161; Correct zone!','#FF9800');
-          if(sortPlaced===SCREENS[curScreen].numbers.length){
-            sortDone=true;cleanupSort();
-            score++;document.getElementById('score-val').textContent=score;
-            window.speechSynthesis?.cancel();
-            showToast('&#11088; All sorted!','#4CAF50');
-            play(sndClaps);spawnConfetti();
-            setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},3000);
-          }
-        }
-      },800);
-    }
-  }
-}
-function moveGhost(x,y){_ghostEl.style.left=x+'px';_ghostEl.style.top=y+'px';}
-
-/* ── Tap ── */
-function renderTap(s){
-  tapCorrectLeft=s.numbers.filter(n=>s.find==='odd'?n%2!==0:n%2===0).length;
-  const cards=s.numbers.map(n=>`
-    <div class="tap-card" data-num="${n}" onclick="tapNum(${n})"
-      style="background:${numColor(n)}">${n}</div>`).join('');
-  document.getElementById('act-area').innerHTML=`
-    <div class="tap-grid">${cards}</div>
-    <div class="tap-counter" id="tap-counter">${tapCorrectLeft} to find</div>`;
+function onUp(e){
+  if(!isDrawing)return;
+  isDrawing=false;
+  clearCanvas();
+  if(pathPts.length<5)return;
+  evaluateDrawing();
 }
 
-function tapNum(n){
-  if(tapDone)return;
-  const s=SCREENS[curScreen];
-  const el=document.querySelector(`.tap-card[data-num="${n}"]`);
-  if(!el||el.classList.contains('tapped-correct'))return;
-  const isCorrect=(s.find==='odd'?n%2!==0:n%2===0);
-  if(isCorrect){
-    el.classList.add('tapped-correct');
-    el.onclick=null;
-    tapCorrectLeft--;
-    const ctr=document.getElementById('tap-counter');
-    if(ctr)ctr.textContent=tapCorrectLeft>0?tapCorrectLeft+' to find':'';
-    if(tapCorrectLeft===0){
-      tapDone=true;
-      score++;document.getElementById('score-val').textContent=score;
-      window.speechSynthesis?.cancel();
-      showToast('&#11088; All found!','#4CAF50');
-      play(sndClaps);spawnConfetti();
-      setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},3000);
-    }
+/* ── Evaluate circle ── */
+function evaluateDrawing(){
+  if(pathPts.length<8)return;
+  let len=0;
+  for(let i=1;i<pathPts.length;i++) len+=Math.hypot(pathPts[i].x-pathPts[i-1].x,pathPts[i].y-pathPts[i-1].y);
+  if(len<70)return;
+
+  const cx=pathPts.reduce((s,p)=>s+p.x,0)/pathPts.length;
+  const cy=pathPts.reduce((s,p)=>s+p.y,0)/pathPts.length;
+
+  const angles=pathPts.map(p=>Math.atan2(p.y-cy,p.x-cx));
+  const sorted=[...angles].sort((a,b)=>a-b);
+  let maxGap=0;
+  for(let i=1;i<sorted.length;i++) maxGap=Math.max(maxGap,sorted[i]-sorted[i-1]);
+  maxGap=Math.max(maxGap,sorted[0]+Math.PI*2-sorted[sorted.length-1]);
+  if(maxGap>(120*Math.PI/180))return;
+
+  const zone=cx<cv().width/2?'left':'right';
+  if(zone===QUESTIONS[curQ].correct) registerCorrect();
+  else registerWrong();
+}
+
+/* ── Correct / Wrong ── */
+function registerCorrect(){
+  answered=true;hideHint();
+  flashPath('#4CAF50',1.0,8);
+  score++;document.getElementById('score-val').textContent=score;
+  window.speechSynthesis?.cancel();
+  playClaps();showToast('&#11088; Correct!','#4CAF50');spawnConfetti();
+  setTimeout(()=>{curQ++;loadQuestion();},3200);
+}
+function registerWrong(){
+  if(answered)return;
+  attempts++;
+  flashPath('#f44336',0.9,7);
+  play(sndWrong);
+  if(attempts===1){
+    showToast('&#10060; Try again!','#f44336');
+    setTimeout(()=>{clearCanvas();showHint();},800);
   } else {
-    el.classList.add('tapped-wrong');
-    play(sndWrong);
-    showToast('&#10060; That one is '+( s.find==='odd'?'even':'odd')+'!','#f44336');
-    setTimeout(()=>el.classList.remove('tapped-wrong'),400);
+    answered=true;
+    showToast('&#10060; Wrong!','#f44336');
+    setTimeout(()=>{
+      hideHint();clearCanvas();
+      drawHintCircle('#4CAF50');
+      showToast('&#128161; Correct answer!','#FF9800');
+      setTimeout(()=>{curQ++;loadQuestion();},3000);
+    },1000);
   }
 }
 
-/* ── Navigation ── */
-function nextScreen(){curScreen++;loadScreen();}
+function flashPath(color,alpha,width){
+  const c=ctx(),can=cv();
+  c.clearRect(0,0,can.width,can.height);
+  if(!pathPts.length)return;
+  c.save();c.globalAlpha=alpha;c.strokeStyle=color;c.lineWidth=width;
+  c.lineCap='round';c.lineJoin='round';c.shadowColor=color;c.shadowBlur=10;
+  c.beginPath();c.moveTo(pathPts[0].x,pathPts[0].y);
+  pathPts.forEach(p=>c.lineTo(p.x,p.y));
+  c.stroke();c.restore();
+}
+function drawHintCircle(color){
+  const q=QUESTIONS[curQ],can=cv(),c=ctx();
+  const hx=q.hintCx*can.width, hy=q.hintCy*can.height;
+  const r=Math.min(can.width/2,can.height)*0.38;
+  c.save();c.strokeStyle=color;c.lineWidth=7;c.globalAlpha=0.9;
+  c.shadowColor=color;c.shadowBlur=14;
+  c.beginPath();c.arc(hx,hy,r,0,Math.PI*2);c.stroke();c.restore();
+}
+
+/* ── Hint ── */
+function showHint(){
+  const q=QUESTIONS[curQ];
+  const row=document.getElementById('images-row');
+  const W=row.offsetWidth, H=row.offsetHeight;
+  const r=Math.min(W/2,H)*0.38;
+  const px=q.hintCx*W, py=q.hintCy*H+row.offsetTop;
+  const guide=document.getElementById('hint-guide');
+  guide.style.width=(r*2)+'px';guide.style.height=(r*2)+'px';
+  guide.style.left=px+'px';guide.style.top=py+'px';
+  guide.classList.add('show');
+  const label=document.getElementById('hint-label');
+  label.style.left=px+'px';
+  label.style.top=Math.max(4,py-r-36)+'px';
+  label.classList.add('show');
+}
+function hideHint(){
+  document.getElementById('hint-guide').classList.remove('show');
+  document.getElementById('hint-label').classList.remove('show');
+}
+
+/* ── Load question ── */
+function loadQuestion(){
+  if(curQ>=QUESTIONS.length){showEnd();return;}
+  answered=false;attempts=0;pathPts=[];
+  hideHint();
+
+  const q=QUESTIONS[curQ];
+  document.getElementById('q-num').textContent=curQ+1;
+  document.getElementById('prog-bar').style.width=((curQ/8)*100)+'%';
+  document.getElementById('question-txt').textContent=q.text;
+  speak(q.text);
+
+  document.getElementById('img-left').src=q.imgL;
+  document.getElementById('img-right').src=q.imgR;
+  document.getElementById('lbl-left').textContent=q.numL;
+  document.getElementById('lbl-right').textContent=q.numR;
+
+  setTimeout(syncCanvas,120);
+}
+
+/* ── Canvas events (set up once) ── */
+function setupCanvas(){
+  const c=cv();
+  c.addEventListener('pointerdown',onDown);
+  c.addEventListener('pointermove',onMove);
+  c.addEventListener('pointerup',onUp);
+  c.addEventListener('pointercancel',onUp);
+  window.addEventListener('resize',()=>{syncCanvas();hideHint();});
+}
+
+/* ── Start / Restart ── */
 function startGame(){
   document.getElementById('intro-screen').style.display='none';
   document.getElementById('game-screen').style.display='flex';
-  curScreen=0;score=0;
+  curQ=0;score=0;
   document.getElementById('score-val').textContent=0;
-  loadScreen();
+  setupCanvas();
+  loadQuestion();
 }
 function restartGame(){
   window.speechSynthesis?.cancel();
-  cleanupSort();
   document.getElementById('end-screen').style.display='none';
   document.getElementById('game-screen').style.display='flex';
-  curScreen=0;score=0;
+  curQ=0;score=0;
   document.getElementById('score-val').textContent=0;
-  loadScreen();
+  loadQuestion();
 }
 
-/* ── Toast / Confetti ── */
+/* ── Toast ── */
 let toastTimer=null;
 function showToast(msg,bg){
   const el=document.getElementById('toast');
@@ -456,6 +370,8 @@ function showToast(msg,bg){
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>el.classList.remove('show'),1400);
 }
+
+/* ── Confetti ── */
 const CC=['#FFD700','#FF6B6B','#4CAF50','#2196F3','#FF9800','#AB47BC','#26C6DA'];
 function spawnConfetti(){
   for(let i=0;i<60;i++) setTimeout(()=>{
@@ -467,17 +383,20 @@ function spawnConfetti(){
 }
 if(!document.querySelector('#cf-style')){const s=document.createElement('style');s.id='cf-style';s.textContent='@keyframes cfFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(540deg);opacity:0}}';document.head.appendChild(s);}
 
+/* ── Mute ── */
 function toggleMute(){
   muted=!muted;
   document.getElementById('mute-btn').innerHTML=muted?'&#128263;':'&#128266;';
   if(muted){window.speechSynthesis?.cancel();sndClaps.pause();}
-  else speak(document.getElementById('instruction-txt').textContent);
+  else speak(document.getElementById('question-txt').textContent);
 }
+
+/* ── End ── */
 function showEnd(){
   document.getElementById('game-screen').style.display='none';
   document.getElementById('end-screen').style.display='flex';
   document.getElementById('final-score').textContent=score;
-  document.getElementById('end-stars').innerHTML=score>=6?'&#11088;&#11088;&#11088;':score>=4?'&#11088;&#11088;':'&#11088;';
+  document.getElementById('end-stars').innerHTML=score>=7?'&#11088;&#11088;&#11088;':score>=5?'&#11088;&#11088;':'&#11088;';
   window.speechSynthesis?.cancel();
   sndClaps.currentTime=0;sndClaps.play().catch(()=>{});
   setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;},3000);
