@@ -12,7 +12,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 #intro-screen{position:fixed;inset:0;background:linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc);display:flex;align-items:center;justify-content:center;border:5px solid #FFD700;z-index:200;cursor:pointer}
 #intro-logo{width:220px;height:auto;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.5));animation:logoBounce 2s ease-in-out infinite}
 @keyframes logoBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-#game-screen{display:none;flex-direction:column;width:100%;max-width:860px;height:100%;padding:12px 14px 76px;overflow-y:auto}
+#game-screen{display:none;flex-direction:column;width:100%;max-width:860px;height:100%;padding:12px 14px 76px;overflow:hidden}
 .hdr{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:18px;padding:10px 18px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,0.1);flex-shrink:0}
 .hdr-score{font-size:1.1em;font-weight:bold;color:#4CAF50;min-width:70px}
 .hdr-title{font-size:clamp(0.72em,2.4vw,0.95em);color:#6a0dad;font-weight:bold;text-align:center}
@@ -23,10 +23,10 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .progress-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#4CAF50,#8BC34A);transition:width 0.5s ease}
 .instruction{text-align:center;font-size:clamp(0.95em,3vw,1.2em);color:#333;font-weight:800;margin-bottom:8px;padding:0 6px;line-height:1.4;flex-shrink:0}
 
-.q-card{background:white;border-radius:24px;padding:22px 16px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;flex-shrink:0;margin-top:auto;margin-bottom:auto}
+.q-card{background:white;border-radius:24px;padding:22px 16px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;width:100%;flex:1;min-height:0;overflow:hidden}
 
 /* Visual equation with group images */
-.img-equation{display:flex;align-items:center;justify-content:center;gap:clamp(6px,2vw,16px);width:100%;flex-wrap:nowrap}
+.img-equation{display:flex;align-items:center;justify-content:center;gap:clamp(6px,2vw,16px);width:100%;flex-wrap:nowrap;flex:1;min-height:0}
 .img-eq-op{font-size:clamp(1.6em,6vw,2.8em);font-weight:900;color:#6c5ce7;line-height:1;flex-shrink:0}
 .img-eq-q{font-size:clamp(1.6em,6vw,2.8em);font-weight:900;color:#6c5ce7;min-width:36px;text-align:center;border-bottom:4px solid #6c5ce7;padding-bottom:2px;transition:color 0.3s,border-color 0.3s;flex-shrink:0}
 .fruit-svg-group{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:clamp(120px,36vw,210px);height:clamp(120px,36vw,210px)}
@@ -60,19 +60,20 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 
 @media(max-width:768px){
   .hdr-title{display:none}
+  .fruit-svg-group{width:clamp(100px,24vw,155px);height:clamp(100px,24vw,155px)}
 }
 @media(max-width:480px){
   #game-screen{padding:8px 10px 72px}
   .hdr{padding:8px 12px;margin-bottom:6px}
-  .q-card{padding:12px 8px;gap:10px}
-  .fruit-svg-group{width:clamp(100px,38vw,160px);height:clamp(100px,38vw,160px)}
-  .img-eq-op{font-size:clamp(1.4em,5vw,2em)}
-  .img-eq-q{font-size:clamp(1.4em,5vw,2em);min-width:28px}
-  .img-equation{gap:clamp(4px,1.5vw,10px)}
-  .choice-btn{width:70px;height:70px;font-size:1.3em}
-  .choices-row{gap:8px}
+  .q-card{padding:10px 8px;gap:10px}
+  .fruit-svg-group{width:clamp(90px,33vw,130px);height:clamp(90px,33vw,130px)}
+  .img-eq-op{font-size:clamp(1.2em,4.2vw,1.6em)}
+  .img-eq-q{font-size:clamp(1.2em,4.2vw,1.6em);min-width:26px}
+  .img-equation{gap:clamp(3px,1.5vw,10px)}
+  .choice-btn{width:72px;height:72px;font-size:1.3em}
+  .choices-row{gap:10px}
   .btn-restart{padding:10px 22px;font-size:0.92em}
-  .instruction{font-size:clamp(0.85em,2.8vw,1em);margin-bottom:6px}
+  .instruction{font-size:clamp(0.82em,2.6vw,0.95em);margin-bottom:4px}
 }
 </style>
 </head>
