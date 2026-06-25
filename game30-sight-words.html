@@ -40,22 +40,22 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 @keyframes speakPulse{0%,100%{box-shadow:0 6px 22px rgba(108,92,231,0.45),0 0 0 0 rgba(108,92,231,0.4)}50%{box-shadow:0 6px 22px rgba(108,92,231,0.45),0 0 0 18px rgba(108,92,231,0)}}
 
 /* Word choice buttons */
-.choices-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;width:100%}
+.choices-row{display:flex;flex-direction:column;gap:14px;align-items:stretch;width:100%}
 .word-btn{
-  flex:1;min-width:80px;max-width:160px;
-  height:74px;border-radius:20px;
+  width:100%;height:80px;border-radius:20px;
   border:4px solid transparent;
-  font-size:clamp(1.2em,4.5vw,1.6em);font-weight:800;font-family:inherit;
+  font-size:clamp(1.8em,6vw,2.6em);font-weight:800;font-family:inherit;
   color:white;cursor:pointer;
-  box-shadow:0 4px 14px rgba(0,0,0,0.18);
+  box-shadow:0 5px 16px rgba(0,0,0,0.18);
   transition:transform 0.1s,border-color 0.2s;
   display:flex;align-items:center;justify-content:center;
-  letter-spacing:0.5px;
+  letter-spacing:2px;
+  text-shadow:0 2px 6px rgba(0,0,0,0.22);
 }
-.word-btn:active{transform:scale(0.93)}
-.word-btn.c0{background:linear-gradient(135deg,#6c5ce7,#a29bfe)}
-.word-btn.c1{background:linear-gradient(135deg,#00b894,#55efc4)}
-.word-btn.c2{background:linear-gradient(135deg,#e17055,#fd79a8)}
+.word-btn:active{transform:scale(0.97)}
+.word-btn.c0{background:#6c5ce7}
+.word-btn.c1{background:#00b894}
+.word-btn.c2{background:#e17055}
 .word-btn.correct{border-color:#4CAF50!important;background:linear-gradient(135deg,#55efc4,#00b894)!important;box-shadow:0 0 0 6px rgba(76,175,80,0.5)!important;animation:popCorrect 0.35s ease!important;transform:none!important}
 .word-btn.wrong{border-color:#f44336;animation:shakeWrong 0.4s ease}
 .word-btn.hint{border-color:#FFD700;animation:pulseHint 1s ease-in-out infinite}
@@ -88,7 +88,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   .q-card{padding:18px 12px 22px;gap:22px}
   .speak-btn{width:90px;height:90px}
   .speak-btn .speak-icon{font-size:2.3em}
-  .word-btn{height:64px;font-size:clamp(1.1em,4vw,1.35em)}
+  .word-btn{height:70px;font-size:clamp(1.6em,5.5vw,2em)}
   .choices-row{gap:10px}
   .instruction{font-size:clamp(0.82em,2.6vw,0.95em);margin-bottom:4px}
   .btn-restart{padding:10px 22px;font-size:0.92em}
