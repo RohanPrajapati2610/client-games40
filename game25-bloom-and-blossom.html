@@ -31,7 +31,7 @@
     #game-screen {
       display: none; flex-direction: column;
       width: 100%; max-width: 860px;
-      height: 100%; padding: 14px 14px 80px; overflow-y: auto;
+      height: 100%; padding: 14px 14px 70px; overflow: hidden;
     }
 
     .hdr {
@@ -58,7 +58,7 @@
       background: white; border-radius: 24px; padding: 18px 14px;
       box-shadow: 0 6px 24px rgba(0,0,0,0.1);
       display: flex; flex-direction: column; align-items: center; gap: 14px;
-      margin-top: auto; margin-bottom: auto; flex-shrink: 0; width: 100%;
+      flex: 1; min-height: 0; width: 100%; overflow: hidden;
     }
 
     .round-badge {
@@ -67,14 +67,20 @@
     }
 
     /* ── MATCH AREA ── */
-    .match-wrapper { position: relative; width: 100%; }
+    .match-wrapper {
+      position: relative; width: 100%;
+      flex: 1; min-height: 0;
+      display: flex; flex-direction: column;
+    }
 
     .columns-row {
       display: flex; align-items: stretch; gap: 0; width: 100%;
+      flex: 1; min-height: 0;
     }
 
     .left-col, .right-col {
-      flex: 1; display: flex; flex-direction: column; gap: 8px; align-items: center;
+      flex: 1; display: flex; flex-direction: column; gap: 6px; align-items: center;
+      justify-content: space-evenly;
     }
     .middle-gap { width: 56px; flex-shrink: 0; }
 
@@ -87,10 +93,10 @@
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
       overflow: hidden; position: relative;
       display: flex; flex-direction: column; align-items: center;
-      padding: 8px 8px 6px;
+      padding: 6px; flex: 1; min-height: 0; max-height: 150px;
     }
     .match-item .flower-img-wrap {
-      width: 120px; height: 120px;
+      flex: 1; min-height: 0; width: 100%;
       display: flex; align-items: center; justify-content: center;
     }
     .match-item .flower-img-wrap img {
@@ -171,20 +177,24 @@
     .btn-play-again { background: #FFD700; color: #333; border: none; border-radius: 50px; padding: 14px 36px; font-size: 1.1em; font-weight: 800; font-family: inherit; cursor: pointer; box-shadow: 0 4px 16px rgba(255,215,0,0.5); }
 
     @media (max-width: 768px) {
-      #game-screen { padding: 10px 10px 76px; }
-      .q-card { padding: 14px 8px; gap: 10px; }
-      .match-item { width: 130px; }
-      .match-item .flower-img-wrap { width: 100px; height: 100px; }
-      .middle-gap { width: 40px; }
+      #game-screen { padding: 10px 10px 66px; }
+      .q-card { padding: 10px 8px; gap: 8px; }
+      .match-item { width: 120px; max-height: 130px; }
+      .middle-gap { width: 36px; }
       .hdr-title { display: none; }
     }
     @media (max-width: 480px) {
-      .match-item { width: 110px; }
-      .match-item .flower-img-wrap { width: 84px; height: 84px; }
-      .middle-gap { width: 28px; }
+      #game-screen { padding: 8px 8px 60px; }
+      .q-card { padding: 8px 6px; gap: 6px; }
+      .match-item { width: 100px; max-height: 110px; }
+      .middle-gap { width: 24px; }
+      .left-col, .right-col { gap: 4px; }
       .match-item::after { width: 9px; height: 9px; }
       .left-col  .match-item::after { right: -5px; }
       .right-col .match-item::after { left: -5px; }
+      .hdr { padding: 8px 12px; margin-bottom: 6px; }
+      .progress-row { margin-bottom: 6px; }
+      .instruction { font-size: 0.85em; margin-bottom: 6px; }
     }
   </style>
 </head>
