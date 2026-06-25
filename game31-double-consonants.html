@@ -107,12 +107,12 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 15</div>
+    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 8</div>
     <div class="hdr-title">Double Consonants &middot; LY4</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">&#128266;</button>
   </div>
   <div class="progress-row">
-    <span class="progress-label">Q <span id="step-num">1</span> / 15</span>
+    <span class="progress-label">Q <span id="step-num">1</span> / 8</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
   <div class="instruction">&#9997;&#65039; Tap the double letters to complete the word!</div>
@@ -134,7 +134,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   <div class="end-trophy">&#127942;</div>
   <div class="end-title">Double Brilliant!</div>
   <div class="end-sub">You know your double consonants!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 15</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 8</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">&#9654; &nbsp;Play Again</button>
 </div>
@@ -148,15 +148,8 @@ const QUESTIONS = [
   { prefix:'o',  blank:'ff', suffix:'',  word:'off',   choices:['ff','gg','dd'] },
   { prefix:'mi', blank:'ss', suffix:'',  word:'miss',  choices:['ss','tt','ll'] },
   { prefix:'be', blank:'ll', suffix:'',  word:'bell',  choices:['ll','ff','dd'] },
-  { prefix:'a',  blank:'dd', suffix:'',  word:'add',   choices:['dd','tt','gg'] },
-  { prefix:'fu', blank:'ll', suffix:'',  word:'full',  choices:['ll','ss','ff'] },
-  { prefix:'ki', blank:'ss', suffix:'',  word:'kiss',  choices:['ss','ll','nn'] },
-  { prefix:'pu', blank:'ff', suffix:'',  word:'puff',  choices:['ff','dd','ss'] },
-  { prefix:'we', blank:'ll', suffix:'',  word:'well',  choices:['ll','tt','gg'] },
-  { prefix:'fi', blank:'zz', suffix:'',  word:'fizz',  choices:['zz','ss','ll'] },
-  { prefix:'ta', blank:'ll', suffix:'',  word:'tall',  choices:['ll','nn','dd'] },
   { prefix:'do', blank:'ll', suffix:'',  word:'doll',  choices:['ll','ss','tt'] },
-  { prefix:'hi', blank:'ll', suffix:'',  word:'hill',  choices:['ll','ss','tt'] },
+  { prefix:'fu', blank:'ll', suffix:'',  word:'full',  choices:['ll','ss','ff'] },
 ];
 
 let curQ = 0, score = 0, attempts = 0, answered = false, muted = false;
@@ -319,7 +312,7 @@ function showEnd(){
   document.getElementById('game-screen').style.display='none';
   document.getElementById('end-screen').style.display='flex';
   document.getElementById('final-score').textContent=score;
-  document.getElementById('end-stars').innerHTML=score>=13?'&#11088;&#11088;&#11088;':score>=10?'&#11088;&#11088;':'&#11088;';
+  document.getElementById('end-stars').innerHTML=score>=7?'&#11088;&#11088;&#11088;':score>=5?'&#11088;&#11088;':'&#11088;';
   window.speechSynthesis?.cancel();
   sndClaps.currentTime=0;sndClaps.play().catch(()=>{});
   setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;},3000);
