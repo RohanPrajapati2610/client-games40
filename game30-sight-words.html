@@ -43,12 +43,6 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .word-blank.wrong-reveal{color:#FF9800;border-color:#FF9800}
 @keyframes popBlank{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
 
-/* Replay button */
-.replay-wrap{display:flex;justify-content:center}
-.replay-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#6c5ce7,#a29bfe);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2em;box-shadow:0 4px 12px rgba(108,92,231,0.4);transition:transform 0.1s;flex-shrink:0}
-.replay-btn:active{transform:scale(0.9)}
-.replay-btn.playing{animation:speakPulse 0.8s ease-in-out infinite}
-@keyframes speakPulse{0%,100%{box-shadow:0 4px 12px rgba(108,92,231,0.4),0 0 0 0 rgba(108,92,231,0.35)}50%{box-shadow:0 4px 12px rgba(108,92,231,0.4),0 0 0 14px rgba(108,92,231,0)}}
 
 /* Choice buttons */
 .choices-row{display:flex;gap:12px;justify-content:center;width:100%}
@@ -101,7 +95,6 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   .choices-row{gap:8px}
   .instruction{font-size:clamp(0.8em,2.5vw,0.92em);margin-bottom:4px}
   .btn-restart{padding:10px 22px;font-size:0.92em}
-  .replay-btn{width:38px;height:38px;font-size:1em}
 }
 </style>
 </head>
@@ -127,9 +120,6 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
     <div class="img-area" id="img-area"></div>
     <div class="sentence-row">
       <div class="sentence-text" id="sentence-display"></div>
-    </div>
-    <div class="replay-wrap">
-      <button class="replay-btn" id="replay-btn" onclick="replayAudio()">&#128266;</button>
     </div>
     <div class="choices-row" id="choices-row"></div>
   </div>
@@ -190,10 +180,8 @@ function speak(text, onEnd){
     const v = window.speechSynthesis.getVoices();
     const voice = v.find(x=>x.lang.startsWith('en')&&!x.name.includes('Google'))||v.find(x=>x.lang.startsWith('en'))||v[0];
     if(voice) u.voice = voice;
-    const btn = document.getElementById('replay-btn');
-    if(btn) btn.classList.add('playing');
-    u.onend = ()=>{ if(btn) btn.classList.remove('playing'); if(onEnd) onEnd(); };
-    u.onerror = ()=>{ if(btn) btn.classList.remove('playing'); if(onEnd) onEnd(); };
+    u.onend = ()=>{ if(onEnd) onEnd(); };
+    u.onerror = ()=>{ if(onEnd) onEnd(); };
     window.speechSynthesis.speak(u);
   }, 200);
 }
@@ -243,11 +231,6 @@ function renderSentence(revealed, correct){
 }
 
 function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function replayAudio(){
-  if(answered) return;
-  speak(QUESTIONS[curQ].audio);
-}
 
 /* ── Answer ── */
 function selectWord(val){
@@ -332,8 +315,7 @@ if(!document.querySelector('#cf-style')){const s=document.createElement('style')
 function toggleMute(){
   muted=!muted;
   document.getElementById('mute-btn').innerHTML=muted?'&#128263;':'&#128266;';
-  const rb=document.getElementById('replay-btn');
-  if(muted){window.speechSynthesis?.cancel();sndClaps.pause();if(rb)rb.classList.remove('playing');}
+  if(muted){window.speechSynthesis?.cancel();sndClaps.pause();}
   else if(!answered) speak(QUESTIONS[curQ]?.audio);
 }
 function showEnd(){
