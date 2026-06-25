@@ -257,7 +257,7 @@ function selectWord(val){
     play(sndWrong);
     if(attempts === 1){
       showToast('&#10060; Try again!', '#f44336');
-      setTimeout(()=>{ chosenBtn.classList.remove('wrong'); if(!answered) correctBtn.classList.add('hint'); speak(q.audio); }, 900);
+      setTimeout(()=>{ chosenBtn.classList.remove('wrong'); if(!answered) correctBtn.classList.add('hint'); }, 900);
     } else {
       answered = true;
       showToast('&#10060; Wrong!', '#f44336');
@@ -266,7 +266,6 @@ function selectWord(val){
         correctBtn.classList.add('correct');
         renderSentence(true, false);
         showToast('&#128161; The word is "' + q.word + '"!', '#FF9800');
-        speak(q.audio);
         setTimeout(()=>{ curQ++; loadQuestion(); }, 2800);
       }, 1000);
     }
