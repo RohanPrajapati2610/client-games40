@@ -578,13 +578,14 @@ function setupEmojiDrag(card) {
         tgt.addEventListener('animationend',()=>tgt.classList.remove('wrong-anim'),{once:true});
 
         if (wrongEmoji[dragId]===1) {
-          /* hint: glow correct circle after 600ms */
+          /* 1st wrong: clear any old hint, then glow correct circle */
           setTimeout(()=>{
+            clearHints();
             const correct=document.getElementById(`circle-${dragId}`);
             if (correct&&!placedEmojis[dragId]) correct.classList.add('hint-circle');
           }, 600);
         } else {
-          /* 2nd wrong: auto-reveal */
+          /* 2nd wrong: clear hint, auto-place emoji into correct circle */
           clearHints();
           const correct=document.getElementById(`circle-${dragId}`);
           if (correct&&!placedEmojis[dragId]) {
