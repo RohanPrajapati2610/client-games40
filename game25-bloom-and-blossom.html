@@ -322,17 +322,16 @@ function shuffle(arr) {
   return a;
 }
 
+function isConflict(a, b) {
+  return (a.id === 'rose' && b.id === 'hibiscus') || (a.id === 'hibiscus' && b.id === 'rose');
+}
+
 function shuffleSafe(arr) {
   let result, tries = 0;
   do {
     result = shuffle(arr);
     tries++;
-  } while (tries < 20 && result.some((f, i) =>
-    i < result.length - 1 &&
-    new Set([f.id, result[i+1].id]).size === 2 &&
-    new Set([f.id, result[i+1].id]).has('rose') &&
-    new Set([f.id, result[i+1].id]).has('hibiscus')
-  ));
+  } while (tries < 30 && result.some((f, i) => i < result.length - 1 && isConflict(f, result[i + 1])));
   return result;
 }
 
