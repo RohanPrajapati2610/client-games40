@@ -329,7 +329,7 @@ function buildRound() {
   busy = false;
 
   currentPairs = PAIR_SETS[currentRound % PAIR_SETS.length];
-  const leftOrder  = shuffle(currentPairs);
+  const leftOrder  = currentPairs;
   const rightOrder = shuffle(currentPairs);
 
   const leftCol  = document.getElementById('left-col');
