@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Sight Words &middot; LY3 &middot; Game 30</title>
+<title>This That These Those &middot; LY4 &middot; Game 30</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fce4ec 0%,#e8f5e9 50%,#e3f2fd 100%);height:100vh;height:100dvh;display:flex;align-items:stretch;justify-content:center;overflow:hidden;user-select:none;-webkit-user-select:none}
+body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fce4ec 0%,#e8f5e9 50%,#e3f2fd 100%);height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden;user-select:none;-webkit-user-select:none}
 
 #intro-screen{position:fixed;inset:0;background:linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc);display:flex;align-items:center;justify-content:center;border:5px solid #FFD700;z-index:200;cursor:pointer}
 #intro-logo{width:220px;height:auto;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.5));animation:logoBounce 2s ease-in-out infinite}
 @keyframes logoBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
-#game-screen{display:none;flex-direction:column;width:100%;max-width:860px;height:100%;padding:12px 14px 76px;overflow:hidden}
+#game-screen{display:none;flex-direction:column;width:100%;max-width:860px;height:100%;padding:12px 14px 76px;overflow-y:auto}
 
 .hdr{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:18px;padding:10px 18px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,0.1);flex-shrink:0}
 .hdr-score{font-size:1.1em;font-weight:bold;color:#4CAF50;min-width:70px}
@@ -26,47 +26,45 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .progress-bar-wrap{flex:1;height:10px;background:#e0e0e0;border-radius:5px;overflow:hidden}
 .progress-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#4CAF50,#8BC34A);transition:width 0.5s ease}
 
-.instruction{text-align:center;font-size:clamp(0.9em,2.8vw,1.1em);color:#555;font-weight:800;margin-bottom:8px;flex-shrink:0}
+.instruction{text-align:center;font-size:clamp(0.9em,2.8vw,1.05em);color:#555;font-weight:800;margin-bottom:8px;flex-shrink:0}
 
-.q-card{background:white;border-radius:24px;padding:18px 16px 22px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;width:100%;flex:1;min-height:0;overflow:hidden}
+/* Q-card */
+.q-card{background:white;border-radius:24px;padding:18px 16px 22px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;width:100%;flex:1;min-height:0;overflow:hidden}
 
-/* Image area */
-.img-area{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;flex:1;min-height:0}
-.q-img{max-height:100%;max-width:48%;object-fit:contain;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,0.1);flex-shrink:1}
-.q-img.single{max-width:80%}
+/* Image */
+.img-wrap{display:flex;align-items:center;justify-content:center;width:100%}
+.q-img{width:auto;height:min(260px,42vh);max-width:80%;object-fit:contain;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.12)}
 
-/* Sentence row */
-.sentence-row{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;width:100%}
-.sentence-text{font-size:clamp(1.2em,4vw,1.7em);font-weight:800;color:#333;text-align:center;line-height:1.5}
-.word-blank{display:inline-block;min-width:60px;padding:2px 10px;border-bottom:4px solid #6c5ce7;color:#6c5ce7;font-weight:800;text-align:center;transition:color 0.3s,border-color 0.3s;border-radius:4px 4px 0 0}
-.word-blank.reveal{color:#4CAF50;border-color:#4CAF50;animation:popBlank 0.4s ease}
-.word-blank.wrong-reveal{color:#FF9800;border-color:#FF9800}
-@keyframes popBlank{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
-
-
-/* Choice buttons */
-.choices-row{display:flex;gap:12px;justify-content:center;width:100%}
-.word-btn{
-  flex:1;max-width:130px;height:64px;border-radius:18px;
-  border:4px solid transparent;
-  font-size:clamp(1.1em,4vw,1.5em);font-weight:800;font-family:inherit;
-  color:white;cursor:pointer;letter-spacing:1px;
-  box-shadow:0 5px 14px rgba(0,0,0,0.16);
-  transition:transform 0.1s,border-color 0.2s;
-  display:flex;align-items:center;justify-content:center;
-  text-shadow:0 1px 4px rgba(0,0,0,0.2);
+/* Sentence with tappable words */
+.sentence-area{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
+.word-row{display:flex;align-items:baseline;flex-wrap:wrap;justify-content:center;gap:4px 0;font-size:clamp(1.3em,4.5vw,1.8em);font-weight:800;color:#333;line-height:1.8;text-align:center}
+.tap-word{
+  display:inline-block;
+  cursor:pointer;
+  padding:2px 5px;
+  border-bottom:4px solid #bbb;
+  border-radius:3px 3px 0 0;
+  color:#6c5ce7;
+  transition:border-color 0.2s,color 0.2s,transform 0.1s;
+  touch-action:manipulation;
+  margin:0 1px;
 }
-.word-btn:active{transform:scale(0.93)}
-.word-btn.c0{background:#6c5ce7}
-.word-btn.c1{background:#00b894}
-.word-btn.c2{background:#e17055}
-.word-btn.correct{border-color:#4CAF50!important;background:#43A047!important;box-shadow:0 0 0 6px rgba(76,175,80,0.5)!important;animation:popCorrect 0.35s ease!important;transform:none!important}
-.word-btn.wrong{border-color:#f44336;animation:shakeWrong 0.4s ease}
-.word-btn.hint{border-color:#FFD700;animation:pulseHint 1s ease-in-out infinite}
+.tap-word:active{transform:scale(0.93)}
+.tap-word.disabled{pointer-events:none;color:#aaa;border-color:#ddd}
+.tap-word.correct{border-color:#4CAF50 !important;color:#2e7d32 !important;animation:popWord 0.4s ease}
+.tap-word.wrong{border-color:#f44336 !important;color:#f44336 !important;animation:shakeWord 0.35s ease}
+.tap-word.reveal{border-color:#FF9800 !important;color:#FF9800 !important}
+.tap-word.hint{border-color:#FFD600 !important;color:#FF8F00 !important;animation:hintPulse 0.8s ease-in-out infinite}
+@keyframes hintPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,214,0,0.9)}50%{box-shadow:0 0 0 12px rgba(255,214,0,0)}}
+.sep{color:#999;font-weight:700;margin:0 1px}
+.rest-text{color:#333;font-weight:800}
+
+@keyframes popWord{0%{transform:scale(1)}45%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes shakeWord{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
 
 /* Bottom */
 .bottom-row{display:flex;justify-content:center;position:fixed;bottom:16px;left:0;right:0;z-index:50;pointer-events:none}
-.btn-restart{pointer-events:all;background:linear-gradient(135deg,#FF9800,#F57C00);color:white;border:none;padding:12px 30px;border-radius:40px;font-size:1em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(255,152,0,0.4)}
+.btn-restart{pointer-events:all;background:linear-gradient(135deg,#FF9800,#F57C00);color:white;border:none;padding:12px 30px;border-radius:40px;font-size:1em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(255,152,0,0.4);touch-action:manipulation;min-height:44px}
 
 #toast{position:fixed;top:18%;left:50%;transform:translateX(-50%) scale(0.7);padding:13px 28px;border-radius:50px;font-size:1.35em;font-weight:bold;color:white;pointer-events:none;opacity:0;transition:opacity 0.2s,transform 0.2s;z-index:500;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
 #toast.show{opacity:1;transform:translateX(-50%) scale(1)}
@@ -78,25 +76,20 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .end-sub{color:rgba(255,255,255,0.9);font-size:1.1em}
 .end-score-box{background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.35);border-radius:20px;padding:16px 40px;color:white;font-size:1.8em;font-weight:bold}
 .end-stars{font-size:2.2em;letter-spacing:4px}
-.btn-play-again{background:#FFD700;color:#333;border:none;padding:15px 44px;border-radius:40px;font-size:1.2em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.2);margin-top:8px}
+.btn-play-again{background:#FFD700;color:#333;border:none;padding:15px 44px;border-radius:40px;font-size:1.2em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.2);margin-top:8px;touch-action:manipulation;min-height:44px}
 
-@keyframes popCorrect{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
-@keyframes shakeWrong{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-@keyframes pulseHint{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.6)}50%{box-shadow:0 0 0 12px rgba(255,215,0,0)}}
 @keyframes trophySpin{from{transform:rotate(-20deg) scale(0)}60%{transform:rotate(10deg) scale(1.1)}to{transform:rotate(0) scale(1)}}
 
-@media(max-width:768px){.hdr-title{display:none}.img-area{max-height:55vw}.q-img{max-height:52vw}}
+@media(max-width:768px){.hdr-title{display:none}}
 @media(max-width:480px){
   #game-screen{padding:8px 10px 72px}
   .hdr{padding:8px 12px;margin-bottom:6px}
   .q-card{padding:14px 12px 18px;gap:14px}
-  .sentence-text{font-size:clamp(1.1em,3.8vw,1.5em)}
-  .word-btn{height:58px;font-size:clamp(1em,3.8vw,1.3em)}
-  .choices-row{gap:8px}
-  .instruction{font-size:clamp(0.8em,2.5vw,0.92em);margin-bottom:4px}
   .btn-restart{padding:10px 22px;font-size:0.92em}
-  .img-area{max-height:42vw}
-  .q-img{max-height:40vw}
+}
+@media(max-height:640px){
+  .q-card{gap:12px}
+  .word-row{font-size:clamp(1.1em,3.8vw,1.5em)}
 }
 </style>
 </head>
@@ -109,21 +102,22 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 15</div>
-    <div class="hdr-title">Sight Words &middot; LY3</div>
+    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 6</div>
+    <div class="hdr-title">This, That, These, Those &middot; LY4</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">&#128266;</button>
   </div>
   <div class="progress-row">
-    <span class="progress-label">Q <span id="step-num">1</span> / 15</span>
+    <span class="progress-label">Q <span id="q-num">1</span> / 6</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
-  <div class="instruction">&#128275; Fill in the missing word!</div>
-  <div class="q-card" id="q-card">
-    <div class="img-area" id="img-area"></div>
-    <div class="sentence-row">
-      <div class="sentence-text" id="sentence-display"></div>
+  <div class="instruction">&#128072; Look at the picture and tap the correct word!</div>
+  <div class="q-card">
+    <div class="img-wrap">
+      <img class="q-img" id="q-img" src="" alt="">
     </div>
-    <div class="choices-row" id="choices-row"></div>
+    <div class="sentence-area">
+      <div class="word-row" id="word-row"></div>
+    </div>
   </div>
   <div class="bottom-row">
     <button class="btn-restart" onclick="restartGame()">&#128260; &nbsp;Restart</button>
@@ -133,166 +127,159 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 <div id="end-screen">
   <div class="end-trophy">&#127942;</div>
   <div class="end-title">Well Done!</div>
-  <div class="end-sub">You know your sight words!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 15</div>
+  <div class="end-sub">You know This, That, These &amp; Those!</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 6</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">&#9654; &nbsp;Play Again</button>
 </div>
 
 <script>
 const QUESTIONS = [
-  { word:'the',  images:['Assets/cat.png'],                                            sentence:'___ cat is cute.',          choices:['the','a','an'],     audio:'The cat is cute.' },
-  { word:'and',  images:['Assets/cricket-bat-clipart.png','Assets/cricket-ball.png'],  sentence:'Bat ___ ball.',             choices:['and','or','but'],   audio:'Bat and ball.' },
-  { word:'a',    images:['Assets/cake.png'],                                            sentence:'I want ___ cake.',          choices:['a','the','an'],     audio:'I want a cake.' },
-  { word:'to',   images:['Assets/house.png'],                                           sentence:'I go ___ the house.',      choices:['to','in','at'],     audio:'I go to the house.' },
-  { word:'you',  images:['Assets/boy.png'],                                             sentence:'___ are my friend.',       choices:['you','he','she'],   audio:'You are my friend.' },
-  { word:'it',   images:['Assets/egg.png'],                                             sentence:'___ is an egg.',           choices:['it','he','she'],    audio:'It is an egg.' },
-  { word:'he',   images:['Assets/boy.png'],                                             sentence:'___ is a boy.',            choices:['he','she','they'],  audio:'He is a boy.' },
-  { word:'she',  images:['Assets/rainy1.png'],                                          sentence:'___ is smart.',            choices:['she','he','it'],    audio:'She is smart.' },
-  { word:'we',   images:['Assets/winter1.png'],                                         sentence:'___ are siblings.',        choices:['we','they','you'],  audio:'We are siblings.' },
-  { word:'they', images:['Assets/summer1.png','Assets/winter1.png'],                    sentence:'___ are friends.',         choices:['they','we','she'],  audio:'They are friends.' },
-  { word:'was',  images:['Assets/cat.png'],                                             sentence:'There ___ a cat.',         choices:['was','is','are'],   audio:'There was a cat.' },
-  { word:'are',  images:['Assets/winter1.png'],                                         sentence:'They ___ playing.',        choices:['are','was','is'],   audio:'They are playing.' },
-  { word:'for',  images:['Assets/cup cake.png'],                                        sentence:'Cake ___ you!',            choices:['for','to','with'],  audio:'Cake for you!' },
-  { word:'not',  images:['Assets/kb issuse/sad.jpg'],                                   sentence:'She is ___ happy.',        choices:['not','so','very'],  audio:'She is not happy.' },
-  { word:'but',  images:['Assets/kb issuse/happy.jpg'],                                 sentence:'He was sad ___ now happy!',choices:['but','and','or'],   audio:'He was sad but now happy!' },
+  { answer:'This',  image:'Assets/cat1.png',          rest:' is a cat.',    audio:'This is a cat.' },
+  { answer:'Those', image:'Assets/dogs1.png',          rest:' are dogs.',    audio:'Those are dogs.' },
+  { answer:'Those', image:'Assets/boys1.png',          rest:' are boys.',    audio:'Those are boys.' },
+  { answer:'That',  image:'Assets/tree.jpg',           rest:' is a tree.',   audio:'That is a tree.' },
+  { answer:'These', image:'Assets/birds1.png',         rest:' are birds.',   audio:'These are birds.' },
+  { answer:'That',  image:'Assets/cricket-ball.png',   rest:' is a ball.',   audio:'That is a ball.' },
 ];
+const CHOICES = ['This','That','These','Those'];
 
-/* preload */
-QUESTIONS.forEach(q => q.images.forEach(src => { const i = new Image(); i.src = src; i.decode?.().catch(()=>{}); }));
+QUESTIONS.forEach(q=>{const i=new Image();i.src=q.image;});
 
-let curQ = 0, score = 0, attempts = 0, answered = false, muted = false;
-let speakTimer = null;
+let curQ=0, score=0, attempts=0, answered=false, muted=false;
 
-/* ── Audio ── */
-const sndWrong = new Audio('Assets/wrong.mp3');
-const sndClaps = new Audio('Assets/free_claps.mp3');
+const sndWrong=new Audio('Assets/wrong.mp3');
+const sndClaps=new Audio('Assets/free_claps.mp3');
 function unlockAudio(){[sndWrong,sndClaps].forEach(s=>{s.play().catch(()=>{});s.pause();s.currentTime=0});document.removeEventListener('pointerdown',unlockAudio)}
-document.addEventListener('pointerdown', unlockAudio);
+document.addEventListener('pointerdown',unlockAudio);
 function play(s){if(muted)return;s.currentTime=0;s.play().catch(()=>{})}
+function playClaps(){if(muted)return;sndClaps.currentTime=0;sndClaps.play().catch(()=>{});setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0},3000)}
 
-function speak(text, onEnd){
-  if(!('speechSynthesis' in window)||muted){if(onEnd)onEnd();return;}
+function speak(text){
+  sndClaps.pause();sndClaps.currentTime=0;
+  if(!('speechSynthesis' in window)||muted)return;
   window.speechSynthesis.cancel();
-  clearTimeout(speakTimer);
-  speakTimer = setTimeout(()=>{
-    if(muted){if(onEnd)onEnd();return;}
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang='en-US'; u.rate=0.78; u.pitch=1.1; u.volume=1;
-    const v = window.speechSynthesis.getVoices();
-    const voice = v.find(x=>x.lang.startsWith('en')&&!x.name.includes('Google'))||v.find(x=>x.lang.startsWith('en'))||v[0];
-    if(voice) u.voice = voice;
-    u.onend = ()=>{ if(onEnd) onEnd(); };
-    u.onerror = ()=>{ if(onEnd) onEnd(); };
+  setTimeout(()=>{
+    if(muted)return;
+    window.speechSynthesis.resume();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='en-US';u.rate=0.75;u.pitch=1.0;
+    const v=window.speechSynthesis.getVoices();
+    const voice=v.find(x=>x.lang.startsWith('en')&&!x.name.includes('Google'))||v.find(x=>x.lang.startsWith('en'))||v[0];
+    if(voice)u.voice=voice;
     window.speechSynthesis.speak(u);
-  }, 200);
+  },150);
 }
 window.speechSynthesis.getVoices();
 window.speechSynthesis.addEventListener('voiceschanged',()=>window.speechSynthesis.getVoices());
 
-/* ── Load question ── */
 function loadQuestion(){
-  if(curQ >= QUESTIONS.length){ showEnd(); return; }
-  const q = QUESTIONS[curQ];
-  attempts = 0; answered = false;
+  if(curQ>=QUESTIONS.length){showEnd();return;}
+  answered=false;attempts=0;
+  const q=QUESTIONS[curQ];
 
-  document.getElementById('step-num').textContent = curQ + 1;
-  document.getElementById('prog-bar').style.width = ((curQ / QUESTIONS.length) * 100) + '%';
+  document.getElementById('q-num').textContent=curQ+1;
+  document.getElementById('score-val').textContent=score;
+  document.getElementById('prog-bar').style.width=(curQ/QUESTIONS.length*100)+'%';
 
-  /* images */
-  const imgArea = document.getElementById('img-area');
-  imgArea.innerHTML = q.images.map((src, i) =>
-    `<img class="q-img${q.images.length === 1 ? ' single' : ''}" src="${src}" alt="" onerror="this.style.opacity=0.3" decoding="async" loading="eager">`
-  ).join('');
-  imgArea.querySelectorAll('img').forEach(img => img.decode?.().catch(()=>{}));
+  const img=document.getElementById('q-img');
+  img.style.opacity=0;
+  img.onload=()=>{img.style.transition='opacity 0.3s';img.style.opacity=1};
+  img.onerror=()=>{};
+  img.src=q.image;
+  if(img.complete&&img.naturalWidth>0){img.style.transition='';img.style.opacity=1;}
 
-  /* sentence with blank */
-  renderSentence(false, false);
+  speak('Look at the picture and tap the correct word!');
 
-  /* choices */
-  const shuffled = shuffle([...q.choices]);
-  const cols = shuffleColors();
-  document.getElementById('choices-row').innerHTML = shuffled.map((w, i) =>
-    `<button class="word-btn c${cols[i]}" data-word="${w}" onclick="selectWord('${w}')">${w}</button>`
-  ).join('');
-
-  setTimeout(() => speak(q.audio), 500);
+  buildWordRow(q);
 }
 
-function renderSentence(revealed, correct){
-  const q = QUESTIONS[curQ];
-  const parts = q.sentence.split('___');
-  let blankHtml;
-  if(!revealed){
-    blankHtml = `<span class="word-blank" id="word-blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>`;
-  } else {
-    const cls = correct ? 'reveal' : 'wrong-reveal';
-    blankHtml = `<span class="word-blank ${cls}" id="word-blank">${q.word}</span>`;
-  }
-  document.getElementById('sentence-display').innerHTML =
-    escHtml(parts[0]) + blankHtml + escHtml(parts[1] || '');
+function buildWordRow(q){
+  const row=document.getElementById('word-row');
+  row.innerHTML='';
+
+  CHOICES.forEach((word,i)=>{
+    const span=document.createElement('span');
+    span.className='tap-word';
+    span.textContent=word;
+    span.dataset.word=word;
+    span.addEventListener('click',()=>handleTap(span,word,q));
+    span.addEventListener('touchend',e=>{e.preventDefault();handleTap(span,word,q)});
+    row.appendChild(span);
+
+    if(i<CHOICES.length-1){
+      const sep=document.createElement('span');
+      sep.className='sep';
+      sep.textContent=' / ';
+      row.appendChild(sep);
+    }
+  });
+
+  const rest=document.createElement('span');
+  rest.className='rest-text';
+  rest.innerHTML='&nbsp;'+escapeHtml(q.rest);
+  row.appendChild(rest);
 }
 
-function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-/* ── Answer ── */
-function selectWord(val){
-  if(answered) return;
-  const q = QUESTIONS[curQ];
-  const chosenBtn = document.querySelector(`.word-btn[data-word="${val}"]`);
-  const correctBtn = document.querySelector(`.word-btn[data-word="${q.word}"]`);
+function handleTap(span,word,q){
+  if(answered)return;
 
-  if(val === q.word){
-    answered = true;
-    document.querySelectorAll('.word-btn').forEach(b=>{b.style.pointerEvents='none';b.classList.remove('hint','wrong');void b.offsetWidth;});
-    chosenBtn.classList.add('correct');
-    renderSentence(true, true);
+  if(word===q.answer){
+    answered=true;
     score++;
-    document.getElementById('score-val').textContent = score;
+    document.getElementById('score-val').textContent=score;
+    document.querySelectorAll('.tap-word').forEach(s=>s.classList.remove('hint'));
+    span.classList.add('correct');
+    disableAll();
     window.speechSynthesis?.cancel();
-    showToast('&#11088; Correct!', '#4CAF50');
-    spawnConfetti();
-    sndClaps.currentTime=0; sndClaps.play().catch(()=>{});
-    setTimeout(()=>{ sndClaps.pause(); sndClaps.currentTime=0; curQ++; loadQuestion(); }, 2800);
+    playClaps();
+    showToast('&#11088; Correct!','#4CAF50');
+    spawnConfetti(['#4CAF50','#81C784','#A5D6A7','#FFD700','#ffffff']);
+    setTimeout(()=>{curQ++;loadQuestion();},3200);
   } else {
     attempts++;
-    chosenBtn.classList.add('wrong');
     play(sndWrong);
-    if(attempts === 1){
-      showToast('&#10060; Try again!', '#f44336');
-      setTimeout(()=>{ chosenBtn.classList.remove('wrong'); if(!answered) correctBtn.classList.add('hint'); }, 900);
-    } else {
-      answered = true;
-      showToast('&#10060; Wrong!', '#f44336');
+    span.classList.add('wrong');
+    setTimeout(()=>span.classList.remove('wrong'),400);
+
+    if(attempts===1){
+      showToast('&#10060; Try again!','#f44336');
       setTimeout(()=>{
-        document.querySelectorAll('.word-btn').forEach(b=>{ b.classList.remove('correct','wrong','hint'); void b.offsetWidth; });
-        correctBtn.classList.add('correct');
-        renderSentence(true, false);
-        showToast('&#128161; The word is "' + q.word + '"!', '#FF9800');
-        setTimeout(()=>{ curQ++; loadQuestion(); }, 2800);
-      }, 1000);
+        const hintSpan=document.querySelector(`.tap-word[data-word="${q.answer}"]`);
+        if(hintSpan)hintSpan.classList.add('hint');
+      },600);
+    } else {
+      answered=true;
+      showToast('&#10060; Wrong!','#f44336');
+      setTimeout(()=>{
+        document.querySelectorAll('.tap-word').forEach(s=>s.classList.remove('hint'));
+        disableAll();
+        const correct=document.querySelector(`.tap-word[data-word="${q.answer}"]`);
+        if(correct)correct.classList.add('reveal');
+        showToast('&#128161; Correct answer!','#FF9800');
+        setTimeout(()=>{curQ++;loadQuestion();},3000);
+      },1000);
     }
   }
 }
 
-/* ── Helpers ── */
-function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function shuffleColors(){const c=[0,1,2];for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]];}return c;}
+function disableAll(){
+  document.querySelectorAll('.tap-word').forEach(s=>s.classList.add('disabled'));
+}
 
 function startGame(){
   document.getElementById('intro-screen').style.display='none';
   document.getElementById('game-screen').style.display='flex';
-  curQ=0; score=0;
-  document.getElementById('score-val').textContent=0;
-  loadQuestion();
+  curQ=0;score=0;loadQuestion();
 }
+
 function restartGame(){
   window.speechSynthesis?.cancel();
   document.getElementById('end-screen').style.display='none';
   document.getElementById('game-screen').style.display='flex';
-  curQ=0; score=0;
-  document.getElementById('score-val').textContent=0;
-  loadQuestion();
+  curQ=0;score=0;loadQuestion();
 }
 
 let toastTimer=null;
@@ -303,32 +290,36 @@ function showToast(msg,bg){
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>el.classList.remove('show'),1400);
 }
-const CC=['#FFD700','#FF6B6B','#4CAF50','#2196F3','#FF9800','#AB47BC','#26C6DA'];
-function spawnConfetti(){
-  for(let i=0;i<60;i++) setTimeout(()=>{
+
+function spawnConfetti(colors){
+  for(let i=0;i<60;i++)setTimeout(()=>{
     const el=document.createElement('div');el.className='confetti';
     const sz=6+Math.random()*9;
-    el.style.cssText=`left:${Math.random()*100}vw;top:-12px;width:${sz}px;height:${sz}px;background:${CC[Math.floor(Math.random()*CC.length)]};border-radius:${Math.random()>.4?'50%':'2px'};animation:cfFall ${1.4+Math.random()*1.8}s linear forwards`;
-    document.body.appendChild(el);setTimeout(()=>el.remove(),3500);
-  },i*22);
+    el.style.cssText=`left:${Math.random()*100}vw;top:-12px;width:${sz}px;height:${sz}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${Math.random()>.4?'50%':'2px'};animation:cfFall ${1.4+Math.random()*1.6}s linear forwards`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),3200);
+  },i*20);
 }
-if(!document.querySelector('#cf-style')){const s=document.createElement('style');s.id='cf-style';s.textContent='@keyframes cfFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(540deg);opacity:0}}';document.head.appendChild(s);}
+if(!document.querySelector('#cf-style')){
+  const s=document.createElement('style');s.id='cf-style';
+  s.textContent='@keyframes cfFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(540deg);opacity:0}}';
+  document.head.appendChild(s);
+}
 
 function toggleMute(){
   muted=!muted;
   document.getElementById('mute-btn').innerHTML=muted?'&#128263;':'&#128266;';
   if(muted){window.speechSynthesis?.cancel();sndClaps.pause();}
-  else if(!answered) speak(QUESTIONS[curQ]?.audio);
+  else speak('Look at the picture and tap the correct word!');
 }
+
 function showEnd(){
   document.getElementById('game-screen').style.display='none';
   document.getElementById('end-screen').style.display='flex';
   document.getElementById('final-score').textContent=score;
-  document.getElementById('end-stars').innerHTML=score>=13?'&#11088;&#11088;&#11088;':score>=10?'&#11088;&#11088;':'&#11088;';
+  document.getElementById('end-stars').innerHTML=score>=6?'&#11088;&#11088;&#11088;':score>=4?'&#11088;&#11088;':'&#11088;';
   window.speechSynthesis?.cancel();
-  sndClaps.currentTime=0;sndClaps.play().catch(()=>{});
-  setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;},3000);
-  spawnConfetti();setTimeout(spawnConfetti,800);
+  playClaps();
+  spawnConfetti(['#FFD700','#FF6B6B','#4CAF50','#2196F3','#FF9800','#AB47BC']);
 }
 </script>
 </body>

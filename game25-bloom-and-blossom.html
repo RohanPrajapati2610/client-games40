@@ -31,7 +31,7 @@
     #game-screen {
       display: none; flex-direction: column;
       width: 100%; max-width: 860px;
-      height: 100%; padding: 14px 14px 70px; overflow: hidden;
+      height: 100%; padding: 14px 14px 70px; overflow-y: auto;
     }
 
     .hdr {
@@ -143,6 +143,7 @@
       padding: 14px 36px; font-size: 1.05em; font-family: inherit;
       font-weight: 800; cursor: pointer;
       box-shadow: 0 4px 16px rgba(255,152,0,0.4); z-index: 50; white-space: nowrap;
+      touch-action: manipulation; min-height: 44px;
     }
 
     #toast {
@@ -174,7 +175,7 @@
     .end-sub { color: rgba(255,255,255,0.9); font-size: 1.1em; text-align: center; }
     .end-score-box { background: rgba(255,255,255,0.15); border-radius: 16px; padding: 12px 28px; color: white; font-size: 1.4em; font-weight: bold; }
     .end-stars { font-size: 2.2em; letter-spacing: 4px; }
-    .btn-play-again { background: #FFD700; color: #333; border: none; border-radius: 50px; padding: 14px 36px; font-size: 1.1em; font-weight: 800; font-family: inherit; cursor: pointer; box-shadow: 0 4px 16px rgba(255,215,0,0.5); }
+    .btn-play-again { background: #FFD700; color: #333; border: none; border-radius: 50px; padding: 14px 36px; font-size: 1.1em; font-weight: 800; font-family: inherit; cursor: pointer; box-shadow: 0 4px 16px rgba(255,215,0,0.5); touch-action: manipulation; min-height: 44px; }
 
     @media (max-width: 768px) {
       #game-screen { padding: 10px 10px 66px; }
@@ -195,6 +196,11 @@
       .hdr { padding: 8px 12px; margin-bottom: 6px; }
       .progress-row { margin-bottom: 6px; }
       .instruction { font-size: 0.85em; margin-bottom: 6px; }
+    }
+    @media (max-height: 640px) {
+      .match-item { max-height: 90px; }
+      .q-card { gap: 4px; padding: 6px 6px; }
+      .instruction { margin-bottom: 4px; }
     }
   </style>
 </head>
@@ -324,15 +330,27 @@ function buildRound() {
   rightCol.innerHTML = '';
   svg.innerHTML = '';
 
+  function makeMatchImg(pair) {
+    const img = document.createElement('img');
+    img.alt = pair.label;
+    img.decoding = 'async';
+    img.loading = 'eager';
+    img.onerror = () => { img.style.opacity = '0.2'; };
+    img.onload  = () => { img.style.opacity = '1'; };
+    img.src = pair.img;
+    if (img.complete && img.naturalWidth > 0) img.style.opacity = '1';
+    return img;
+  }
+
   leftOrder.forEach(pair => {
     const el = document.createElement('div');
     el.className = 'match-item';
     el.dataset.id = pair.id;
     el.dataset.side = 'left';
-    el.innerHTML = `
-      <div class="flower-img-wrap">
-        <img src="${pair.img}" alt="${pair.label}" decoding="async" loading="eager">
-      </div>`;
+    const wrap = document.createElement('div');
+    wrap.className = 'flower-img-wrap';
+    wrap.appendChild(makeMatchImg(pair));
+    el.appendChild(wrap);
     el.addEventListener('click', () => onLeftTap(pair.id));
     leftCol.appendChild(el);
   });
@@ -342,10 +360,10 @@ function buildRound() {
     el.className = 'match-item';
     el.dataset.id = pair.id;
     el.dataset.side = 'right';
-    el.innerHTML = `
-      <div class="flower-img-wrap">
-        <img src="${pair.img}" alt="${pair.label}" decoding="async" loading="eager">
-      </div>`;
+    const wrap = document.createElement('div');
+    wrap.className = 'flower-img-wrap';
+    wrap.appendChild(makeMatchImg(pair));
+    el.appendChild(wrap);
     el.addEventListener('click', () => onRightTap(pair.id));
     rightCol.appendChild(el);
   });

@@ -14,7 +14,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 #intro-logo{width:220px;height:auto;filter:drop-shadow(0 6px 20px rgba(0,0,0,0.5));animation:logoBounce 2s ease-in-out infinite}
 @keyframes logoBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
-#game-screen{display:none;flex-direction:column;width:100%;max-width:860px;height:100%;padding:12px 14px 76px;overflow:hidden}
+#game-screen{display:none;flex-direction:column;width:100%;max-width:860px;height:100%;padding:12px 14px 76px;overflow-y:auto}
 
 .hdr{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:18px;padding:10px 18px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,0.1);flex-shrink:0}
 .hdr-score{font-size:1.1em;font-weight:bold;color:#4CAF50;min-width:70px}
@@ -53,6 +53,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   transition:transform 0.1s,border-color 0.2s;
   display:flex;align-items:center;justify-content:center;
   text-shadow:0 2px 6px rgba(0,0,0,0.2);
+  touch-action:manipulation;min-height:44px;
 }
 .choice-btn:active{transform:scale(0.93)}
 .choice-btn.c0{background:#6c5ce7}
@@ -64,7 +65,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 
 /* Bottom */
 .bottom-row{display:flex;justify-content:center;position:fixed;bottom:16px;left:0;right:0;z-index:50;pointer-events:none}
-.btn-restart{pointer-events:all;background:linear-gradient(135deg,#FF9800,#F57C00);color:white;border:none;padding:12px 30px;border-radius:40px;font-size:1em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(255,152,0,0.4)}
+.btn-restart{pointer-events:all;background:linear-gradient(135deg,#FF9800,#F57C00);color:white;border:none;padding:12px 30px;border-radius:40px;font-size:1em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(255,152,0,0.4);touch-action:manipulation;min-height:44px}
 
 #toast{position:fixed;top:18%;left:50%;transform:translateX(-50%) scale(0.7);padding:13px 28px;border-radius:50px;font-size:1.35em;font-weight:bold;color:white;pointer-events:none;opacity:0;transition:opacity 0.2s,transform 0.2s;z-index:500;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
 #toast.show{opacity:1;transform:translateX(-50%) scale(1)}
@@ -76,7 +77,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .end-sub{color:rgba(255,255,255,0.9);font-size:1.1em}
 .end-score-box{background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.35);border-radius:20px;padding:16px 40px;color:white;font-size:1.8em;font-weight:bold}
 .end-stars{font-size:2.2em;letter-spacing:4px}
-.btn-play-again{background:#FFD700;color:#333;border:none;padding:15px 44px;border-radius:40px;font-size:1.2em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.2);margin-top:8px}
+.btn-play-again{background:#FFD700;color:#333;border:none;padding:15px 44px;border-radius:40px;font-size:1.2em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.2);margin-top:8px;touch-action:manipulation;min-height:44px}
 
 @keyframes popCorrect{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
 @keyframes shakeWrong{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
@@ -96,6 +97,14 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   .img-area{max-height:44vw}
   .q-img{max-height:42vw}
 }
+@media(max-height:640px){
+  .q-card{gap:10px;padding:10px 10px 14px}
+  .img-area{max-height:32vw}
+  .q-img{max-height:30vw}
+  .sentence-text{font-size:clamp(1em,3.5vw,1.4em)}
+  .choices-row{gap:8px}
+  .instruction{margin-bottom:4px}
+}
 </style>
 </head>
 <body>
@@ -107,12 +116,12 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 8</div>
+    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 18</div>
     <div class="hdr-title">Double Consonants &middot; LY4</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">&#128266;</button>
   </div>
   <div class="progress-row">
-    <span class="progress-label">Q <span id="step-num">1</span> / 8</span>
+    <span class="progress-label">Q <span id="step-num">1</span> / 18</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
   <div class="instruction">&#9997;&#65039; Tap the double letters to complete the word!</div>
@@ -132,7 +141,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   <div class="end-trophy">&#127942;</div>
   <div class="end-title">Double Brilliant!</div>
   <div class="end-sub">You know your double consonants!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 8</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 18</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">&#9654; &nbsp;Play Again</button>
 </div>
@@ -140,14 +149,26 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 <script>
 /* sentence: "___" marks where the double letters go (prefix is baked into sentence text) */
 const QUESTIONS = [
-  { word:'ball', blank:'ll', img:'Assets/football.png',           sentence:'I kick the ba___.',    audio:'I kick the ball.',    choices:['ll','tt','ss'] },
-  { word:'egg',  blank:'gg', img:'Assets/egg.png',               sentence:'The e___ is oval.',    audio:'The egg is oval.',    choices:['gg','dd','tt'] },
-  { word:'buzz', blank:'zz', img:'Assets/kb issuse/bee.png',     sentence:'Bees bu___ and fly.',  audio:'Bees buzz and fly.',  choices:['zz','nn','ll'] },
-  { word:'off',  blank:'ff', img:'Assets/cat.png',               sentence:'The cat fell o___ the wall.', audio:'The cat fell off the wall.', choices:['ff','gg','dd'] },
-  { word:'miss', blank:'ss', img:'Assets/boy.png',               sentence:'The boy will mi___ the bus.', audio:'The boy will miss the bus.', choices:['ss','tt','ll'] },
-  { word:'bell', blank:'ll', img:'Assets/cow1.png',              sentence:'The cow has a be___.',        audio:'The cow has a bell.',        choices:['ll','ff','dd'] },
-  { word:'doll', blank:'ll', img:'Assets/doll.png',              sentence:'This is a do___.',            audio:'This is a doll.',            choices:['ll','ss','tt'] },
-  { word:'full', blank:'ll', img:'Assets/balloon.png',           sentence:'The balloon is fu___ of air.',audio:'The balloon is full of air.',choices:['ll','ss','ff'] },
+  /* ff / ll */
+  { word:'cliff', blank:'ff', img:'Assets/cliff.png',        sentence:'I see a cli___.',          audio:'I see a cliff.',          choices:['ff','ll','ss'] },
+  { word:'sniff', blank:'ff', img:'Assets/sniff.png',        sentence:'He will sni___ the flower.',audio:'He will sniff the flower.',choices:['ff','zz','ll'] },
+  { word:'cuff',  blank:'ff', img:'Assets/cuff.png',         sentence:'This is a cu___.',          audio:'This is a cuff.',          choices:['ff','ll','ss'] },
+  { word:'hill',  blank:'ll', img:'Assets/hill.png',         sentence:'I climb the hi___.',        audio:'I climb the hill.',        choices:['ll','ff','ss'] },
+  { word:'shell', blank:'ll', img:'Assets/shell.png',        sentence:'I find a she___.',          audio:'I find a shell.',          choices:['ll','ff','zz'] },
+  { word:'bell',  blank:'ll', img:'Assets/bell.png',         sentence:'Ring the be___.',           audio:'Ring the bell.',           choices:['ll','ff','ss'] },
+  { word:'stuff', blank:'ff', img:'Assets/stuff.png',        sentence:'Put the stu___ in the bag.',audio:'Put the stuff in the bag.',choices:['ff','ll','zz'] },
+  { word:'ball',  blank:'ll', img:'Assets/cricket-ball.png', sentence:'Throw the ba___.',          audio:'Throw the ball.',          choices:['ll','ff','ss'] },
+  { word:'bull',  blank:'ll', img:'Assets/bull.png',         sentence:'The bu___ is strong.',      audio:'The bull is strong.',      choices:['ll','ff','zz'] },
+  /* ss / zz */
+  { word:'glass', blank:'ss', img:'Assets/glass.png',        sentence:'Drink from the gla___.',   audio:'Drink from the glass.',    choices:['ss','zz','ll'] },
+  { word:'dress', blank:'ss', img:'Assets/dress.png',        sentence:'She wears a dre___.',      audio:'She wears a dress.',       choices:['ss','ff','ll'] },
+  { word:'grass', blank:'ss', img:'Assets/grass.png',        sentence:'The gra___ is green.',     audio:'The grass is green.',      choices:['ss','zz','ff'] },
+  { word:'pizza', blank:'zz', img:'Assets/new assets/pizza.jpg', sentence:'I love pi___a.',       audio:'I love pizza.',            choices:['zz','ss','ll'] },
+  { word:'hiss',  blank:'ss', img:'Assets/hiss.png',         sentence:'The snake will hi___.',    audio:'The snake will hiss.',     choices:['ss','zz','ff'] },
+  { word:'jazz',  blank:'zz', img:'Assets/jazz.png',         sentence:'I play ja___.',            audio:'I play jazz.',             choices:['zz','ss','ll'] },
+  { word:'toss',  blank:'ss', img:'Assets/toss.png',         sentence:'Let us to___ the coin.',   audio:'Let us toss the coin.',    choices:['ss','zz','ff'] },
+  { word:'class', blank:'ss', img:'Assets/class.png',        sentence:'I go to cla___.',          audio:'I go to class.',           choices:['ss','ff','zz'] },
+  { word:'buzz',  blank:'zz', img:'Assets/bee.png',          sentence:'Bees bu___ and fly.',      audio:'Bees buzz and fly.',       choices:['zz','ss','ff'] },
 ];
 
 /* preload */
@@ -194,8 +215,14 @@ function loadQuestion(){
   /* image */
   const imgArea=document.getElementById('img-area');
   if(q.img){
-    imgArea.innerHTML=`<img class="q-img" src="${q.img}" alt="${q.word}" onerror="this.style.opacity=0.2" decoding="async" loading="eager">`;
-    imgArea.querySelectorAll('img').forEach(img=>img.decode?.().catch(()=>{}));
+    imgArea.innerHTML='';
+    const qImg=document.createElement('img');
+    qImg.className='q-img'; qImg.alt=q.word; qImg.decoding='async'; qImg.loading='eager';
+    qImg.onerror=()=>{qImg.style.opacity='0.2';};
+    qImg.onload=()=>{qImg.style.opacity='1';};
+    qImg.src=q.img;
+    if(qImg.complete&&qImg.naturalWidth>0) qImg.style.opacity='1';
+    imgArea.appendChild(qImg);
   } else {
     imgArea.innerHTML='';
   }
