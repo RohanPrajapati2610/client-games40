@@ -230,13 +230,12 @@ let selectedColor   = null;
 let wrongColor = {}, wrongEmoji = {};
 let busy = false;
 
-/* ── AUDIO (same as game4) ── */
-const sndCorrect = new Audio('Assets/correct.mp3');
-const sndWrong   = new Audio('Assets/wrong.mp3');
-const sndClaps   = new Audio('Assets/free_claps.mp3');
+/* ── AUDIO ── */
+const sndWrong = new Audio('Assets/wrong.mp3');
+const sndClaps = new Audio('Assets/free_claps.mp3');
 
 function unlockAudio() {
-  [sndCorrect, sndWrong, sndClaps].forEach(s => { s.play().catch(()=>{}); s.pause(); s.currentTime=0; });
+  [sndWrong, sndClaps].forEach(s => { s.play().catch(()=>{}); s.pause(); s.currentTime=0; });
   document.removeEventListener('pointerdown', unlockAudio);
 }
 document.addEventListener('pointerdown', unlockAudio);
@@ -443,7 +442,7 @@ function onSectionTap(id) {
     /* CORRECT */
     coloredSections[id]=true;
     fillSection(id, e.color, e.textColor);
-    play(sndCorrect);
+    playClaps();
     showToast('✅ '+e.colorLabel+'!','#4CAF50');
     clearHints();
     selectedColor=null;
@@ -547,7 +546,7 @@ function setupEmojiDrag(card) {
         document.getElementById('score-val').textContent=score;
         placeEmoji(dragId, tgt);
         clearHints();
-        play(sndCorrect);
+        playClaps();
         showToast('⭐ Correct!','#4CAF50');
         if (Object.keys(placedEmojis).length===EMOTIONS.length) onRoundComplete();
       } else {
