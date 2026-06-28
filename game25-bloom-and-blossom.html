@@ -322,6 +322,20 @@ function shuffle(arr) {
   return a;
 }
 
+function shuffleSafe(arr) {
+  let result, tries = 0;
+  do {
+    result = shuffle(arr);
+    tries++;
+  } while (tries < 20 && result.some((f, i) =>
+    i < result.length - 1 &&
+    new Set([f.id, result[i+1].id]).size === 2 &&
+    new Set([f.id, result[i+1].id]).has('rose') &&
+    new Set([f.id, result[i+1].id]).has('hibiscus')
+  ));
+  return result;
+}
+
 function buildRound() {
   matched = new Set();
   attempts = {};
@@ -330,7 +344,7 @@ function buildRound() {
 
   currentPairs = PAIR_SETS[currentRound % PAIR_SETS.length];
   const leftOrder  = currentPairs;
-  const rightOrder = shuffle(currentPairs);
+  const rightOrder = shuffleSafe(currentPairs);
 
   const leftCol  = document.getElementById('left-col');
   const rightCol = document.getElementById('right-col');
