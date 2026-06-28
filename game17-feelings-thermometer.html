@@ -463,7 +463,7 @@ function onSectionTap(id) {
     document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
     if (Object.keys(coloredSections).length === EMOTIONS.length) {
       playClaps(); spawnConfetti();
-      setTimeout(startPhase2, 1600);
+      setTimeout(startPhase2, 3200);
     }
   } else {
     /* ❌ WRONG — show where the selected colour actually belongs */
@@ -486,7 +486,7 @@ function onSectionTap(id) {
       document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
       if (Object.keys(coloredSections).length === EMOTIONS.length) {
         playClaps(); spawnConfetti();
-        setTimeout(startPhase2, 1600);
+        setTimeout(startPhase2, 3200);
       }
     }
   }
@@ -623,7 +623,7 @@ function onRoundComplete() {
   window.speechSynthesis?.cancel();
   playClaps(); spawnConfetti(); setTimeout(spawnConfetti,600);
   currentRound++;
-  if (currentRound>=TOTAL_ROUNDS) setTimeout(showEnd,1800);
+  if (currentRound>=TOTAL_ROUNDS) setTimeout(showEnd,3200);
   else setTimeout(buildRound, 2200);
 }
 
