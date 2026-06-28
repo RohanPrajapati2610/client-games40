@@ -82,14 +82,19 @@
     .e-circle.wrong-anim { animation:shakeEl 0.4s ease; }
     @keyframes shakeEl { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
 
-    /* ── HINT — matches game4 style exactly ── */
+    /* ── HINT ── */
+    /* Emoji phase: glow the correct circle */
     .e-circle.hint-circle {
       border:4px dashed #FFD700 !important;
       animation:hintGlow 0.8s ease-in-out infinite;
     }
-    .color-swatch.hint-swatch {
-      border-color:#FFD700 !important;
-      animation:hintGlow 0.8s ease-in-out infinite;
+    /* Color phase: SVG section hint rect — animated via CSS */
+    .svg-hint {
+      animation:svgHintPulse 0.8s ease-in-out infinite;
+    }
+    @keyframes svgHintPulse {
+      0%,100% { opacity:0.55; }
+      50%      { opacity:1; }
     }
     @keyframes hintGlow {
       0%,100% { box-shadow:0 0 10px 3px rgba(255,215,0,0.5); }
@@ -216,11 +221,11 @@ const TOTAL_ROUNDS = 3;
 const TUBE_SECS    = 4;      // only 4 rectangular sections; id=4 is bulb
 
 /* Sizing */
-const ROW_H   = 70;
-const NECK_H  = 16;
-const BULB_R  = 40;
-const TUBE_W  = 62;
-const CALM_H  = NECK_H + BULB_R * 2 + 6;
+const ROW_H   = 88;
+const NECK_H  = 18;
+const BULB_R  = 52;
+const TUBE_W  = 80;
+const CALM_H  = NECK_H + BULB_R * 2 + 8;
 
 let currentRound = 0, score = 0, muted = false;
 let phase = 1;
@@ -358,6 +363,13 @@ function buildThermometer() {
   s+=`<text id="lbl-4" x="${cx}" y="${bulbCY+5}" text-anchor="middle" font-size="11" font-family="Nunito,sans-serif" font-weight="800" fill="#ccc" pointer-events="none">${EMOTIONS[4].colorLabel}</text>`;
   s+=`<circle cx="${cx}" cy="${bulbCY}" r="${BULB_R}" fill="none" stroke="#999" stroke-width="2.5"/>`;
 
+  /* hint overlay rects (gold dashed border, hidden by default) */
+  for(let i=0;i<TUBE_SECS;i++){
+    const sy=i*ROW_H, rx=i===0?4:0;
+    s+=`<rect id="hint-sec-${i}" x="${tubeX}" y="${sy}" width="${TUBE_W}" height="${ROW_H}" rx="${rx}" fill="none" stroke="#FFD700" stroke-width="4" stroke-dasharray="10,5" opacity="0" pointer-events="none"/>`;
+  }
+  s+=`<circle id="hint-sec-4" cx="${cx}" cy="${bulbCY}" r="${BULB_R}" fill="none" stroke="#FFD700" stroke-width="4" stroke-dasharray="10,5" opacity="0" pointer-events="none"/>`;
+
   /* clickable overlays */
   for(let i=0;i<TUBE_SECS;i++){
     s+=`<rect class="t-tap" data-id="${i}" x="${tubeX}" y="${i*ROW_H}" width="${TUBE_W}" height="${ROW_H}" fill="transparent" style="cursor:pointer"/>`;
@@ -457,12 +469,11 @@ function onSectionTap(id) {
     showToast(`❌ Try ${e.colorLabel}!`,'#f44336');
 
     if (wrongColor[id]===1) {
-      /* hint: glow the correct swatch */
+      /* hint: highlight the correct thermometer section */
       setTimeout(()=>{
         document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
         selectedColor=null;
-        const correctSw=document.querySelector(`.color-swatch[data-id="${id}"]`);
-        if (correctSw) correctSw.classList.add('hint-swatch');
+        showSectionHint(id);
       }, 600);
     } else {
       /* 2nd wrong: auto-reveal */
@@ -487,9 +498,18 @@ function fillSection(id, color, textColor) {
   }
 }
 
+function showSectionHint(id) {
+  clearHints();
+  const el = document.getElementById(`hint-sec-${id}`);
+  if (el) { el.setAttribute('opacity','1'); el.classList.add('svg-hint'); }
+}
+
 function clearHints() {
-  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('hint-swatch'));
   document.querySelectorAll('.e-circle').forEach(c=>c.classList.remove('hint-circle'));
+  EMOTIONS.forEach(e=>{
+    const el=document.getElementById(`hint-sec-${e.id}`);
+    if (el) { el.setAttribute('opacity','0'); el.classList.remove('svg-hint'); }
+  });
 }
 
 /* ── PHASE 2: EMOJI DRAG ── */
