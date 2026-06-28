@@ -258,8 +258,9 @@ const ALL_FLOWERS = [
 
 /* Lotus and hibiscus look similar — keep them in separate rounds */
 const PAIR_SETS = [
-  [ ALL_FLOWERS[0], ALL_FLOWERS[1], ALL_FLOWERS[2] ], /* rose, lotus, marigold   */
+  [ ALL_FLOWERS[0], ALL_FLOWERS[1], ALL_FLOWERS[2] ], /* rose, lotus, marigold     */
   [ ALL_FLOWERS[3], ALL_FLOWERS[2], ALL_FLOWERS[1] ], /* hibiscus, marigold, lotus */
+  [ ALL_FLOWERS[3], ALL_FLOWERS[2], ALL_FLOWERS[0] ], /* hibiscus, marigold, rose  */
 ];
 
 let currentPairs = PAIR_SETS[0];
