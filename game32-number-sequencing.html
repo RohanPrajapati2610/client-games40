@@ -495,7 +495,7 @@ function toggleMute() {
   muted = !muted;
   document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
   if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
-  else { const txt = document.getElementById('question-txt').textContent; if (txt) speak(txt); }
+  else { speak('Drag the missing numbers in the right place!'); }
 }
 
 /* ── End (same as game4) ── */
