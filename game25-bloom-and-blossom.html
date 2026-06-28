@@ -249,15 +249,23 @@
 </div>
 
 <script>
-const PAIRS = [
+const ALL_FLOWERS = [
   { id:'rose',     img:'Assets/rose.png',     label:'Rose'     },
   { id:'lotus',    img:'Assets/lotus.png',    label:'Lotus'    },
   { id:'marigold', img:'Assets/marigold.png', label:'Marigold' },
   { id:'hibiscus', img:'Assets/hibiscus.png', label:'Hibiscus' },
 ];
 
+/* Lotus and hibiscus look similar — keep them in separate rounds */
+const PAIR_SETS = [
+  [ ALL_FLOWERS[0], ALL_FLOWERS[1], ALL_FLOWERS[2] ], /* rose, lotus, marigold   */
+  [ ALL_FLOWERS[0], ALL_FLOWERS[3], ALL_FLOWERS[2] ], /* rose, hibiscus, marigold */
+];
+
+let currentPairs = PAIR_SETS[0];
+
 /* Preload all images immediately so mobile shows no lag */
-PAIRS.forEach(p => {
+ALL_FLOWERS.forEach(p => {
   const i = new Image();
   i.src = p.img;
   i.decode?.().catch(() => {});
@@ -319,8 +327,9 @@ function buildRound() {
   selectedLeftId = null;
   busy = false;
 
-  const leftOrder  = shuffle(PAIRS);
-  const rightOrder = shuffle(PAIRS);
+  currentPairs = PAIR_SETS[currentRound % PAIR_SETS.length];
+  const leftOrder  = shuffle(currentPairs);
+  const rightOrder = shuffle(currentPairs);
 
   const leftCol  = document.getElementById('left-col');
   const rightCol = document.getElementById('right-col');
@@ -421,7 +430,7 @@ function registerMatch(id) {
   selectedLeftId = null;
   busy = false;
 
-  if (matched.size === PAIRS.length) onRoundComplete();
+  if (matched.size === currentPairs.length) onRoundComplete();
 }
 
 function registerMismatch(wrongRightId) {
