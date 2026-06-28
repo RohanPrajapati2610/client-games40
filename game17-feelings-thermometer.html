@@ -446,43 +446,43 @@ function onColorSelect(color, swEl) {
 function onSectionTap(id) {
   if (phase!==1||busy) return;
   if (coloredSections[id]) { showToast('✅ Already coloured!','#FF9800'); return; }
-  if (!selectedColor)      { showToast('👆 Pick a colour first!','#FF9800'); speak('Pick a colour first!'); return; }
+  if (!selectedColor) { showToast('👆 Pick a colour first!','#FF9800'); speak('Pick a colour first!'); return; }
 
-  const e=EMOTIONS[id];
-  if (selectedColor===e.color) {
-    /* CORRECT */
-    coloredSections[id]=true;
-    fillSection(id, e.color, e.textColor);
+  const tappedEmotion  = EMOTIONS[id];
+  /* find which section the SELECTED colour actually belongs to */
+  const correctEmotion = EMOTIONS.find(em => em.color === selectedColor);
+  const correctId      = correctEmotion.id;
+
+  if (selectedColor === tappedEmotion.color) {
+    /* ✅ CORRECT — selected colour matches tapped section */
+    coloredSections[id] = true;
+    fillSection(id, correctEmotion.color, correctEmotion.textColor);
     playClaps();
-    showToast('✅ '+e.colorLabel+'!','#4CAF50');
+    showToast('✅ ' + correctEmotion.colorLabel + '!', '#4CAF50');
     clearHints();
-    selectedColor=null;
-    document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
-    if (Object.keys(coloredSections).length===EMOTIONS.length) {
-      setTimeout(startPhase2, 900);
-    }
+    selectedColor = null;
+    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+    if (Object.keys(coloredSections).length === EMOTIONS.length) setTimeout(startPhase2, 900);
   } else {
-    /* WRONG */
-    if (!wrongColor[id]) wrongColor[id]=0;
-    wrongColor[id]++;
+    /* ❌ WRONG — show where the selected colour actually belongs */
+    if (!wrongColor[correctId]) wrongColor[correctId] = 0;
+    wrongColor[correctId]++;
     play(sndWrong);
-    showToast(`❌ Try ${e.colorLabel}!`,'#f44336');
+    showToast('❌ Try again!', '#f44336');
 
-    if (wrongColor[id]===1) {
-      /* hint: highlight the correct thermometer section */
-      setTimeout(()=>{
-        document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
-        selectedColor=null;
-        showSectionHint(id);
-      }, 600);
+    if (wrongColor[correctId] === 1) {
+      /* 1st wrong: highlight the section where selected colour belongs */
+      setTimeout(() => showSectionHint(correctId), 600);
     } else {
-      /* 2nd wrong: auto-reveal */
+      /* 2nd wrong: auto-fill selected colour into its correct section */
       clearHints();
-      coloredSections[id]=true;
-      fillSection(id, e.color, e.textColor);
-      selectedColor=null;
-      document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
-      if (Object.keys(coloredSections).length===EMOTIONS.length) setTimeout(startPhase2, 900);
+      if (!coloredSections[correctId]) {
+        coloredSections[correctId] = true;
+        fillSection(correctId, correctEmotion.color, correctEmotion.textColor);
+      }
+      selectedColor = null;
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      if (Object.keys(coloredSections).length === EMOTIONS.length) setTimeout(startPhase2, 900);
     }
   }
 }
