@@ -164,13 +164,13 @@
 
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">⭐ <span id="score-val">0</span> / 15</div>
+    <div class="hdr-score">⭐ <span id="score-val">0</span> / 5</div>
     <div class="hdr-title">Feelings Thermometer</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
   </div>
 
   <div class="progress-row">
-    <span class="progress-label">Round <span id="round-num">1</span> / 3</span>
+    <span class="progress-label">Round <span id="round-num">1</span> / 1</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
 
@@ -197,7 +197,7 @@
   <div class="end-trophy">🏆</div>
   <div class="end-title">You have done a great job!</div>
   <div class="end-sub">You know all about feelings!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 15</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 5</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">▶ &nbsp;Play Again</button>
 </div>
@@ -217,7 +217,7 @@ const EMOTIONS = [
   { id:4, name:'Calm',    emoji:'😌', color:'#1E88E5', colorLabel:'Blue',   textColor:'#fff' },
 ];
 
-const TOTAL_ROUNDS = 3;
+const TOTAL_ROUNDS = 1;
 const TUBE_SECS    = 4;      // only 4 rectangular sections; id=4 is bulb
 
 /* Sizing */
@@ -457,12 +457,14 @@ function onSectionTap(id) {
     /* ✅ CORRECT — selected colour matches tapped section */
     coloredSections[id] = true;
     fillSection(id, correctEmotion.color, correctEmotion.textColor);
-    playClaps();
     showToast('✅ ' + correctEmotion.colorLabel + '!', '#4CAF50');
     clearHints();
     selectedColor = null;
     document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
-    if (Object.keys(coloredSections).length === EMOTIONS.length) setTimeout(startPhase2, 900);
+    if (Object.keys(coloredSections).length === EMOTIONS.length) {
+      playClaps(); spawnConfetti();
+      setTimeout(startPhase2, 1600);
+    }
   } else {
     /* ❌ WRONG — show where the selected colour actually belongs */
     if (!wrongColor[correctId]) wrongColor[correctId] = 0;
@@ -482,7 +484,10 @@ function onSectionTap(id) {
       }
       selectedColor = null;
       document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
-      if (Object.keys(coloredSections).length === EMOTIONS.length) setTimeout(startPhase2, 900);
+      if (Object.keys(coloredSections).length === EMOTIONS.length) {
+        playClaps(); spawnConfetti();
+        setTimeout(startPhase2, 1600);
+      }
     }
   }
 }
@@ -559,37 +564,37 @@ function setupEmojiDrag(card) {
 
     if (tgt&&!placedEmojis[+tgt.dataset.id]) {
       const cid=+tgt.dataset.id;
-      if (cid===dragId) {
+      const thisId=dragId; /* capture before reset at end of handler */
+      if (cid===thisId) {
         /* CORRECT */
-        if (!wrongEmoji[dragId]) score++;
+        if (!wrongEmoji[thisId]) score++;
         document.getElementById('score-val').textContent=score;
-        placeEmoji(dragId, tgt);
+        placeEmoji(thisId, tgt);
         clearHints();
-        playClaps();
         showToast('⭐ Correct!','#4CAF50');
         if (Object.keys(placedEmojis).length===EMOTIONS.length) onRoundComplete();
       } else {
         /* WRONG */
-        if (!wrongEmoji[dragId]) wrongEmoji[dragId]=0;
-        wrongEmoji[dragId]++;
+        if (!wrongEmoji[thisId]) wrongEmoji[thisId]=0;
+        wrongEmoji[thisId]++;
         play(sndWrong);
         showToast('❌ Try again!','#f44336');
         tgt.classList.add('wrong-anim');
         tgt.addEventListener('animationend',()=>tgt.classList.remove('wrong-anim'),{once:true});
 
-        if (wrongEmoji[dragId]===1) {
-          /* 1st wrong: clear any old hint, then glow correct circle */
+        if (wrongEmoji[thisId]===1) {
+          /* 1st wrong: thisId is captured — safe to use in setTimeout */
           setTimeout(()=>{
             clearHints();
-            const correct=document.getElementById(`circle-${dragId}`);
-            if (correct&&!placedEmojis[dragId]) correct.classList.add('hint-circle');
+            const correct=document.getElementById(`circle-${thisId}`);
+            if (correct&&!placedEmojis[thisId]) correct.classList.add('hint-circle');
           }, 600);
         } else {
-          /* 2nd wrong: clear hint, auto-place emoji into correct circle */
+          /* 2nd wrong: auto-place emoji into correct circle */
           clearHints();
-          const correct=document.getElementById(`circle-${dragId}`);
-          if (correct&&!placedEmojis[dragId]) {
-            placeEmoji(dragId, correct);
+          const correct=document.getElementById(`circle-${thisId}`);
+          if (correct&&!placedEmojis[thisId]) {
+            placeEmoji(thisId, correct);
             if (Object.keys(placedEmojis).length===EMOTIONS.length) onRoundComplete();
           }
         }
@@ -627,7 +632,7 @@ function showEnd() {
   document.getElementById('game-screen').style.display='none';
   document.getElementById('end-screen').style.display='flex';
   document.getElementById('final-score').textContent=score;
-  document.getElementById('end-stars').textContent=score>=13?'⭐⭐⭐':score>=9?'⭐⭐':'⭐';
+  document.getElementById('end-stars').textContent=score>=5?'⭐⭐⭐':score>=3?'⭐⭐':'⭐';
   document.getElementById('prog-bar').style.width='100%';
   playClaps(); spawnConfetti(); setTimeout(spawnConfetti,800);
 }
