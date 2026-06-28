@@ -61,88 +61,108 @@
       margin-top: auto; margin-bottom: auto; flex-shrink: 0; width: 100%;
     }
 
-    /* ── MATCH AREA ── */
-    .match-wrapper {
-      position: relative; width: 100%;
-    }
-
-    .columns-row {
-      display: flex; align-items: stretch;
-      gap: 0; width: 100%;
-    }
-
-    .left-col, .right-col {
-      flex: 1; display: flex; flex-direction: column; gap: 10px;
-      align-items: center;
-    }
-
+    /* ── MATCH ROUND ── */
+    .match-wrapper { position: relative; width: 100%; }
+    .columns-row { display: flex; align-items: stretch; gap: 0; width: 100%; }
+    .left-col, .right-col { flex: 1; display: flex; flex-direction: column; gap: 10px; align-items: center; }
     .middle-gap { width: 60px; flex-shrink: 0; }
 
-    /* Sport / Equipment card */
     .match-item {
       border-radius: 14px; border: 3px solid #e0e0e0;
       background: #fafafa; cursor: pointer;
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
-      overflow: hidden; position: relative;
-      width: 130px;
+      overflow: hidden; position: relative; width: 130px;
     }
-    .match-item img {
-      width: 100%; height: 80px; object-fit: contain; display: block;
-      border-radius: 11px; background: #f5f5f5; padding: 6px;
-    }
-    .match-item .item-label {
-      text-align: center; font-size: 0.72em; font-weight: 800;
-      color: #555; padding: 3px 4px 5px;
-    }
+    .match-item img { width: 100%; height: 80px; object-fit: contain; display: block; border-radius: 11px; background: #f5f5f5; padding: 6px; }
+    .match-item .item-label { text-align: center; font-size: 0.72em; font-weight: 800; color: #555; padding: 3px 4px 5px; }
 
-    /* Dot connector */
     .match-item::after {
-      content: '';
-      position: absolute;
-      width: 12px; height: 12px;
-      background: #bbb; border-radius: 50%;
+      content: ''; position: absolute;
+      width: 12px; height: 12px; background: #bbb; border-radius: 50%;
       top: 50%; transform: translateY(-50%);
     }
     .left-col .match-item::after  { right: -8px; }
     .right-col .match-item::after { left: -8px; }
 
-    /* States */
-    .match-item.selected {
-      border-color: #FFD700;
-      box-shadow: 0 0 0 3px rgba(255,215,0,0.5);
-    }
+    .match-item.selected { border-color: #FFD700; box-shadow: 0 0 0 3px rgba(255,215,0,0.5); }
     .match-item.selected::after { background: #FFD700; }
-
-    .match-item.matched {
-      border-color: #4CAF50;
-      box-shadow: 0 0 0 3px rgba(76,175,80,0.3);
-      cursor: default;
-    }
+    .match-item.matched { border-color: #4CAF50; box-shadow: 0 0 0 3px rgba(76,175,80,0.3); cursor: default; }
     .match-item.matched::after { background: #4CAF50; }
     .match-item.matched .item-label { color: #2e7d32; }
-
     .match-item.wrong-anim { animation: shakeItem 0.4s ease; }
-    @keyframes shakeItem { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+    .match-item.hint-anim { border-color: #FF9800; box-shadow: 0 0 0 4px rgba(255,152,0,0.4); animation: hintPulse 1s ease-in-out infinite; }
 
-    .match-item.hint-anim {
-      border-color: #FF9800;
-      box-shadow: 0 0 0 4px rgba(255,152,0,0.4);
-      animation: hintPulse 1s ease-in-out infinite;
-    }
+    @keyframes shakeItem { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
     @keyframes hintPulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,152,0,0.5)} 50%{box-shadow:0 0 0 10px rgba(255,152,0,0)} }
 
-    /* SVG lines overlay */
-    #lines-svg {
-      position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none; overflow: visible;
+    #lines-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+
+    /* ── COLORING ROUND ── */
+    .color-items-grid {
+      display: flex; gap: 14px; justify-content: center;
+      align-items: flex-start; flex-wrap: wrap; width: 100%;
     }
 
-    /* Round badge */
-    .round-badge {
-      font-size: 0.82em; font-weight: 800; color: #7b1fa2;
-      background: #f3e5f5; border-radius: 20px; padding: 4px 14px;
+    .color-item {
+      border-radius: 16px; border: 3px solid #e0e0e0;
+      background: #fafafa; cursor: pointer;
+      transition: border-color 0.2s, background 0.35s, box-shadow 0.2s;
+      overflow: hidden; width: 120px; min-height: 148px;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 10px 8px 8px; gap: 6px; touch-action: manipulation;
     }
+    .color-item:active:not(.colored) { transform: scale(0.95); }
+
+    .item-visual {
+      width: 84px; height: 72px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.6em; border-radius: 10px;
+      background: #f0f0f0; overflow: hidden; flex-shrink: 0;
+    }
+    .item-visual img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+
+    .item-name {
+      font-size: 0.73em; font-weight: 800; color: #333;
+      text-align: center; line-height: 1.2;
+    }
+    .item-color-tag {
+      font-size: 0.68em; font-weight: 700; color: #888;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .color-chip {
+      width: 10px; height: 10px; border-radius: 50%;
+      display: inline-block; border: 1px solid rgba(0,0,0,0.2); flex-shrink: 0;
+    }
+
+    .color-item.colored { cursor: default; }
+    .color-item.colored .item-visual { background: rgba(255,255,255,0.15); }
+
+    .color-item.hint-item {
+      border: 3px dashed #FFD700 !important;
+      animation: colorItemHint 0.8s ease-in-out infinite;
+    }
+    @keyframes colorItemHint {
+      0%,100% { box-shadow: 0 0 8px 2px rgba(255,215,0,0.4); }
+      50%      { box-shadow: 0 0 22px 8px rgba(255,215,0,0.9); }
+    }
+    .color-item.wrong-anim { animation: shakeItem 0.4s ease; }
+
+    /* Color swatches */
+    .swatch-tray { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .color-swatch {
+      border-radius: 50%; border: 4px solid transparent; cursor: pointer;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.2s;
+      touch-action: manipulation;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.68em; font-weight: 800;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+    .color-swatch:active { transform: scale(0.9); }
+    .color-swatch.selected { border-color: #222 !important; transform: scale(1.2); box-shadow: 0 0 0 4px rgba(0,0,0,0.15) !important; }
+
+    /* ── SHARED ── */
+    .round-badge { font-size: 0.82em; font-weight: 800; color: #7b1fa2; background: #f3e5f5; border-radius: 20px; padding: 4px 14px; }
 
     .btn-restart {
       position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
@@ -179,7 +199,7 @@
     .end-trophy { font-size: 4.5em; animation: trophySpin 1.5s ease-out; }
     @keyframes trophySpin { from{transform:rotate(-20deg) scale(0)} 60%{transform:rotate(10deg) scale(1.1)} to{transform:rotate(0deg) scale(1)} }
     .end-title { color: #FFD700; font-size: clamp(1.5em,5vw,2.2em); font-weight: bold; text-shadow: 0 3px 10px rgba(0,0,0,0.3); text-align: center; }
-    .end-sub { color: rgba(255,255,255,0.9); font-size: 1.1em; text-align: center; }
+    .end-sub   { color: rgba(255,255,255,0.9); font-size: 1.1em; text-align: center; }
     .end-score-box { background: rgba(255,255,255,0.15); border-radius: 16px; padding: 12px 28px; color: white; font-size: 1.4em; font-weight: bold; }
     .end-stars { font-size: 2.2em; letter-spacing: 4px; }
     .btn-play-again { background: #FFD700; color: #333; border: none; border-radius: 50px; padding: 14px 36px; font-size: 1.1em; font-weight: 800; font-family: inherit; cursor: pointer; box-shadow: 0 4px 16px rgba(255,215,0,0.5); }
@@ -191,6 +211,8 @@
       .match-item img { height: 68px; padding: 4px; }
       .middle-gap { width: 44px; }
       .hdr-title { display: none; }
+      .color-item { width: 100px; }
+      .item-visual { width: 70px; height: 62px; font-size: 2.2em; }
     }
     @media (max-width: 480px) {
       .match-item { width: 90px; }
@@ -200,6 +222,9 @@
       .match-item::after { width: 10px; height: 10px; }
       .left-col .match-item::after  { right: -6px; }
       .right-col .match-item::after { left: -6px; }
+      .color-item { width: 88px; min-height: 130px; }
+      .item-visual { width: 62px; height: 54px; font-size: 1.9em; }
+      .item-name { font-size: 0.65em; }
     }
   </style>
 </head>
@@ -213,31 +238,21 @@
 
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">⭐ <span id="score-val">0</span> / 9</div>
+    <div class="hdr-score">⭐ <span id="score-val">0</span> / 12</div>
     <div class="hdr-title">Sports and Games</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
   </div>
 
   <div class="progress-row">
-    <span class="progress-label">Round <span id="round-num">1</span> / 3</span>
+    <span class="progress-label">Round <span id="round-num">1</span> / 4</span>
     <div class="progress-bar-wrap">
       <div class="progress-bar-fill" id="prog-bar" style="width:0%"></div>
     </div>
   </div>
 
-  <div class="instruction">Tap a sport, then tap its matching equipment!</div>
+  <div class="instruction" id="instruction-txt"></div>
 
-  <div class="q-card">
-    <div class="round-badge" id="round-badge">Round 1 of 3</div>
-    <div class="match-wrapper" id="match-wrapper">
-      <div class="columns-row">
-        <div class="left-col"  id="left-col"></div>
-        <div class="middle-gap"></div>
-        <div class="right-col" id="right-col"></div>
-      </div>
-      <svg id="lines-svg"></svg>
-    </div>
-  </div>
+  <div class="q-card" id="q-card"></div>
 
   <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
 </div>
@@ -245,26 +260,63 @@
 <div id="end-screen">
   <div class="end-trophy">🏆</div>
   <div class="end-title">You have done a great job!</div>
-  <div class="end-sub">You completed all 3 rounds!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 9</div>
+  <div class="end-sub">You completed all 4 rounds!</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 12</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">▶ &nbsp;Play Again</button>
 </div>
 
 <script>
+/* ── DATA ── */
 const PAIRS = [
   { id:'cricket',  leftImg:'Assets/cricket-ground.jpg',    leftLabel:'Cricket',  rightImg:'Assets/cricket-bat-clipart.png', rightLabel:'Cricket Bat' },
   { id:'football', leftImg:'Assets/football%20ground.png', leftLabel:'Football', rightImg:'Assets/football.png',            rightLabel:'Football'    },
   { id:'carrom',   leftImg:'Assets/carrom%20board.jpg',    leftLabel:'Carrom',   rightImg:'Assets/striker.jpg',             rightLabel:'Carrom'      },
 ];
 
-const TOTAL_ROUNDS = 3;
-let currentRound = 0, score = 0;
-let selectedLeftId = null;
-let matched = new Set();
-let attempts = {};
-let busy = false;
+const COLORING_ROUNDS = [
+  {
+    sport: 'Cricket',
+    instruction: 'Pick a colour and tap the matching cricket item!',
+    items: [
+      { id:'bat',    img:'Assets/cricket-bat-clipart.png', emoji:'',   name:'Cricket Bat',  color:'#795548', colorLabel:'Brown',  textColor:'#fff' },
+      { id:'ball',   img:'Assets/cricket-ball.png',        emoji:'',   name:'Cricket Ball', color:'#e53935', colorLabel:'Red',    textColor:'#fff' },
+      { id:'stumps', img:'',                               emoji:'🟡', name:'Stumps',       color:'#FDD835', colorLabel:'Yellow', textColor:'#333' },
+    ]
+  },
+  {
+    sport: 'Carrom',
+    instruction: 'Pick a colour and tap the matching carrom item!',
+    items: [
+      { id:'board',   img:'Assets/carrom%20board.jpg', emoji:'',   name:'Carrom Board', color:'#795548', colorLabel:'Brown', textColor:'#fff' },
+      { id:'striker', img:'Assets/striker.jpg',        emoji:'',   name:'Striker',      color:'#1E88E5', colorLabel:'Blue',  textColor:'#fff' },
+      { id:'piece',   img:'',                          emoji:'⚫', name:'Carrom Piece', color:'#37474F', colorLabel:'Black', textColor:'#fff' },
+    ]
+  },
+  {
+    sport: 'Football',
+    instruction: 'Pick a colour and tap the matching football item!',
+    items: [
+      { id:'football', img:'Assets/football.png', emoji:'',   name:'Football',       color:'#37474F', colorLabel:'Black',  textColor:'#fff' },
+      { id:'goal',     img:'',                    emoji:'🥅', name:'Goal Post',      color:'#FF6D00', colorLabel:'Orange', textColor:'#fff' },
+      { id:'boots',    img:'',                    emoji:'👟', name:'Football Boots', color:'#1E88E5', colorLabel:'Blue',   textColor:'#fff' },
+    ]
+  },
+];
 
+const TOTAL_ROUNDS = 4;
+
+/* ── STATE ── */
+let currentRound = 0, score = 0, muted = false;
+let currentInstruction = '';
+
+/* Match state */
+let selectedLeftId = null, matched = new Set(), attempts = {}, busy = false;
+
+/* Coloring state */
+let coloredItems = {}, selectedColor = null, wrongColor = {};
+
+/* ── AUDIO ── */
 const sndWrong = new Audio('Assets/wrong.mp3');
 const sndClaps = new Audio('Assets/free_claps.mp3');
 
@@ -273,6 +325,14 @@ function unlockAudio() {
   document.removeEventListener('pointerdown', unlockAudio);
 }
 document.addEventListener('pointerdown', unlockAudio);
+
+function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(() => {}); }
+
+function playClaps() {
+  if (muted) return;
+  sndClaps.currentTime = 0; sndClaps.play().catch(() => {});
+  setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 3000);
+}
 
 function speak(text) {
   sndClaps.pause(); sndClaps.currentTime = 0;
@@ -292,12 +352,11 @@ function speak(text) {
 window.speechSynthesis.getVoices();
 window.speechSynthesis.addEventListener('voiceschanged', () => window.speechSynthesis.getVoices());
 
-let muted = false;
-
-function playClaps() {
-  if (muted) return;
-  sndClaps.currentTime = 0; sndClaps.play().catch(() => {});
-  setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 3000);
+function toggleMute() {
+  muted = !muted;
+  document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+  if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
+  else { if (currentInstruction) speak(currentInstruction); }
 }
 
 function shuffle(arr) {
@@ -309,49 +368,54 @@ function shuffle(arr) {
   return a;
 }
 
+/* ── ROUND DISPATCHER ── */
 function buildRound() {
-  matched = new Set();
-  attempts = {};
-  selectedLeftId = null;
-  busy = false;
+  if (currentRound === 0) buildMatchRound();
+  else buildColoringRound(currentRound - 1);
+}
+
+/* ── MATCH ROUND ── */
+function buildMatchRound() {
+  matched = new Set(); attempts = {}; selectedLeftId = null; busy = false;
+  currentInstruction = 'Tap a sport, then tap its matching equipment!';
+
+  updateHeader();
+  document.getElementById('instruction-txt').textContent = currentInstruction;
 
   const leftOrder  = shuffle(PAIRS);
   const rightOrder = shuffle(PAIRS);
 
-  const leftCol  = document.getElementById('left-col');
-  const rightCol = document.getElementById('right-col');
-  const svg      = document.getElementById('lines-svg');
-
-  leftCol.innerHTML = '';
-  rightCol.innerHTML = '';
-  svg.innerHTML = '';
+  document.getElementById('q-card').innerHTML = `
+    <div class="round-badge">Round 1 of ${TOTAL_ROUNDS}</div>
+    <div class="match-wrapper" id="match-wrapper">
+      <div class="columns-row">
+        <div class="left-col"  id="left-col"></div>
+        <div class="middle-gap"></div>
+        <div class="right-col" id="right-col"></div>
+      </div>
+      <svg id="lines-svg"></svg>
+    </div>
+  `;
 
   leftOrder.forEach(pair => {
     const el = document.createElement('div');
     el.className = 'match-item';
-    el.dataset.id = pair.id;
-    el.dataset.side = 'left';
+    el.dataset.id = pair.id; el.dataset.side = 'left';
     el.innerHTML = `<img src="${pair.leftImg}" alt="${pair.leftLabel}"><div class="item-label">${pair.leftLabel}</div>`;
     el.addEventListener('click', () => onLeftTap(pair.id));
-    leftCol.appendChild(el);
+    document.getElementById('left-col').appendChild(el);
   });
 
   rightOrder.forEach(pair => {
     const el = document.createElement('div');
     el.className = 'match-item';
-    el.dataset.id = pair.id;
-    el.dataset.side = 'right';
+    el.dataset.id = pair.id; el.dataset.side = 'right';
     el.innerHTML = `<img src="${pair.rightImg}" alt="${pair.rightLabel}"><div class="item-label">${pair.rightLabel}</div>`;
     el.addEventListener('click', () => onRightTap(pair.id));
-    rightCol.appendChild(el);
+    document.getElementById('right-col').appendChild(el);
   });
 
-  document.getElementById('round-num').textContent    = currentRound + 1;
-  document.getElementById('round-badge').textContent  = `Round ${currentRound + 1} of ${TOTAL_ROUNDS}`;
-  document.getElementById('prog-bar').style.width     = (currentRound / TOTAL_ROUNDS * 100) + '%';
-  document.getElementById('score-val').textContent    = score;
-
-  speak('Tap a sport, then tap its matching equipment!');
+  speak(currentInstruction);
 }
 
 function getEl(side, id) {
@@ -360,13 +424,8 @@ function getEl(side, id) {
 
 function onLeftTap(id) {
   if (busy || matched.has(id)) return;
-
-  /* if already selected, do nothing — don't toggle off */
   if (selectedLeftId === id) return;
-
-  /* switching to a different sport — clear any active hint */
   document.querySelectorAll('.match-item.hint-anim').forEach(el => el.classList.remove('hint-anim'));
-
   if (selectedLeftId) getEl('left', selectedLeftId)?.classList.remove('selected');
   selectedLeftId = id;
   getEl('left', id).classList.add('selected');
@@ -374,23 +433,15 @@ function onLeftTap(id) {
 
 function onRightTap(id) {
   if (busy || matched.has(id)) return;
-  if (!selectedLeftId) {
-    showToast('👆 Tap a sport first!', '#FF9800');
-    return;
-  }
-
-  if (selectedLeftId === id) {
-    registerMatch(id);
-  } else {
-    registerMismatch(id);
-  }
+  if (!selectedLeftId) { showToast('👆 Tap a sport first!', '#FF9800'); return; }
+  if (selectedLeftId === id) registerMatch(id);
+  else registerMismatch(id);
 }
 
 function registerMatch(id) {
   busy = true;
   const leftEl  = getEl('left',  id);
   const rightEl = getEl('right', id);
-
   leftEl.classList.remove('selected');
   leftEl.classList.add('matched');
   rightEl.classList.remove('hint-anim');
@@ -401,14 +452,11 @@ function registerMatch(id) {
 
   drawLine(leftEl, rightEl, '#4CAF50');
   showToast('⭐ Correct!', '#4CAF50');
-
   matched.add(id);
   selectedLeftId = null;
   busy = false;
 
-  if (matched.size === PAIRS.length) {
-    onRoundComplete();
-  }
+  if (matched.size === PAIRS.length) onRoundComplete();
 }
 
 function registerMismatch(wrongRightId) {
@@ -416,13 +464,13 @@ function registerMismatch(wrongRightId) {
   if (!attempts[selectedLeftId]) attempts[selectedLeftId] = 0;
   attempts[selectedLeftId]++;
 
-  const leftEl     = getEl('left',  selectedLeftId);
-  const wrongRight = getEl('right', wrongRightId);
+  const leftEl      = getEl('left',  selectedLeftId);
+  const wrongRight  = getEl('right', wrongRightId);
   const currentLeft = selectedLeftId;
 
   leftEl.classList.add('wrong-anim');
   wrongRight.classList.add('wrong-anim');
-  sndWrong.currentTime = 0; if (!muted) sndWrong.play().catch(() => {});
+  play(sndWrong);
   showToast('❌ Try again!', '#f44336');
 
   setTimeout(() => {
@@ -430,13 +478,11 @@ function registerMismatch(wrongRightId) {
     wrongRight.classList.remove('wrong-anim');
 
     if (attempts[currentLeft] >= 2) {
-      /* 2nd wrong — auto-correct */
       getEl('right', currentLeft)?.classList.remove('hint-anim');
       selectedLeftId = currentLeft;
       registerMatch(currentLeft);
       busy = false;
     } else {
-      /* 1st wrong — show hint, keep left item selected */
       getEl('right', currentLeft)?.classList.add('hint-anim');
       leftEl.classList.add('selected');
       busy = false;
@@ -445,20 +491,17 @@ function registerMismatch(wrongRightId) {
 }
 
 function drawLine(leftEl, rightEl, color) {
-  const svg       = document.getElementById('lines-svg');
-  const wrapper   = document.getElementById('match-wrapper');
-  const wRect     = wrapper.getBoundingClientRect();
-  const lRect     = leftEl.getBoundingClientRect();
-  const rRect     = rightEl.getBoundingClientRect();
-
-  const x1 = lRect.right  - wRect.left;
-  const y1 = lRect.top + lRect.height / 2 - wRect.top;
-  const x2 = rRect.left   - wRect.left;
-  const y2 = rRect.top + rRect.height / 2 - wRect.top;
+  const svg     = document.getElementById('lines-svg');
+  const wrapper = document.getElementById('match-wrapper');
+  const wRect   = wrapper.getBoundingClientRect();
+  const lRect   = leftEl.getBoundingClientRect();
+  const rRect   = rightEl.getBoundingClientRect();
 
   const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-  line.setAttribute('x1', x1); line.setAttribute('y1', y1);
-  line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+  line.setAttribute('x1', lRect.right - wRect.left);
+  line.setAttribute('y1', lRect.top + lRect.height / 2 - wRect.top);
+  line.setAttribute('x2', rRect.left - wRect.left);
+  line.setAttribute('y2', rRect.top + rRect.height / 2 - wRect.top);
   line.setAttribute('stroke', color);
   line.setAttribute('stroke-width', '3');
   line.setAttribute('stroke-linecap', 'round');
@@ -466,18 +509,150 @@ function drawLine(leftEl, rightEl, color) {
   svg.appendChild(line);
 }
 
+/* ── COLORING ROUND ── */
+function buildColoringRound(idx) {
+  coloredItems = {}; selectedColor = null; wrongColor = {}; busy = false;
+
+  const roundData = COLORING_ROUNDS[idx];
+  currentInstruction = roundData.instruction;
+
+  updateHeader();
+  document.getElementById('instruction-txt').textContent = '🎨 ' + currentInstruction;
+
+  const swatchSize = Math.min(64, Math.floor((window.innerWidth - 80) / roundData.items.length) - 14);
+
+  document.getElementById('q-card').innerHTML = `
+    <div class="round-badge">Round ${currentRound + 1} of ${TOTAL_ROUNDS} — ${roundData.sport}</div>
+    <div class="color-items-grid" id="color-items-grid"></div>
+    <div class="swatch-tray" id="swatch-tray"></div>
+  `;
+
+  const grid = document.getElementById('color-items-grid');
+  roundData.items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'color-item';
+    el.dataset.id = item.id;
+
+    const visualHTML = item.img
+      ? `<div class="item-visual"><img src="${item.img}" alt="${item.name}"></div>`
+      : `<div class="item-visual">${item.emoji}</div>`;
+
+    el.innerHTML = `
+      ${visualHTML}
+      <div class="item-name">${item.name}</div>
+      <div class="item-color-tag">
+        <span class="color-chip" style="background:${item.color}"></span>
+        ${item.colorLabel}
+      </div>
+    `;
+    el.addEventListener('click', () => onItemTap(item.id));
+    grid.appendChild(el);
+  });
+
+  const tray = document.getElementById('swatch-tray');
+  shuffle([...roundData.items]).forEach(item => {
+    const sw = document.createElement('div');
+    sw.className = 'color-swatch';
+    sw.dataset.color = item.color;
+    sw.style.cssText = `background:${item.color};width:${swatchSize}px;height:${swatchSize}px;color:${item.textColor};`;
+    sw.textContent = item.colorLabel;
+    sw.addEventListener('click', () => onColorSelect(item.color, sw));
+    tray.appendChild(sw);
+  });
+
+  speak(currentInstruction);
+}
+
+function onColorSelect(color, swEl) {
+  selectedColor = color;
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+  swEl.classList.add('selected');
+}
+
+function onItemTap(itemId) {
+  if (busy) return;
+  const items = COLORING_ROUNDS[currentRound - 1].items;
+  const item  = items.find(it => it.id === itemId);
+
+  if (coloredItems[itemId]) { showToast('✅ Already coloured!', '#FF9800'); return; }
+  if (!selectedColor)       { showToast('👆 Pick a colour first!', '#FF9800'); speak('Pick a colour first!'); return; }
+
+  const correctItem = items.find(it => it.color === selectedColor);
+  const correctId   = correctItem.id;
+
+  if (selectedColor === item.color) {
+    /* ✅ CORRECT */
+    if (!wrongColor[itemId]) score++;
+    document.getElementById('score-val').textContent = score;
+    coloredItems[itemId] = true;
+    fillItem(itemId, correctItem.color, correctItem.textColor);
+    showToast('✅ ' + correctItem.colorLabel + '!', '#4CAF50');
+    clearColorHints();
+    selectedColor = null;
+    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+    if (Object.keys(coloredItems).length === items.length) onRoundComplete();
+  } else {
+    /* ❌ WRONG */
+    if (!wrongColor[correctId]) wrongColor[correctId] = 0;
+    wrongColor[correctId]++;
+    play(sndWrong);
+    showToast('❌ Try again!', '#f44336');
+
+    const tappedEl = document.querySelector(`.color-item[data-id="${itemId}"]`);
+    if (tappedEl) {
+      tappedEl.classList.add('wrong-anim');
+      tappedEl.addEventListener('animationend', () => tappedEl.classList.remove('wrong-anim'), { once: true });
+    }
+
+    if (wrongColor[correctId] === 1) {
+      const hintId = correctId;
+      setTimeout(() => {
+        clearColorHints();
+        const el = document.querySelector(`.color-item[data-id="${hintId}"]`);
+        if (el && !coloredItems[hintId]) el.classList.add('hint-item');
+      }, 600);
+    } else {
+      clearColorHints();
+      if (!coloredItems[correctId]) {
+        coloredItems[correctId] = true;
+        fillItem(correctId, correctItem.color, correctItem.textColor);
+      }
+      selectedColor = null;
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      if (Object.keys(coloredItems).length === items.length) onRoundComplete();
+    }
+  }
+}
+
+function fillItem(itemId, color, textColor) {
+  const el = document.querySelector(`.color-item[data-id="${itemId}"]`);
+  if (!el) return;
+  el.style.background = color;
+  el.style.borderColor = color;
+  el.classList.add('colored');
+  const light = textColor === '#fff';
+  el.querySelectorAll('.item-name').forEach(t => t.style.color = light ? 'rgba(255,255,255,0.95)' : 'rgba(0,0,0,0.75)');
+  el.querySelectorAll('.item-color-tag').forEach(t => t.style.color = light ? 'rgba(255,255,255,0.75)' : 'rgba(0,0,0,0.55)');
+}
+
+function clearColorHints() {
+  document.querySelectorAll('.color-item.hint-item').forEach(el => el.classList.remove('hint-item'));
+}
+
+/* ── ROUND COMPLETE ── */
 function onRoundComplete() {
   window.speechSynthesis?.cancel();
-  playClaps();
-  spawnConfetti();
-  setTimeout(spawnConfetti, 600);
-
+  playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 600);
   currentRound++;
-  if (currentRound >= TOTAL_ROUNDS) {
-    setTimeout(showEnd, 1800);
-  } else {
-    setTimeout(buildRound, 2000);
-  }
+  if (currentRound >= TOTAL_ROUNDS) setTimeout(showEnd, 3200);
+  else setTimeout(buildRound, 3200);
+}
+
+/* ── HELPERS ── */
+function updateHeader() {
+  document.getElementById('round-num').textContent  = currentRound + 1;
+  document.getElementById('prog-bar').style.width   = (currentRound / TOTAL_ROUNDS * 100) + '%';
+  document.getElementById('score-val').textContent  = score;
 }
 
 function startGame() {
@@ -515,22 +690,14 @@ function spawnConfetti() {
   }
 }
 
-function toggleMute() {
-  muted = !muted;
-  document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
-  if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
-  else speak('Tap a sport, then tap its matching equipment!');
-}
-
 function showEnd() {
   document.getElementById('game-screen').style.display = 'none';
   document.getElementById('end-screen').style.display  = 'flex';
   document.getElementById('final-score').textContent   = score;
-  document.getElementById('end-stars').textContent     = score >= 8 ? '⭐⭐⭐' : score >= 5 ? '⭐⭐' : '⭐';
+  document.getElementById('end-stars').textContent     = score >= 10 ? '⭐⭐⭐' : score >= 7 ? '⭐⭐' : '⭐';
   document.getElementById('prog-bar').style.width      = '100%';
   window.speechSynthesis?.cancel();
-  playClaps(); spawnConfetti();
-  setTimeout(spawnConfetti, 800);
+  playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 800);
 }
 </script>
 </body>
