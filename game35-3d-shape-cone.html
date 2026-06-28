@@ -465,7 +465,7 @@ function toggleMute(){
   muted=!muted;
   document.getElementById('mute-btn').textContent=muted?'🔇':'🔊';
   if(muted){window.speechSynthesis?.cancel();sndClaps.pause();}
-  else{const txt=document.getElementById('instruction-txt').textContent;if(txt)speak(txt);}
+  else{speak('Draw a circle around the cone shaped object!');}
 }
 
 /* ── End ── */
