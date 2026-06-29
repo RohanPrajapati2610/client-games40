@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Sensorial Week · LY2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', Arial, sans-serif;
+      background: linear-gradient(135deg, #fce4ec 0%, #e8f5e9 50%, #e3f2fd 100%);
+      height: 100vh; height: 100dvh;
+      display: flex; align-items: stretch; justify-content: center;
+      overflow: hidden; user-select: none; -webkit-user-select: none;
+    }
+
+    /* ── INTRO ── */
+    #intro-screen {
+      position: fixed; inset: 0;
+      background: linear-gradient(160deg, #4a148c, #7b1fa2, #ab47bc);
+      display: flex; align-items: center; justify-content: center;
+      border: 5px solid #FFD700; z-index: 200;
+    }
+    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; cursor: pointer; }
+    @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+    /* ── GAME SCREEN ── */
+    #game-screen {
+      display: none; flex-direction: column;
+      width: 100%; max-width: 860px; height: 100%;
+      padding: 14px 14px 70px; overflow-y: auto;
+    }
+
+    .hdr { display:flex; align-items:center; justify-content:space-between; background:white; border-radius:18px; padding:10px 18px; margin-bottom:10px; box-shadow:0 4px 14px rgba(0,0,0,0.1); flex-shrink:0; }
+    .hdr-score { font-size:1.2em; font-weight:bold; color:#4CAF50; min-width:90px; }
+    .hdr-title { font-size:clamp(0.75em,2.5vw,1em); color:#6a0dad; font-weight:bold; text-align:center; }
+    .mute-btn { width:38px; height:38px; border:2px solid #ddd; border-radius:50%; background:white; font-size:1.1em; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+    .instruction { text-align:center; font-size:clamp(0.95em,3vw,1.1em); color:#333; font-weight:700; margin-bottom:12px; padding:0 4px; flex-shrink:0; line-height:1.4; }
+
+    /* ── CARD GRID ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      width: 100%;
+      margin: auto;
+    }
+
+    /* ── FLIP CARD ── */
+    .card { aspect-ratio: 3/4; perspective: 700px; cursor: pointer; }
+    .card-inner {
+      width: 100%; height: 100%; position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.45s ease;
+      border-radius: 16px;
+    }
+    .card.flipped .card-inner { transform: rotateY(180deg); }
+    .card.matched .card-inner { transform: rotateY(180deg); }
+
+    .card-back, .card-front {
+      position: absolute; inset: 0; border-radius: 16px;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 6px; padding: 8px;
+    }
+
+    /* BACK — face-down */
+    .card-back {
+      background: linear-gradient(135deg, #7b1fa2, #4a148c);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+    .back-pattern { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; }
+    .back-dot { width:9px; height:9px; border-radius:50%; background:rgba(255,215,0,0.45); }
+
+    /* FRONT — face-up */
+    .card-front {
+      background: white;
+      border: 3px solid #e0e0e0;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      transform: rotateY(180deg);
+    }
+    .card-front img {
+      width: 100%; height: 75%;
+      object-fit: contain;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .card-label { font-size: clamp(0.6em,1.8vw,0.78em); font-weight:800; color:#444; text-align:center; line-height:1.2; }
+
+    /* ── STATES ── */
+    .card.matched .card-front {
+      border-color: #4CAF50;
+      box-shadow: 0 0 0 3px rgba(76,175,80,0.4);
+      background: #f1fff3;
+    }
+    .card.wrong-anim .card-inner { animation: shakeCard 0.4s ease; }
+    @keyframes shakeCard { 0%,100%{transform:rotateY(180deg) translateX(0)} 25%{transform:rotateY(180deg) translateX(-8px)} 75%{transform:rotateY(180deg) translateX(8px)} }
+
+    /* Hint glow on card back after 1st wrong */
+    .card.hint-glow .card-back {
+      border: 4px solid #FF9800 !important;
+      animation: hintGlowCard 0.7s ease-in-out infinite;
+    }
+    @keyframes hintGlowCard {
+      0%,100% { box-shadow: 0 0 10px 4px rgba(255,152,0,0.9), 0 0 30px 8px rgba(255,152,0,0.5); }
+      50%      { box-shadow: 0 0 22px 10px rgba(255,200,0,1),  0 0 50px 18px rgba(255,152,0,0.7); }
+    }
+
+    /* Auto-reveal orange highlight */
+    .card.auto-reveal .card-front {
+      border-color: #FF9800;
+      box-shadow: 0 0 0 4px rgba(255,152,0,0.45);
+    }
+
+    /* ── BOTTOM ── */
+    .bottom-row { display:flex; justify-content:center; position:fixed; bottom:16px; left:0; right:0; z-index:50; pointer-events:none; }
+    .btn-restart { pointer-events:all; background:linear-gradient(135deg,#FF9800,#F57C00); color:white; border:none; padding:12px 32px; border-radius:40px; font-size:1em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 5px 14px rgba(255,152,0,0.4); }
+
+    /* ── TOAST ── */
+    #toast { position:fixed; top:18%; left:50%; transform:translateX(-50%) scale(0.7); padding:14px 30px; border-radius:50px; font-size:1.5em; font-weight:bold; color:white; pointer-events:none; opacity:0; transition:opacity 0.2s,transform 0.2s; z-index:500; white-space:nowrap; box-shadow:0 8px 24px rgba(0,0,0,0.2); }
+    #toast.show { opacity:1; transform:translateX(-50%) scale(1); }
+
+    /* ── CONFETTI ── */
+    .confetti { position:fixed; pointer-events:none; z-index:9998; border-radius:2px; }
+
+    /* ── END SCREEN ── */
+    #end-screen { display:none; position:fixed; inset:0; background:linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc); flex-direction:column; align-items:center; justify-content:center; gap:16px; z-index:200; text-align:center; padding:30px; }
+    .end-trophy { font-size:4.5em; animation:trophySpin 1.5s ease-out; }
+    @keyframes trophySpin { from{transform:rotate(-20deg) scale(0)} 60%{transform:rotate(10deg) scale(1.1)} to{transform:rotate(0) scale(1)} }
+    .end-title  { color:#FFD700; font-size:clamp(1.5em,5vw,2.2em); font-weight:bold; text-shadow:0 3px 10px rgba(0,0,0,0.3); }
+    .end-sub    { color:rgba(255,255,255,0.9); font-size:1.1em; }
+    .end-score-box { background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.35); border-radius:20px; padding:16px 40px; color:white; font-size:1.8em; font-weight:bold; }
+    .end-stars  { font-size:2.2em; letter-spacing:4px; }
+    .btn-play-again { background:#FFD700; color:#333; border:none; padding:15px 45px; border-radius:40px; font-size:1.2em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,0.2); margin-top:8px; }
+
+    @media (max-width: 768px) {
+      #game-screen { padding: 10px 10px 70px; }
+      .card-grid { gap: 8px; }
+      .hdr-title { display: none; }
+    }
+    @media (max-width: 480px) {
+      .card-grid { gap: 6px; }
+      .back-dot { width: 6px; height: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="intro-screen">
+  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onclick="startGame()" onerror="this.style.display='none'">
+</div>
+<div id="toast"></div>
+
+<div id="game-screen">
+  <div class="hdr">
+    <div class="hdr-score">⭐ <span id="score-val">0</span> / 5 pairs</div>
+    <div class="hdr-title">Sensorial Week</div>
+    <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
+  </div>
+  <div class="instruction" id="instruction">Flip the cards and match each activity to its sense organ!</div>
+  <div class="card-grid" id="card-grid"></div>
+  <div class="bottom-row">
+    <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
+  </div>
+</div>
+
+<div id="end-screen">
+  <div class="end-trophy">🏆</div>
+  <div class="end-title">You have done a great job!</div>
+  <div class="end-sub">You matched all 5 sense pairs!</div>
+  <div class="end-score-box">Pairs found: &nbsp;<span id="final-score">0</span> / 5</div>
+  <div class="end-stars" id="end-stars"></div>
+  <button class="btn-play-again" onclick="restartGame()">▶ &nbsp;Play Again</button>
+</div>
+
+<script>
+/* ══════════════════════════════════════
+   PAIRS — activity image + sense organ image
+   ══════════════════════════════════════ */
+const PAIRS = [
+  {
+    id: 'smell',
+    actImg:   'Assets/Boy smelling a flower.png', actLabel:   'Smelling',
+    organImg: 'Assets/Nose.webp',                 organLabel: 'Nose',
+    audio: 'Smelling — Nose'
+  },
+  {
+    id: 'taste',
+    actImg:   'Assets/Boy tasting ice cream.png', actLabel:   'Tasting',
+    organImg: 'Assets/Tongue.webp',               organLabel: 'Tongue',
+    audio: 'Tasting — Tongue'
+  },
+  {
+    id: 'see',
+    actImg:   'Assets/Boy looking through a magnifying glass.png', actLabel:   'Seeing',
+    organImg: 'Assets/eyes.webp',                                  organLabel: 'Eyes',
+    audio: 'Seeing — Eyes'
+  },
+  {
+    id: 'touch',
+    actImg:   'Assets/Boy touching a teddy bear.png', actLabel:   'Touching',
+    organImg: 'Assets/hands.webp',                    organLabel: 'Hands',
+    audio: 'Touching — Hands'
+  },
+  {
+    id: 'hear',
+    actImg:   'Assets/Boy ringing a bell.png', actLabel:   'Hearing',
+    organImg: 'Assets/ear.png',                organLabel: 'Ear',
+    audio: 'Hearing — Ear'
+  },
+];
+
+/* Preload all images */
+PAIRS.forEach(p => { new Image().src = p.actImg; new Image().src = p.organImg; });
+
+/* ══════════════════════════════════════
+   STATE
+   ══════════════════════════════════════ */
+let anchorCard  = null;   // first card — stays face-up until matched or auto-revealed
+let matchedPairs = new Set();
+let wrongCount   = {};    // { pairId: attempts while that card is anchor }
+let locked       = false;
+let score        = 0;
+let muted        = false;
+
+/* ══════════════════════════════════════
+   AUDIO
+   ══════════════════════════════════════ */
+const sndWrong = new Audio('Assets/wrong.mp3');
+const sndClaps = new Audio('Assets/free_claps.mp3');
+
+function unlockAudio() {
+  [sndWrong, sndClaps].forEach(s => { s.play().catch(()=>{}); s.pause(); s.currentTime = 0; });
+  document.removeEventListener('pointerdown', unlockAudio);
+}
+document.addEventListener('pointerdown', unlockAudio);
+
+function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(()=>{}); }
+function playClaps() {
+  if (muted) return;
+  sndClaps.currentTime = 0; sndClaps.play().catch(()=>{});
+  setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 3000);
+}
+function speak(text) {
+  sndClaps.pause(); sndClaps.currentTime = 0;
+  if (!('speechSynthesis' in window) || muted) return;
+  window.speechSynthesis.cancel();
+  setTimeout(() => {
+    if (muted) return;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.0;
+    const vs = window.speechSynthesis.getVoices();
+    const v  = vs.find(v => v.lang.startsWith('en') && !v.name.includes('Google'))
+            || vs.find(v => v.lang.startsWith('en')) || vs[0];
+    if (v) u.voice = v;
+    window.speechSynthesis.speak(u);
+  }, 150);
+}
+window.speechSynthesis.getVoices();
+window.speechSynthesis.addEventListener('voiceschanged', () => window.speechSynthesis.getVoices());
+
+function toggleMute() {
+  muted = !muted;
+  document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+  if (muted) {
+    window.speechSynthesis?.cancel();
+    sndClaps.pause();
+  } else {
+    const txt = document.getElementById('instruction').textContent;
+    if (txt) speak(txt);
+  }
+}
+
+/* ══════════════════════════════════════
+   BUILD GRID
+   ══════════════════════════════════════ */
+function buildGrid() {
+  anchorCard = null; matchedPairs = new Set(); wrongCount = {}; locked = false; score = 0;
+  document.getElementById('score-val').textContent = 0;
+
+  const cards = [];
+  PAIRS.forEach(p => {
+    cards.push({ pairId: p.id, img: p.actImg,   label: p.actLabel,   audio: p.actLabel   });
+    cards.push({ pairId: p.id, img: p.organImg, label: p.organLabel, audio: p.organLabel });
+  });
+  shuffle(cards);
+
+  const grid = document.getElementById('card-grid');
+  grid.innerHTML = '';
+
+  cards.forEach((c, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.pairId  = c.pairId;
+    card.dataset.cardIdx = i;
+    card.dataset.audio   = c.audio;
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="card-back">
+          <div class="back-pattern">
+            ${Array(9).fill('<div class="back-dot"></div>').join('')}
+          </div>
+        </div>
+        <div class="card-front">
+          <img src="${c.img}" alt="${c.label}">
+          <div class="card-label">${c.label}</div>
+        </div>
+      </div>`;
+    card.addEventListener('click',    () => flipCard(card));
+    card.addEventListener('touchend', e  => { e.preventDefault(); flipCard(card); }, { passive: false });
+    grid.appendChild(card);
+  });
+
+  speak('Flip the cards and match each activity to its sense organ!');
+}
+
+/* ══════════════════════════════════════
+   FLIP LOGIC
+   ══════════════════════════════════════ */
+function flipCard(card) {
+  if (locked) return;
+  if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+  card.classList.remove('hint-glow');
+  card.classList.add('flipped');
+
+  if (!anchorCard) {
+    /* First card — becomes anchor, stays face-up */
+    anchorCard = card;
+  } else {
+    /* Second card — check against anchor */
+    locked = true;
+    const c2 = card;
+    setTimeout(() => checkMatch(c2), 900);
+  }
+}
+
+/* ══════════════════════════════════════
+   CHECK MATCH
+   ══════════════════════════════════════ */
+function checkMatch(c2) {
+  const c1  = anchorCard;
+  const pid = c1.dataset.pairId;
+
+  if (pid === c2.dataset.pairId) {
+    /* ── CORRECT ── */
+    c1.classList.remove('hint-glow');
+    c1.classList.add('matched');
+    c2.classList.add('matched');
+    score++;
+    matchedPairs.add(pid);
+    document.getElementById('score-val').textContent = score;
+    showToast('⭐ Match!', '#4CAF50');
+    anchorCard = null;
+    wrongCount[pid] = 0;
+    locked = false;
+    if (matchedPairs.size === PAIRS.length) { playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 600); setTimeout(showEnd, 3200); }
+
+  } else {
+    /* ── WRONG — flip c2 back, anchor (c1) stays face-up ── */
+    wrongCount[pid] = (wrongCount[pid] || 0) + 1;
+    c2.classList.add('wrong-anim');
+    play(sndWrong);
+    showToast('❌ Try again!', '#f44336');
+
+    setTimeout(() => {
+      c2.classList.remove('flipped', 'wrong-anim');
+      locked = false;
+
+      /* Hint glow on the correct partner of the anchor (not c2, not c1) */
+      const partner = Array.from(document.querySelectorAll(`.card[data-pair-id="${pid}"]`))
+                           .find(c => c !== c1 && !c.classList.contains('matched'));
+      if (partner) partner.classList.add('hint-glow');
+
+      /* Auto-reveal after 2nd wrong attempt on same anchor */
+      if (wrongCount[pid] >= 2 && !matchedPairs.has(pid)) {
+        setTimeout(() => autoMatch(pid), 600);
+      }
+    }, 900);
+  }
+}
+
+/* ══════════════════════════════════════
+   AUTO-MATCH (2nd wrong on same pair)
+   ══════════════════════════════════════ */
+function autoMatch(pairId) {
+  if (matchedPairs.has(pairId)) return;
+  locked = true;
+  const cards = Array.from(document.querySelectorAll(`.card[data-pair-id="${pairId}"]`))
+                     .filter(c => !c.classList.contains('matched'));
+  if (cards.length < 2) { locked = false; return; }
+
+  showToast('💡 Let me help!', '#FF9800');
+  cards.forEach(c => { c.classList.remove('hint-glow'); c.classList.add('flipped', 'auto-reveal'); });
+
+  setTimeout(() => {
+    cards.forEach(c => { c.classList.remove('auto-reveal'); c.classList.add('matched'); });
+    matchedPairs.add(pairId);
+    anchorCard = null;
+    wrongCount[pairId] = 0;
+    locked = false;
+    if (matchedPairs.size === PAIRS.length) setTimeout(showEnd, 1500);
+  }, 1600);
+}
+
+/* ══════════════════════════════════════
+   HELPERS
+   ══════════════════════════════════════ */
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function startGame() {
+  document.getElementById('intro-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display  = 'flex';
+  buildGrid();
+}
+
+function restartGame() {
+  window.speechSynthesis?.cancel();
+  document.getElementById('end-screen').style.display  = 'none';
+  document.getElementById('game-screen').style.display = 'flex';
+  buildGrid();
+}
+
+function showEnd() {
+  document.getElementById('game-screen').style.display = 'none';
+  document.getElementById('end-screen').style.display  = 'flex';
+  document.getElementById('final-score').textContent   = score;
+  document.getElementById('end-stars').textContent = score >= 5 ? '⭐⭐⭐' : score >= 3 ? '⭐⭐' : '⭐';
+  window.speechSynthesis?.cancel();
+  playClaps();
+  spawnConfetti();
+  setTimeout(spawnConfetti, 700);
+}
+
+let toastTimer;
+function showToast(msg, bg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.background = bg;
+  t.classList.add('show'); clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1400);
+}
+
+const CC = ['#FFD700','#FF6B6B','#4CAF50','#2196F3','#FF9800','#AB47BC','#26C6DA'];
+function spawnConfetti() {
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div'); el.className = 'confetti';
+      const sz = 6 + Math.random() * 9;
+      el.style.cssText = `left:${Math.random()*100}vw;top:-12px;width:${sz}px;height:${sz}px;background:${CC[Math.floor(Math.random()*CC.length)]};border-radius:${Math.random()>.4?'50%':'2px'};animation:cfFall ${1.4+Math.random()*1.8}s linear forwards;`;
+      document.body.appendChild(el); setTimeout(() => el.remove(), 3500);
+    }, i * 22);
+  }
+}
+if (!document.querySelector('#cf-style')) {
+  const s = document.createElement('style'); s.id = 'cf-style';
+  s.textContent = `@keyframes cfFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(540deg);opacity:0}}`;
+  document.head.appendChild(s);
+}
+</script>
+</body>
+</html>

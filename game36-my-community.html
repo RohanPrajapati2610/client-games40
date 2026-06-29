@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>My Community · LY2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', Arial, sans-serif;
+      background: linear-gradient(135deg, #fce4ec 0%, #e8f5e9 50%, #e3f2fd 100%);
+      height: 100vh; height: 100dvh;
+      display: flex; align-items: stretch; justify-content: center;
+      overflow: hidden; user-select: none; -webkit-user-select: none;
+    }
+
+    /* ── INTRO ── */
+    #intro-screen {
+      position: fixed; inset: 0;
+      background: linear-gradient(160deg, #4a148c, #7b1fa2, #ab47bc);
+      display: flex; align-items: center; justify-content: center;
+      border: 5px solid #FFD700; z-index: 200;
+    }
+    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; cursor: pointer; }
+    @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+    /* ── GAME SCREEN ── */
+    #game-screen {
+      display: none; flex-direction: column;
+      width: 100%; max-width: 860px; height: 100%;
+      padding: 14px 14px 70px; overflow-y: auto;
+    }
+
+    .hdr { display:flex; align-items:center; justify-content:space-between; background:white; border-radius:18px; padding:10px 18px; margin-bottom:12px; box-shadow:0 4px 14px rgba(0,0,0,0.1); }
+    .hdr-score { font-size:1.2em; font-weight:bold; color:#4CAF50; min-width:70px; }
+    .hdr-title { font-size:clamp(0.75em,2.5vw,1em); color:#6a0dad; font-weight:bold; text-align:center; }
+    .mute-btn { width:38px; height:38px; border:2px solid #ddd; border-radius:50%; background:white; font-size:1.1em; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+    .progress-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+    .progress-label { font-size:0.9em; color:#777; white-space:nowrap; }
+    .progress-bar-wrap { flex:1; height:10px; background:#e0e0e0; border-radius:5px; overflow:hidden; }
+    .progress-bar-fill { height:100%; border-radius:5px; background:linear-gradient(90deg,#4CAF50,#8BC34A); transition:width 0.5s ease; }
+
+    .question-txt { text-align:center; font-size:clamp(1em,3.5vw,1.2em); color:#333; font-weight:bold; margin-bottom:8px; padding:0 10px; line-height:1.4; }
+    .draw-tip { text-align:center; font-size:clamp(0.82em,2.5vw,0.95em); color:#888; margin-bottom:10px; }
+
+    /* ── SCENE CARD ── */
+    .scene-card {
+      background: white; border-radius: 24px; padding: 20px 16px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      margin-top: auto; margin-bottom: auto; width: 100%;
+    }
+
+    /* Helper image at top */
+    .helper-section { display:flex; flex-direction:column; align-items:center; gap:6px; }
+    .helper-section img { height: 160px; width: auto; object-fit: contain; }
+    .helper-name { font-size: 1.05em; font-weight: 800; color: #6a0dad; }
+
+    /* Tools row — canvas lives here */
+    .tools-section {
+      position: relative; width: 100%; max-width: 560px;
+      display: flex; touch-action: none;
+      border-radius: 16px; overflow: hidden;
+      border: 3px solid #e0e0e0;
+    }
+
+    .tool-wrap {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px; padding: 14px 10px;
+      background: #fafafa;
+    }
+    .tool-wrap:first-child { border-right: 2px solid #e0e0e0; }
+    .tool-wrap img { height: 100px; width: auto; object-fit: contain; }
+    .tool-wrap .tool-label { font-size: 0.78em; font-weight: 800; color: #555; text-align: center; }
+
+    /* Behavior mode — larger images, no helper shown above */
+    .tools-section.behavior-mode .tool-wrap img { height: 160px; width: 100%; object-fit: cover; border-radius: 8px; }
+    .tools-section.behavior-mode .tool-wrap { padding: 10px 8px; }
+    .helper-section.hidden { display: none; }
+
+    /* Canvas overlays the full tools-section */
+    #draw-canvas {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      cursor: crosshair; touch-action: none;
+    }
+
+    /* Hint guide ring */
+    #hint-guide {
+      position: absolute; border-radius: 50%;
+      border: 4px dashed #FFD700; pointer-events: none;
+      display: none;
+      animation: hintGlowAnim 0.8s ease-in-out infinite;
+      z-index: 10; transform: translate(-50%, -50%);
+    }
+    #hint-guide.show { display: block; }
+    @keyframes hintGlowAnim {
+      0%,100% { box-shadow: 0 0 10px 3px rgba(255,215,0,0.5); border-color:#FFD700; }
+      50%      { box-shadow: 0 0 24px 8px rgba(255,215,0,0.9); border-color:#FFC200; }
+    }
+    #hint-label {
+      display: none; position: absolute;
+      background: #FFD700; color: #333;
+      font-size: 0.82em; font-weight: bold;
+      padding: 5px 13px; border-radius: 20px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      white-space: nowrap; z-index: 20; pointer-events: none;
+      animation: arrowBounce 0.65s ease-in-out infinite;
+      transform: translateX(-50%);
+    }
+    #hint-label.show { display: block; }
+    @keyframes arrowBounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+    /* ── BOTTOM ── */
+    .bottom-row { display:flex; justify-content:center; position:fixed; bottom:16px; left:0; right:0; z-index:50; pointer-events:none; }
+    .btn-restart { pointer-events:all; background:linear-gradient(135deg,#FF9800,#F57C00); color:white; border:none; padding:12px 32px; border-radius:40px; font-size:1em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 5px 14px rgba(255,152,0,0.4); }
+
+    /* ── TOAST ── */
+    #toast { position:fixed; top:18%; left:50%; transform:translateX(-50%) scale(0.7); padding:14px 30px; border-radius:50px; font-size:1.5em; font-weight:bold; color:white; pointer-events:none; opacity:0; transition:opacity 0.2s,transform 0.2s; z-index:500; white-space:nowrap; box-shadow:0 8px 24px rgba(0,0,0,0.2); }
+    #toast.show { opacity:1; transform:translateX(-50%) scale(1); }
+
+    /* ── CONFETTI ── */
+    .confetti { position:fixed; pointer-events:none; z-index:9998; border-radius:2px; }
+
+    /* ── END SCREEN ── */
+    #end-screen { display:none; position:fixed; inset:0; background:linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc); flex-direction:column; align-items:center; justify-content:center; gap:16px; z-index:200; text-align:center; padding:30px; }
+    .end-trophy { font-size:4.5em; animation:trophySpin 1.5s ease-out; }
+    @keyframes trophySpin { from{transform:rotate(-20deg) scale(0)} 60%{transform:rotate(10deg) scale(1.1)} to{transform:rotate(0) scale(1)} }
+    .end-title  { color:#FFD700; font-size:clamp(1.5em,5vw,2.2em); font-weight:bold; text-shadow:0 3px 10px rgba(0,0,0,0.3); }
+    .end-sub    { color:rgba(255,255,255,0.9); font-size:1.1em; }
+    .end-score-box { background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.35); border-radius:20px; padding:16px 40px; color:white; font-size:1.8em; font-weight:bold; }
+    .end-stars  { font-size:2.2em; letter-spacing:4px; }
+    .btn-play-again { background:#FFD700; color:#333; border:none; padding:15px 45px; border-radius:40px; font-size:1.2em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,0.2); margin-top:8px; }
+
+    @media (max-width: 768px) {
+      #game-screen { padding: 10px 10px 70px; }
+      .scene-card { padding: 14px 10px; }
+      .helper-section img { height: 130px; }
+      .tool-wrap img { height: 80px; }
+      .tools-section.behavior-mode .tool-wrap img { height: 130px; }
+      .hdr-title { display: none; }
+    }
+    @media (max-width: 480px) {
+      .helper-section img { height: 100px; }
+      .tool-wrap img { height: 64px; }
+      .tools-section.behavior-mode .tool-wrap img { height: 110px; }
+      .tool-wrap { padding: 10px 6px; }
+      .tool-wrap .tool-label { font-size: 0.7em; }
+      .question-txt { font-size: 0.95em; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="intro-screen">
+  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onclick="startGame()" onerror="this.style.display='none'">
+</div>
+<div id="toast"></div>
+
+<div id="game-screen">
+  <div class="hdr">
+    <div class="hdr-score">⭐ <span id="score-val">0</span> / 8</div>
+    <div class="hdr-title">My Community</div>
+    <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
+  </div>
+  <div class="progress-row">
+    <span class="progress-label">Q <span id="q-num">1</span> / 8</span>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
+  </div>
+  <div class="question-txt" id="question-txt"></div>
+  <div class="draw-tip">✏️ Draw a circle around the correct tool!</div>
+
+  <div class="scene-card">
+    <!-- Helper (top) -->
+    <div class="helper-section">
+      <img id="helper-img" src="" alt="">
+      <div class="helper-name" id="helper-name"></div>
+    </div>
+
+    <!-- Tools row (canvas overlay here) -->
+    <div class="tools-section" id="tools-section">
+      <div class="tool-wrap" id="tool-left-wrap">
+        <img id="tool-left-img"  src="" alt="">
+        <div class="tool-label"  id="tool-left-label"></div>
+      </div>
+      <div class="tool-wrap" id="tool-right-wrap">
+        <img id="tool-right-img" src="" alt="">
+        <div class="tool-label"  id="tool-right-label"></div>
+      </div>
+      <canvas id="draw-canvas"></canvas>
+      <div id="hint-guide"></div>
+      <div id="hint-label">✏️ Circle here!</div>
+    </div>
+  </div>
+
+  <div class="bottom-row">
+    <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
+  </div>
+</div>
+
+<div id="end-screen">
+  <div class="end-trophy">🏆</div>
+  <div class="end-title">You have done a great job!</div>
+  <div class="end-sub">You completed all 8 questions!</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 8</div>
+  <div class="end-stars" id="end-stars"></div>
+  <button class="btn-play-again" onclick="restartGame()">▶ &nbsp;Play Again</button>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   QUESTIONS
+   helper   : image for the community helper (top)
+   leftImg  : image shown on the LEFT tool slot
+   rightImg : image shown on the RIGHT tool slot
+   leftLabel / rightLabel : captions below each tool
+   correct  : 'left' | 'right'  — which side is the correct answer
+   hintCx   : 0.25 for left tool, 0.75 for right tool (fraction of canvas width)
+   hintCy   : 0.5  (vertical center of the tools row)
+   ══════════════════════════════════════════════════════════ */
+const QUESTIONS = [
+  {
+    helperImg:   'Assets/teacher.png',
+    helperLabel: 'Teacher',
+    text:        'Circle the correct tool used by the Teacher!',
+    leftImg:     'Assets/fire-extinguiser.png',  leftLabel:  'Fire Extinguisher',
+    rightImg:    'Assets/blackboard.png',         rightLabel: 'Blackboard',
+    correct: 'right', hintCx: 0.75, hintCy: 0.5
+  },
+  {
+    helperImg:   'Assets/doctor.png',
+    helperLabel: 'Doctor',
+    text:        'Circle the correct tool used by the Doctor!',
+    leftImg:     'Assets/stescope.png',  leftLabel:  'Stethoscope',
+    rightImg:    'Assets/whistle.png',   rightLabel: 'Whistle',
+    correct: 'left', hintCx: 0.25, hintCy: 0.5
+  },
+  {
+    helperImg:   'Assets/police_officer.png',
+    helperLabel: 'Police Officer',
+    text:        'Circle the correct tool used by the Police Officer!',
+    leftImg:     'Assets/whistle.png',   leftLabel:  'Whistle',
+    rightImg:    'Assets/booksd.png',    rightLabel: 'Books',
+    correct: 'left', hintCx: 0.25, hintCy: 0.5
+  },
+  {
+    helperImg:   'Assets/firefighter.png',
+    helperLabel: 'Firefighter',
+    text:        'Circle the correct tool used by the Firefighter!',
+    leftImg:     'Assets/fire-extinguiser.png',    leftLabel:  'Fire Extinguisher',
+    rightImg:    'Assets/sweeing-machine.webp',     rightLabel: 'Sewing Machine',
+    correct: 'left', hintCx: 0.25, hintCy: 0.5
+  },
+  {
+    helperImg:   'Assets/chef.png',
+    helperLabel: 'Chef',
+    text:        'Circle the correct tool used by the Chef!',
+    leftImg:     'Assets/chef-cap.png',   leftLabel:  'Chef Hat',
+    rightImg:    'Assets/stescope.png',   rightLabel: 'Stethoscope',
+    correct: 'left', hintCx: 0.25, hintCy: 0.5
+  },
+  {
+    helperImg:   'Assets/farmer.png',
+    helperLabel: 'Farmer',
+    text:        'Circle the correct tool used by the Farmer!',
+    leftImg:     'Assets/watering-can.png', leftLabel:  'Watering Can',
+    rightImg:    'Assets/blackboard.png',   rightLabel: 'Blackboard',
+    correct: 'left', hintCx: 0.25, hintCy: 0.5
+  },
+
+  /* ── BEHAVIOR QUESTIONS (page 80) ── */
+  {
+    type:        'behavior',
+    text:        'Circle the correct behavior!',
+    leftImg:     'Assets/girl-littering.png',  leftLabel:  '',
+    rightImg:    'Assets/girl-recycling.png',  rightLabel: '',
+    correct: 'right', hintCx: 0.75, hintCy: 0.5
+  },
+  {
+    type:        'behavior',
+    text:        'Circle the correct behavior!',
+    leftImg:     'Assets/boy-hitting-dog.png', leftLabel:  '',
+    rightImg:    'Assets/boy-feeding-dog.png', rightLabel: '',
+    correct: 'right', hintCx: 0.75, hintCy: 0.5
+  },
+];
+
+/* ── STATE ── */
+let curQ = 0, score = 0, attempts = 0, answered = false, muted = false;
+let isDrawing = false, pathPts = [];
+
+/* ── AUDIO ── */
+const sndWrong = new Audio('Assets/wrong.mp3');
+const sndClaps = new Audio('Assets/free_claps.mp3');
+const sndCorrect = new Audio('Assets/correct.mp3');
+
+function unlockAudio() {
+  [sndWrong, sndClaps, sndCorrect].forEach(s => { s.play().catch(()=>{}); s.pause(); s.currentTime = 0; });
+  document.removeEventListener('pointerdown', unlockAudio);
+}
+document.addEventListener('pointerdown', unlockAudio);
+
+function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(()=>{}); }
+function playClaps() {
+  if (muted) return;
+  sndClaps.currentTime = 0; sndClaps.play().catch(()=>{});
+  setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 3000);
+}
+function speak(text) {
+  sndClaps.pause(); sndClaps.currentTime = 0;
+  if (!('speechSynthesis' in window) || muted) return;
+  window.speechSynthesis.cancel();
+  setTimeout(() => {
+    if (muted) return;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.0;
+    const vs = window.speechSynthesis.getVoices();
+    const v = vs.find(v => v.lang.startsWith('en') && !v.name.includes('Google'))
+           || vs.find(v => v.lang.startsWith('en')) || vs[0];
+    if (v) u.voice = v;
+    window.speechSynthesis.speak(u);
+  }, 150);
+}
+window.speechSynthesis.getVoices();
+window.speechSynthesis.addEventListener('voiceschanged', () => window.speechSynthesis.getVoices());
+
+function toggleMute() {
+  muted = !muted;
+  document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+  if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
+  else speak(QUESTIONS[curQ]?.text || '');
+}
+
+/* ── CANVAS ── */
+function cvs()    { return document.getElementById('draw-canvas'); }
+function getCtx() { return cvs().getContext('2d'); }
+
+function syncCanvas() {
+  const ts = document.getElementById('tools-section');
+  const c  = cvs();
+  c.width  = ts.offsetWidth;
+  c.height = ts.offsetHeight;
+}
+
+function clearCanvas() {
+  const c = cvs(); getCtx().clearRect(0, 0, c.width, c.height);
+}
+
+function setupCanvas() {
+  const c = cvs();
+  window.addEventListener('resize', () => { syncCanvas(); clearCanvas(); hideHint(); });
+  c.addEventListener('pointerdown',   onDown);
+  c.addEventListener('pointermove',   onMove);
+  c.addEventListener('pointerup',     onUp);
+  c.addEventListener('pointercancel', onUp);
+  c.addEventListener('pointerleave',  onUp);
+}
+
+function getXY(e) {
+  const r = cvs().getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+
+function onDown(e) {
+  if (answered) return;
+  e.preventDefault();
+  isDrawing = true; pathPts = [];
+  const pos = getXY(e);
+  pathPts.push(pos);
+  const ctx = getCtx(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y);
+  cvs().setPointerCapture(e.pointerId);
+}
+
+function onMove(e) {
+  if (!isDrawing || answered) return;
+  e.preventDefault();
+  const pos = getXY(e);
+  pathPts.push(pos);
+  const ctx = getCtx();
+  ctx.lineTo(pos.x, pos.y);
+  ctx.strokeStyle = 'rgba(60,160,80,0.85)';
+  ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.stroke(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y);
+}
+
+function onUp(e) {
+  if (!isDrawing) return;
+  isDrawing = false;
+  clearCanvas();
+  if (pathPts.length < 5) return;
+  evaluateDrawing();
+}
+
+/* ── EVALUATE DRAWING ── */
+function evaluateDrawing() {
+  if (pathPts.length < 8) return;
+
+  /* Minimum stroke length — reject short scribbles */
+  let len = 0;
+  for (let i = 1; i < pathPts.length; i++)
+    len += Math.hypot(pathPts[i].x - pathPts[i-1].x, pathPts[i].y - pathPts[i-1].y);
+  if (len < 60) return;
+
+  /* Centroid */
+  const cx = pathPts.reduce((s, p) => s + p.x, 0) / pathPts.length;
+  const cy = pathPts.reduce((s, p) => s + p.y, 0) / pathPts.length;
+
+  /* Angular coverage — must be ≥ 240° to count as a circle */
+  const angles = pathPts.map(p => Math.atan2(p.y - cy, p.x - cx));
+  const sorted = [...angles].sort((a, b) => a - b);
+  let maxGap = 0;
+  for (let i = 1; i < sorted.length; i++)
+    maxGap = Math.max(maxGap, sorted[i] - sorted[i-1]);
+  maxGap = Math.max(maxGap, sorted[0] + Math.PI * 2 - sorted[sorted.length - 1]);
+  if (maxGap > (120 * Math.PI / 180)) return; // not circular enough — ignore
+
+  /* Zone: left or right half of the canvas */
+  const zone = cx < cvs().width / 2 ? 'left' : 'right';
+
+  if (zone === QUESTIONS[curQ].correct) registerCorrect();
+  else                                   registerWrong();
+}
+
+/* ── CORRECT ── */
+function registerCorrect() {
+  answered = true; hideHint();
+  flashPath('#4CAF50', 1.0, 8);
+  if (attempts === 0) score++;
+  document.getElementById('score-val').textContent = score;
+  window.speechSynthesis?.cancel();
+  playClaps(); showToast('⭐ Correct!', '#4CAF50'); spawnConfetti();
+  setTimeout(() => { curQ++; loadQuestion(); }, 3000);
+}
+
+/* ── WRONG ── */
+function registerWrong() {
+  if (answered) return;
+  attempts++;
+  if (attempts === 1) {
+    flashPath('#f44336', 0.9, 7);
+    play(sndWrong); showToast('❌ Try again!', '#f44336');
+    setTimeout(() => { clearCanvas(); showHint(); }, 800);
+  } else {
+    answered = true;
+    flashPath('#f44336', 0.9, 7);
+    play(sndWrong); showToast('❌ Wrong!', '#f44336');
+    setTimeout(() => {
+      hideHint(); clearCanvas();
+      drawHintCircle('#4CAF50');
+      showToast('💡 Correct answer!', '#FF9800');
+      setTimeout(() => { curQ++; loadQuestion(); }, 3000);
+    }, 1000);
+  }
+}
+
+/* ── CANVAS DRAW HELPERS ── */
+function flashPath(color, alpha, width) {
+  const ctx = getCtx(); const c = cvs();
+  ctx.clearRect(0, 0, c.width, c.height);
+  if (!pathPts.length) return;
+  ctx.save();
+  ctx.globalAlpha = alpha; ctx.strokeStyle = color; ctx.lineWidth = width;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.shadowColor = color; ctx.shadowBlur = 10;
+  ctx.beginPath(); ctx.moveTo(pathPts[0].x, pathPts[0].y);
+  pathPts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.stroke(); ctx.restore();
+}
+
+function drawHintCircle(color) {
+  const q = QUESTIONS[curQ]; const c = cvs(); const ctx = getCtx();
+  const hx = q.hintCx * c.width;
+  const hy = q.hintCy * c.height;
+  const r  = Math.min(c.width * 0.38, c.height * 0.42);
+  ctx.save();
+  ctx.strokeStyle = color; ctx.lineWidth = 7;
+  ctx.globalAlpha = 0.9; ctx.shadowColor = color; ctx.shadowBlur = 14;
+  ctx.setLineDash(color === '#4CAF50' ? [] : [10, 6]);
+  ctx.beginPath(); ctx.arc(hx, hy, r, 0, Math.PI * 2);
+  ctx.stroke(); ctx.restore();
+}
+
+/* ── HINT RING ── */
+function showHint() {
+  const q  = QUESTIONS[curQ];
+  const ts = document.getElementById('tools-section');
+  const tW = ts.offsetWidth; const tH = ts.offsetHeight;
+  const r  = Math.min(tW * 0.38, tH * 0.42);
+  const px = q.hintCx * tW;
+  const py = q.hintCy * tH;
+
+  const guide = document.getElementById('hint-guide');
+  guide.style.width  = (r * 2) + 'px';
+  guide.style.height = (r * 2) + 'px';
+  guide.style.left   = px + 'px';
+  guide.style.top    = py + 'px';
+  guide.classList.add('show');
+
+  const label = document.getElementById('hint-label');
+  label.style.left = px + 'px';
+  label.style.top  = Math.max(6, py - r - 36) + 'px';
+  label.classList.add('show');
+}
+
+function hideHint() {
+  document.getElementById('hint-guide').classList.remove('show');
+  document.getElementById('hint-label').classList.remove('show');
+}
+
+/* ── LOAD QUESTION ── */
+function loadQuestion() {
+  if (curQ >= QUESTIONS.length) { showEnd(); return; }
+  answered = false; attempts = 0; pathPts = [];
+
+  const q = QUESTIONS[curQ];
+  document.getElementById('q-num').textContent     = curQ + 1;
+  document.getElementById('score-val').textContent = score;
+  document.getElementById('prog-bar').style.width  = (curQ / QUESTIONS.length * 100) + '%';
+  document.getElementById('question-txt').textContent = q.text;
+
+  const isBehavior = q.type === 'behavior';
+  const helperSection = document.querySelector('.helper-section');
+  const toolsSection  = document.getElementById('tools-section');
+
+  if (isBehavior) {
+    helperSection.classList.add('hidden');
+    toolsSection.classList.add('behavior-mode');
+  } else {
+    helperSection.classList.remove('hidden');
+    toolsSection.classList.remove('behavior-mode');
+    document.getElementById('helper-img').src          = q.helperImg;
+    document.getElementById('helper-name').textContent = q.helperLabel;
+  }
+
+  document.getElementById('tool-left-img').src             = q.leftImg;
+  document.getElementById('tool-left-label').textContent   = q.leftLabel;
+  document.getElementById('tool-right-img').src            = q.rightImg;
+  document.getElementById('tool-right-label').textContent  = q.rightLabel;
+
+  /* Sync canvas after images render */
+  requestAnimationFrame(() => { requestAnimationFrame(() => { syncCanvas(); clearCanvas(); hideHint(); }); });
+
+  speak(q.text);
+}
+
+/* ── LIFECYCLE ── */
+function startGame() {
+  document.getElementById('intro-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display  = 'flex';
+  curQ = 0; score = 0;
+  setupCanvas();
+  loadQuestion();
+}
+
+function restartGame() {
+  clearCanvas(); hideHint(); pathPts = [];
+  document.getElementById('end-screen').style.display  = 'none';
+  document.getElementById('game-screen').style.display = 'flex';
+  curQ = 0; score = 0;
+  loadQuestion();
+}
+
+/* ── END ── */
+function showEnd() {
+  document.getElementById('game-screen').style.display = 'none';
+  document.getElementById('end-screen').style.display  = 'flex';
+  document.getElementById('final-score').textContent   = score;
+  document.getElementById('end-stars').textContent = score >= 8 ? '⭐⭐⭐' : score >= 5 ? '⭐⭐' : '⭐';
+  playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 800);
+}
+
+/* ── TOAST ── */
+let toastTimer;
+function showToast(msg, bg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.background = bg;
+  t.classList.add('show'); clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1400);
+}
+
+/* ── CONFETTI ── */
+const CC = ['#FFD700','#FF6B6B','#4CAF50','#2196F3','#FF9800','#AB47BC','#26C6DA'];
+function spawnConfetti() {
+  for (let i = 0; i < 70; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div'); el.className = 'confetti';
+      const sz = 6 + Math.random() * 9;
+      el.style.cssText = `left:${Math.random()*100}vw;top:-12px;width:${sz}px;height:${sz}px;background:${CC[Math.floor(Math.random()*CC.length)]};border-radius:${Math.random()>.4?'50%':'2px'};animation:cfFall ${1.4+Math.random()*1.8}s linear forwards;`;
+      document.body.appendChild(el); setTimeout(() => el.remove(), 3500);
+    }, i * 22);
+  }
+}
+if (!document.querySelector('#cf-style')) {
+  const s = document.createElement('style'); s.id = 'cf-style';
+  s.textContent = `@keyframes cfFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(540deg);opacity:0}}`;
+  document.head.appendChild(s);
+}
+</script>
+</body>
+</html>
