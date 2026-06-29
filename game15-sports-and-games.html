@@ -4,21 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Sports and Games · LY2</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      font-family: 'Nunito', 'Trebuchet MS', Arial, sans-serif;
+      font-family: 'Nunito', Arial, sans-serif;
       background: linear-gradient(135deg, #fce4ec 0%, #e8f5e9 50%, #e3f2fd 100%);
       height: 100vh; height: 100dvh;
       display: flex; align-items: stretch; justify-content: center;
       overflow: hidden; user-select: none; -webkit-user-select: none;
     }
-
     #intro-screen {
       position: fixed; inset: 0;
       background: linear-gradient(160deg, #4a148c, #7b1fa2, #ab47bc);
@@ -28,17 +23,9 @@
     #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; }
     @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 
-    #game-screen {
-      display: none; flex-direction: column;
-      width: 100%; max-width: 860px;
-      height: 100%; padding: 14px 14px 80px; overflow-y: auto;
-    }
+    #game-screen { display: none; flex-direction: column; width: 100%; max-width: 860px; height: 100%; padding: 14px 14px 80px; overflow-y: auto; }
 
-    .hdr {
-      display: flex; align-items: center; justify-content: space-between;
-      background: white; border-radius: 18px; padding: 10px 18px;
-      margin-bottom: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); flex-shrink: 0;
-    }
+    .hdr { display: flex; align-items: center; justify-content: space-between; background: white; border-radius: 18px; padding: 10px 18px; margin-bottom: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); flex-shrink: 0; }
     .hdr-score { font-size: 1.2em; font-weight: bold; color: #4CAF50; min-width: 70px; }
     .hdr-title { font-size: clamp(0.75em,2.5vw,1em); color: #6a0dad; font-weight: bold; text-align: center; }
     .mute-btn { width: 38px; height: 38px; border: 2px solid #ddd; border-radius: 50%; background: white; font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; }
@@ -48,42 +35,21 @@
     .progress-bar-wrap { flex: 1; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; }
     .progress-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg,#4CAF50,#8BC34A); transition: width 0.5s ease; }
 
-    .instruction {
-      text-align: center; font-size: clamp(0.95em,3vw,1.1em);
-      color: #333; font-weight: 700; margin-bottom: 10px;
-      padding: 0 4px; flex-shrink: 0; line-height: 1.4;
-    }
+    .instruction { text-align: center; font-size: clamp(0.95em,3vw,1.1em); color: #333; font-weight: 700; margin-bottom: 10px; padding: 0 4px; flex-shrink: 0; line-height: 1.4; }
 
-    .q-card {
-      background: white; border-radius: 24px; padding: 20px 14px;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.1);
-      display: flex; flex-direction: column; align-items: center; gap: 16px;
-      margin-top: auto; margin-bottom: auto; flex-shrink: 0; width: 100%;
-    }
+    .q-card { background: white; border-radius: 24px; padding: 20px 14px; box-shadow: 0 6px 24px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; gap: 16px; margin-top: auto; margin-bottom: auto; flex-shrink: 0; width: 100%; }
 
     /* ── MATCH ROUND ── */
     .match-wrapper { position: relative; width: 100%; }
-    .columns-row { display: flex; align-items: stretch; gap: 0; width: 100%; }
+    .columns-row { display: flex; align-items: stretch; width: 100%; }
     .left-col, .right-col { flex: 1; display: flex; flex-direction: column; gap: 10px; align-items: center; }
     .middle-gap { width: 60px; flex-shrink: 0; }
-
-    .match-item {
-      border-radius: 14px; border: 3px solid #e0e0e0;
-      background: #fafafa; cursor: pointer;
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
-      overflow: hidden; position: relative; width: 130px;
-    }
-    .match-item img { width: 100%; height: 80px; object-fit: contain; display: block; border-radius: 11px; background: #f5f5f5; padding: 6px; }
+    .match-item { border-radius: 14px; border: 3px solid #e0e0e0; background: #fafafa; cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s; overflow: hidden; position: relative; width: 130px; }
+    .match-item img { width: 100%; height: 80px; object-fit: contain; display: block; background: #f5f5f5; padding: 6px; }
     .match-item .item-label { text-align: center; font-size: 0.72em; font-weight: 800; color: #555; padding: 3px 4px 5px; }
-
-    .match-item::after {
-      content: ''; position: absolute;
-      width: 12px; height: 12px; background: #bbb; border-radius: 50%;
-      top: 50%; transform: translateY(-50%);
-    }
+    .match-item::after { content: ''; position: absolute; width: 12px; height: 12px; background: #bbb; border-radius: 50%; top: 50%; transform: translateY(-50%); }
     .left-col .match-item::after  { right: -8px; }
     .right-col .match-item::after { left: -8px; }
-
     .match-item.selected { border-color: #FFD700; box-shadow: 0 0 0 3px rgba(255,215,0,0.5); }
     .match-item.selected::after { background: #FFD700; }
     .match-item.matched { border-color: #4CAF50; box-shadow: 0 0 0 3px rgba(76,175,80,0.3); cursor: default; }
@@ -91,140 +57,74 @@
     .match-item.matched .item-label { color: #2e7d32; }
     .match-item.wrong-anim { animation: shakeItem 0.4s ease; }
     .match-item.hint-anim { border-color: #FF9800; box-shadow: 0 0 0 4px rgba(255,152,0,0.4); animation: hintPulse 1s ease-in-out infinite; }
-
     @keyframes shakeItem { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
     @keyframes hintPulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,152,0,0.5)} 50%{box-shadow:0 0 0 10px rgba(255,152,0,0)} }
-
     #lines-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
 
     /* ── COLORING ROUND ── */
-    .color-items-grid {
-      display: flex; gap: 14px; justify-content: center;
-      align-items: flex-start; flex-wrap: wrap; width: 100%;
-    }
+    .color-items-grid { display: flex; gap: 14px; justify-content: center; align-items: flex-start; flex-wrap: wrap; width: 100%; }
 
     .color-item {
-      border-radius: 16px; border: 3px solid #e0e0e0;
-      background: #fafafa; cursor: pointer;
-      transition: border-color 0.2s, background 0.35s, box-shadow 0.2s;
-      overflow: hidden; width: 120px; min-height: 148px;
-      display: flex; flex-direction: column; align-items: center;
+      border-radius: 16px; border: 3px solid #e0e0e0; background: white;
+      cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s;
+      width: 120px; display: flex; flex-direction: column; align-items: center;
       padding: 10px 8px 8px; gap: 6px; touch-action: manipulation;
     }
     .color-item:active:not(.colored) { transform: scale(0.95); }
+    .color-item.colored { border-color: #4CAF50; box-shadow: 0 0 0 3px rgba(76,175,80,0.25); cursor: default; }
 
-    .item-visual {
-      width: 84px; height: 72px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.6em; border-radius: 10px;
-      background: #f0f0f0; overflow: hidden; flex-shrink: 0;
-    }
-    .item-visual img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+    .item-svg-wrap { width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; }
+    .item-svg-wrap svg { width: 90px; height: 90px; }
 
-    .item-name {
-      font-size: 0.73em; font-weight: 800; color: #333;
-      text-align: center; line-height: 1.2;
-    }
-    .item-color-tag {
-      font-size: 0.68em; font-weight: 700; color: #888;
-      display: flex; align-items: center; gap: 4px;
-    }
-    .color-chip {
-      width: 10px; height: 10px; border-radius: 50%;
-      display: inline-block; border: 1px solid rgba(0,0,0,0.2); flex-shrink: 0;
-    }
+    .item-name { font-size: 0.73em; font-weight: 800; color: #333; text-align: center; line-height: 1.2; }
+    .item-color-tag { font-size: 0.68em; font-weight: 700; color: #888; display: flex; align-items: center; gap: 4px; }
+    .color-chip { width: 10px; height: 10px; border-radius: 50%; display: inline-block; border: 1px solid rgba(0,0,0,0.2); flex-shrink: 0; }
 
-    .color-item.colored { cursor: default; }
-    .color-item.colored .item-visual { background: rgba(255,255,255,0.15); }
-
-    .color-item.hint-item {
-      border: 3px dashed #FFD700 !important;
-      animation: colorItemHint 0.8s ease-in-out infinite;
-    }
+    .color-item.hint-item { border: 3px dashed #FFD700 !important; animation: colorItemHint 0.8s ease-in-out infinite; }
     @keyframes colorItemHint {
       0%,100% { box-shadow: 0 0 8px 2px rgba(255,215,0,0.4); }
       50%      { box-shadow: 0 0 22px 8px rgba(255,215,0,0.9); }
     }
     .color-item.wrong-anim { animation: shakeItem 0.4s ease; }
 
-    /* Color swatches */
     .swatch-tray { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-    .color-swatch {
-      border-radius: 50%; border: 4px solid transparent; cursor: pointer;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.25);
-      transition: transform 0.15s, border-color 0.15s, box-shadow 0.2s;
-      touch-action: manipulation;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.68em; font-weight: 800;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-    }
+    .color-swatch { border-radius: 50%; border: 4px solid transparent; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.25); transition: transform 0.15s, border-color 0.15s; touch-action: manipulation; display: flex; align-items: center; justify-content: center; font-size: 0.68em; font-weight: 800; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
     .color-swatch:active { transform: scale(0.9); }
     .color-swatch.selected { border-color: #222 !important; transform: scale(1.2); box-shadow: 0 0 0 4px rgba(0,0,0,0.15) !important; }
 
     /* ── SHARED ── */
     .round-badge { font-size: 0.82em; font-weight: 800; color: #7b1fa2; background: #f3e5f5; border-radius: 20px; padding: 4px 14px; }
+    .btn-restart { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg,#FF9800,#F57C00); color: white; border: none; border-radius: 50px; padding: 14px 36px; font-size: 1.05em; font-family: inherit; font-weight: 800; cursor: pointer; box-shadow: 0 4px 16px rgba(255,152,0,0.4); z-index: 50; white-space: nowrap; }
 
-    .btn-restart {
-      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
-      background: linear-gradient(135deg,#FF9800,#F57C00);
-      color: white; border: none; border-radius: 50px;
-      padding: 14px 36px; font-size: 1.05em; font-family: inherit;
-      font-weight: 800; cursor: pointer;
-      box-shadow: 0 4px 16px rgba(255,152,0,0.4); z-index: 50; white-space: nowrap;
-    }
-
-    #toast {
-      position: fixed; top: 20%; left: 50%;
-      transform: translateX(-50%) scale(0);
-      color: white; padding: 14px 28px; border-radius: 50px;
-      font-size: 1.4em; font-weight: 800;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.25); z-index: 100;
-      transition: transform 0.2s, opacity 0.2s;
-      opacity: 0; pointer-events: none; white-space: nowrap;
-    }
+    #toast { position: fixed; top: 20%; left: 50%; transform: translateX(-50%) scale(0); color: white; padding: 14px 28px; border-radius: 50px; font-size: 1.4em; font-weight: 800; box-shadow: 0 6px 24px rgba(0,0,0,0.25); z-index: 100; transition: transform 0.2s, opacity 0.2s; opacity: 0; pointer-events: none; white-space: nowrap; }
     #toast.show { transform: translateX(-50%) scale(1); opacity: 1; }
 
-    .confetti-piece {
-      position: fixed; top: -10px; pointer-events: none; z-index: 999;
-      animation: confettiFall linear forwards;
-    }
+    .confetti-piece { position: fixed; top: -10px; pointer-events: none; z-index: 999; animation: confettiFall linear forwards; }
     @keyframes confettiFall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
 
-    #end-screen {
-      display: none; position: fixed; inset: 0;
-      background: linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc);
-      flex-direction: column; align-items: center; justify-content: center;
-      gap: 18px; z-index: 150; padding: 30px;
-    }
+    #end-screen { display: none; position: fixed; inset: 0; background: linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc); flex-direction: column; align-items: center; justify-content: center; gap: 18px; z-index: 150; padding: 30px; }
     .end-trophy { font-size: 4.5em; animation: trophySpin 1.5s ease-out; }
     @keyframes trophySpin { from{transform:rotate(-20deg) scale(0)} 60%{transform:rotate(10deg) scale(1.1)} to{transform:rotate(0deg) scale(1)} }
-    .end-title { color: #FFD700; font-size: clamp(1.5em,5vw,2.2em); font-weight: bold; text-shadow: 0 3px 10px rgba(0,0,0,0.3); text-align: center; }
-    .end-sub   { color: rgba(255,255,255,0.9); font-size: 1.1em; text-align: center; }
+    .end-title  { color: #FFD700; font-size: clamp(1.5em,5vw,2.2em); font-weight: bold; text-shadow: 0 3px 10px rgba(0,0,0,0.3); text-align: center; }
+    .end-sub    { color: rgba(255,255,255,0.9); font-size: 1.1em; text-align: center; }
     .end-score-box { background: rgba(255,255,255,0.15); border-radius: 16px; padding: 12px 28px; color: white; font-size: 1.4em; font-weight: bold; }
-    .end-stars { font-size: 2.2em; letter-spacing: 4px; }
+    .end-stars  { font-size: 2.2em; letter-spacing: 4px; }
     .btn-play-again { background: #FFD700; color: #333; border: none; border-radius: 50px; padding: 14px 36px; font-size: 1.1em; font-weight: 800; font-family: inherit; cursor: pointer; box-shadow: 0 4px 16px rgba(255,215,0,0.5); }
 
     @media (max-width: 768px) {
       #game-screen { padding: 10px 10px 76px; }
       .q-card { padding: 14px 10px; gap: 12px; }
-      .match-item { width: 110px; }
-      .match-item img { height: 68px; padding: 4px; }
-      .middle-gap { width: 44px; }
-      .hdr-title { display: none; }
-      .color-item { width: 100px; }
-      .item-visual { width: 70px; height: 62px; font-size: 2.2em; }
+      .match-item { width: 110px; } .match-item img { height: 68px; }
+      .middle-gap { width: 44px; } .hdr-title { display: none; }
+      .color-item { width: 100px; } .item-svg-wrap, .item-svg-wrap svg { width: 76px; height: 76px; }
     }
     @media (max-width: 480px) {
-      .match-item { width: 90px; }
-      .match-item img { height: 56px; padding: 3px; }
+      .match-item { width: 90px; } .match-item img { height: 56px; }
       .middle-gap { width: 36px; }
-      .match-item .item-label { font-size: 0.65em; padding: 2px 2px 3px; }
       .match-item::after { width: 10px; height: 10px; }
-      .left-col .match-item::after  { right: -6px; }
-      .right-col .match-item::after { left: -6px; }
-      .color-item { width: 88px; min-height: 130px; }
-      .item-visual { width: 62px; height: 54px; font-size: 1.9em; }
-      .item-name { font-size: 0.65em; }
+      .left-col .match-item::after { right: -6px; } .right-col .match-item::after { left: -6px; }
+      .color-item { width: 86px; } .item-svg-wrap, .item-svg-wrap svg { width: 64px; height: 64px; }
+      .item-name { font-size: 0.63em; }
     }
   </style>
 </head>
@@ -233,7 +133,6 @@
 <div id="intro-screen" onclick="startGame()">
   <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onerror="this.style.display='none'">
 </div>
-
 <div id="toast"></div>
 
 <div id="game-screen">
@@ -242,18 +141,12 @@
     <div class="hdr-title">Sports and Games</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">🔊</button>
   </div>
-
   <div class="progress-row">
     <span class="progress-label">Round <span id="round-num">1</span> / 4</span>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar-fill" id="prog-bar" style="width:0%"></div>
-    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
-
   <div class="instruction" id="instruction-txt"></div>
-
   <div class="q-card" id="q-card"></div>
-
   <button class="btn-restart" onclick="restartGame()">🔄 &nbsp;Restart</button>
 </div>
 
@@ -267,6 +160,84 @@
 </div>
 
 <script>
+/* ── SVG SHAPES (coloring-book outlines, black border / white fill) ── */
+const SVG = {
+  bat: `<svg viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">
+    <rect class="fillable" x="16" y="4" width="68" height="88" rx="12" fill="white" stroke="#333" stroke-width="3.5"/>
+    <rect class="fillable" x="37" y="88" width="26" height="40" rx="5" fill="white" stroke="#333" stroke-width="3.5"/>
+    <line x1="37" y1="98"  x2="63" y2="98"  stroke="#bbb" stroke-width="2"/>
+    <line x1="37" y1="108" x2="63" y2="108" stroke="#bbb" stroke-width="2"/>
+    <line x1="37" y1="118" x2="63" y2="118" stroke="#bbb" stroke-width="2"/>
+  </svg>`,
+
+  ball: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle class="fillable" cx="50" cy="50" r="44" fill="white" stroke="#333" stroke-width="3.5"/>
+    <path d="M50,6 Q26,20,22,50 Q22,80,50,94" fill="none" stroke="#666" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M50,6 Q74,20,78,50 Q78,80,50,94" fill="none" stroke="#666" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>`,
+
+  stumps: `<svg viewBox="0 0 110 125" xmlns="http://www.w3.org/2000/svg">
+    <rect class="fillable" x="10" y="28" width="16" height="88" rx="4" fill="white" stroke="#333" stroke-width="3"/>
+    <rect class="fillable" x="47" y="28" width="16" height="88" rx="4" fill="white" stroke="#333" stroke-width="3"/>
+    <rect class="fillable" x="84" y="28" width="16" height="88" rx="4" fill="white" stroke="#333" stroke-width="3"/>
+    <rect class="fillable" x="22" y="17" width="30" height="13" rx="4" fill="white" stroke="#333" stroke-width="2.5"/>
+    <rect class="fillable" x="58" y="17" width="30" height="13" rx="4" fill="white" stroke="#333" stroke-width="2.5"/>
+  </svg>`,
+
+  board: `<svg viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg">
+    <rect class="fillable" x="5" y="5" width="100" height="100" rx="8" fill="white" stroke="#333" stroke-width="3.5"/>
+    <rect x="16" y="16" width="78" height="78" rx="4" fill="none" stroke="#777" stroke-width="2"/>
+    <circle cx="55" cy="55" r="24" fill="none" stroke="#777" stroke-width="2"/>
+    <circle cx="55" cy="55" r="6"  fill="none" stroke="#777" stroke-width="2"/>
+    <circle cx="22" cy="22" r="7" fill="none" stroke="#999" stroke-width="1.5"/>
+    <circle cx="88" cy="22" r="7" fill="none" stroke="#999" stroke-width="1.5"/>
+    <circle cx="22" cy="88" r="7" fill="none" stroke="#999" stroke-width="1.5"/>
+    <circle cx="88" cy="88" r="7" fill="none" stroke="#999" stroke-width="1.5"/>
+  </svg>`,
+
+  striker: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle class="fillable" cx="50" cy="50" r="42" fill="white" stroke="#333" stroke-width="3.5"/>
+    <circle cx="50" cy="50" r="20" fill="none" stroke="#777" stroke-width="2"/>
+    <circle cx="50" cy="50" r="5"  fill="none" stroke="#777" stroke-width="2"/>
+  </svg>`,
+
+  piece: `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+    <circle class="fillable" cx="40" cy="40" r="34" fill="white" stroke="#333" stroke-width="3.5"/>
+    <circle cx="40" cy="40" r="12" fill="none" stroke="#777" stroke-width="2"/>
+  </svg>`,
+
+  football: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle class="fillable" cx="50" cy="50" r="44" fill="white" stroke="#333" stroke-width="3.5"/>
+    <polygon points="50,26 63,36 58,51 42,51 37,36" fill="none" stroke="#555" stroke-width="2.5"/>
+    <line x1="37" y1="36" x2="20" y2="42" stroke="#555" stroke-width="2"/>
+    <line x1="63" y1="36" x2="80" y2="42" stroke="#555" stroke-width="2"/>
+    <line x1="42" y1="51" x2="35" y2="70" stroke="#555" stroke-width="2"/>
+    <line x1="58" y1="51" x2="65" y2="70" stroke="#555" stroke-width="2"/>
+    <line x1="50" y1="26" x2="50" y2="6"  stroke="#555" stroke-width="2"/>
+  </svg>`,
+
+  goal: `<svg viewBox="0 0 130 105" xmlns="http://www.w3.org/2000/svg">
+    <rect class="fillable" x="8"   y="6" width="15" height="80" rx="4" fill="white" stroke="#333" stroke-width="3"/>
+    <rect class="fillable" x="107" y="6" width="15" height="80" rx="4" fill="white" stroke="#333" stroke-width="3"/>
+    <rect class="fillable" x="8"   y="6" width="114" height="16" rx="4" fill="white" stroke="#333" stroke-width="3"/>
+    <line x1="23" y1="28" x2="107" y2="28" stroke="#ccc" stroke-width="1.5"/>
+    <line x1="23" y1="44" x2="107" y2="44" stroke="#ccc" stroke-width="1.5"/>
+    <line x1="23" y1="60" x2="107" y2="60" stroke="#ccc" stroke-width="1.5"/>
+    <line x1="23" y1="76" x2="107" y2="76" stroke="#ccc" stroke-width="1.5"/>
+    <line x1="40" y1="22" x2="40"  y2="86" stroke="#ccc" stroke-width="1.5"/>
+    <line x1="60" y1="22" x2="60"  y2="86" stroke="#ccc" stroke-width="1.5"/>
+    <line x1="80" y1="22" x2="80"  y2="86" stroke="#ccc" stroke-width="1.5"/>
+    <line x1="100" y1="22" x2="100" y2="86" stroke="#ccc" stroke-width="1.5"/>
+  </svg>`,
+
+  boots: `<svg viewBox="0 0 130 100" xmlns="http://www.w3.org/2000/svg">
+    <path class="fillable" d="M18,8 L18,64 Q18,83,40,86 L108,86 Q120,86,120,74 L120,62 Q120,50,106,50 L66,50 L66,8 Z" fill="white" stroke="#333" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+    <line x1="22" y1="22" x2="62" y2="22" stroke="#aaa" stroke-width="2.5"/>
+    <line x1="22" y1="33" x2="62" y2="33" stroke="#aaa" stroke-width="2.5"/>
+    <line x1="22" y1="44" x2="62" y2="44" stroke="#aaa" stroke-width="2.5"/>
+  </svg>`,
+};
+
 /* ── DATA ── */
 const PAIRS = [
   { id:'cricket',  leftImg:'Assets/cricket-ground.jpg',    leftLabel:'Cricket',  rightImg:'Assets/cricket-bat-clipart.png', rightLabel:'Cricket Bat' },
@@ -276,30 +247,27 @@ const PAIRS = [
 
 const COLORING_ROUNDS = [
   {
-    sport: 'Cricket',
-    instruction: 'Pick a colour and tap the matching cricket item!',
+    sport: 'Cricket', instruction: 'Pick a colour and fill in the cricket item!',
     items: [
-      { id:'bat',    img:'Assets/cricket-bat-clipart.png', emoji:'',   name:'Cricket Bat',  color:'#795548', colorLabel:'Brown',  textColor:'#fff' },
-      { id:'ball',   img:'Assets/cricket-ball.png',        emoji:'',   name:'Cricket Ball', color:'#e53935', colorLabel:'Red',    textColor:'#fff' },
-      { id:'stumps', img:'',                               emoji:'🟡', name:'Stumps',       color:'#FDD835', colorLabel:'Yellow', textColor:'#333' },
+      { id:'bat',    svgKey:'bat',      name:'Cricket Bat',  color:'#795548', colorLabel:'Brown',  textColor:'#fff' },
+      { id:'ball',   svgKey:'ball',     name:'Cricket Ball', color:'#e53935', colorLabel:'Red',    textColor:'#fff' },
+      { id:'stumps', svgKey:'stumps',   name:'Stumps',       color:'#F9A825', colorLabel:'Yellow', textColor:'#333' },
     ]
   },
   {
-    sport: 'Carrom',
-    instruction: 'Pick a colour and tap the matching carrom item!',
+    sport: 'Carrom', instruction: 'Pick a colour and fill in the carrom item!',
     items: [
-      { id:'board',   img:'Assets/carrom%20board.jpg', emoji:'',   name:'Carrom Board', color:'#795548', colorLabel:'Brown', textColor:'#fff' },
-      { id:'striker', img:'Assets/striker.jpg',        emoji:'',   name:'Striker',      color:'#1E88E5', colorLabel:'Blue',  textColor:'#fff' },
-      { id:'piece',   img:'',                          emoji:'⚫', name:'Carrom Piece', color:'#37474F', colorLabel:'Black', textColor:'#fff' },
+      { id:'board',   svgKey:'board',   name:'Carrom Board', color:'#795548', colorLabel:'Brown', textColor:'#fff' },
+      { id:'striker', svgKey:'striker', name:'Striker',      color:'#1E88E5', colorLabel:'Blue',  textColor:'#fff' },
+      { id:'piece',   svgKey:'piece',   name:'Carrom Piece', color:'#37474F', colorLabel:'Black', textColor:'#fff' },
     ]
   },
   {
-    sport: 'Football',
-    instruction: 'Pick a colour and tap the matching football item!',
+    sport: 'Football', instruction: 'Pick a colour and fill in the football item!',
     items: [
-      { id:'football', img:'Assets/football.png', emoji:'',   name:'Football',       color:'#37474F', colorLabel:'Black',  textColor:'#fff' },
-      { id:'goal',     img:'',                    emoji:'🥅', name:'Goal Post',      color:'#FF6D00', colorLabel:'Orange', textColor:'#fff' },
-      { id:'boots',    img:'',                    emoji:'👟', name:'Football Boots', color:'#1E88E5', colorLabel:'Blue',   textColor:'#fff' },
+      { id:'football', svgKey:'football', name:'Football',       color:'#37474F', colorLabel:'Black',  textColor:'#fff' },
+      { id:'goal',     svgKey:'goal',     name:'Goal Post',      color:'#FF6D00', colorLabel:'Orange', textColor:'#fff' },
+      { id:'boots',    svgKey:'boots',    name:'Football Boots', color:'#1E88E5', colorLabel:'Blue',   textColor:'#fff' },
     ]
   },
 ];
@@ -307,397 +275,292 @@ const COLORING_ROUNDS = [
 const TOTAL_ROUNDS = 4;
 
 /* ── STATE ── */
-let currentRound = 0, score = 0, muted = false;
-let currentInstruction = '';
-
-/* Match state */
+let currentRound = 0, score = 0, muted = false, currentInstruction = '';
 let selectedLeftId = null, matched = new Set(), attempts = {}, busy = false;
-
-/* Coloring state */
 let coloredItems = {}, selectedColor = null, wrongColor = {};
 
 /* ── AUDIO ── */
 const sndWrong = new Audio('Assets/wrong.mp3');
 const sndClaps = new Audio('Assets/free_claps.mp3');
-
-function unlockAudio() {
-  [sndWrong, sndClaps].forEach(s => { s.play().catch(()=>{}); s.pause(); s.currentTime = 0; });
-  document.removeEventListener('pointerdown', unlockAudio);
-}
+function unlockAudio() { [sndWrong,sndClaps].forEach(s=>{s.play().catch(()=>{});s.pause();s.currentTime=0;}); document.removeEventListener('pointerdown',unlockAudio); }
 document.addEventListener('pointerdown', unlockAudio);
-
-function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(() => {}); }
-
-function playClaps() {
-  if (muted) return;
-  sndClaps.currentTime = 0; sndClaps.play().catch(() => {});
-  setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 3000);
-}
-
+function play(s) { if(muted)return; s.currentTime=0; s.play().catch(()=>{}); }
+function playClaps() { if(muted)return; sndClaps.currentTime=0; sndClaps.play().catch(()=>{}); setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;},3000); }
 function speak(text) {
-  sndClaps.pause(); sndClaps.currentTime = 0;
-  if (!('speechSynthesis' in window) || muted) return;
+  sndClaps.pause(); sndClaps.currentTime=0;
+  if(!('speechSynthesis' in window)||muted) return;
   window.speechSynthesis.cancel();
-  setTimeout(() => {
-    if (muted) return;
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.0;
-    const voices = window.speechSynthesis.getVoices();
-    const v = voices.find(v => v.lang.startsWith('en') && !v.name.includes('Google'))
-           || voices.find(v => v.lang.startsWith('en')) || voices[0];
-    if (v) u.voice = v;
+  setTimeout(()=>{
+    if(muted) return;
+    const u=new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=0.7; u.pitch=1.0;
+    const voices=window.speechSynthesis.getVoices();
+    const v=voices.find(v=>v.lang.startsWith('en')&&!v.name.includes('Google'))||voices.find(v=>v.lang.startsWith('en'))||voices[0];
+    if(v) u.voice=v;
     window.speechSynthesis.speak(u);
-  }, 150);
+  },150);
 }
 window.speechSynthesis.getVoices();
-window.speechSynthesis.addEventListener('voiceschanged', () => window.speechSynthesis.getVoices());
+window.speechSynthesis.addEventListener('voiceschanged',()=>window.speechSynthesis.getVoices());
 
 function toggleMute() {
-  muted = !muted;
-  document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
-  if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
-  else { if (currentInstruction) speak(currentInstruction); }
+  muted=!muted;
+  document.getElementById('mute-btn').textContent=muted?'🔇':'🔊';
+  if(muted){window.speechSynthesis?.cancel();sndClaps.pause();}
+  else if(currentInstruction) speak(currentInstruction);
 }
 
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+function shuffle(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
 /* ── ROUND DISPATCHER ── */
-function buildRound() {
-  if (currentRound === 0) buildMatchRound();
-  else buildColoringRound(currentRound - 1);
-}
+function buildRound() { currentRound===0 ? buildMatchRound() : buildColoringRound(currentRound-1); }
 
 /* ── MATCH ROUND ── */
 function buildMatchRound() {
-  matched = new Set(); attempts = {}; selectedLeftId = null; busy = false;
-  currentInstruction = 'Tap a sport, then tap its matching equipment!';
-
+  matched=new Set(); attempts={}; selectedLeftId=null; busy=false;
+  currentInstruction='Tap a sport, then tap its matching equipment!';
   updateHeader();
-  document.getElementById('instruction-txt').textContent = currentInstruction;
+  document.getElementById('instruction-txt').textContent=currentInstruction;
 
-  const leftOrder  = shuffle(PAIRS);
-  const rightOrder = shuffle(PAIRS);
-
-  document.getElementById('q-card').innerHTML = `
+  document.getElementById('q-card').innerHTML=`
     <div class="round-badge">Round 1 of ${TOTAL_ROUNDS}</div>
     <div class="match-wrapper" id="match-wrapper">
       <div class="columns-row">
-        <div class="left-col"  id="left-col"></div>
+        <div class="left-col" id="left-col"></div>
         <div class="middle-gap"></div>
         <div class="right-col" id="right-col"></div>
       </div>
       <svg id="lines-svg"></svg>
-    </div>
-  `;
+    </div>`;
 
-  leftOrder.forEach(pair => {
-    const el = document.createElement('div');
-    el.className = 'match-item';
-    el.dataset.id = pair.id; el.dataset.side = 'left';
-    el.innerHTML = `<img src="${pair.leftImg}" alt="${pair.leftLabel}"><div class="item-label">${pair.leftLabel}</div>`;
-    el.addEventListener('click', () => onLeftTap(pair.id));
+  shuffle(PAIRS).forEach(pair=>{
+    const el=document.createElement('div'); el.className='match-item'; el.dataset.id=pair.id; el.dataset.side='left';
+    el.innerHTML=`<img src="${pair.leftImg}" alt="${pair.leftLabel}"><div class="item-label">${pair.leftLabel}</div>`;
+    el.addEventListener('click',()=>onLeftTap(pair.id));
     document.getElementById('left-col').appendChild(el);
   });
-
-  rightOrder.forEach(pair => {
-    const el = document.createElement('div');
-    el.className = 'match-item';
-    el.dataset.id = pair.id; el.dataset.side = 'right';
-    el.innerHTML = `<img src="${pair.rightImg}" alt="${pair.rightLabel}"><div class="item-label">${pair.rightLabel}</div>`;
-    el.addEventListener('click', () => onRightTap(pair.id));
+  shuffle(PAIRS).forEach(pair=>{
+    const el=document.createElement('div'); el.className='match-item'; el.dataset.id=pair.id; el.dataset.side='right';
+    el.innerHTML=`<img src="${pair.rightImg}" alt="${pair.rightLabel}"><div class="item-label">${pair.rightLabel}</div>`;
+    el.addEventListener('click',()=>onRightTap(pair.id));
     document.getElementById('right-col').appendChild(el);
   });
-
   speak(currentInstruction);
 }
 
-function getEl(side, id) {
-  return document.querySelector(`.match-item[data-side="${side}"][data-id="${id}"]`);
-}
+function getEl(side,id){ return document.querySelector(`.match-item[data-side="${side}"][data-id="${id}"]`); }
 
 function onLeftTap(id) {
-  if (busy || matched.has(id)) return;
-  if (selectedLeftId === id) return;
-  document.querySelectorAll('.match-item.hint-anim').forEach(el => el.classList.remove('hint-anim'));
-  if (selectedLeftId) getEl('left', selectedLeftId)?.classList.remove('selected');
-  selectedLeftId = id;
-  getEl('left', id).classList.add('selected');
+  if(busy||matched.has(id)) return;
+  if(selectedLeftId===id) return;
+  document.querySelectorAll('.match-item.hint-anim').forEach(el=>el.classList.remove('hint-anim'));
+  if(selectedLeftId) getEl('left',selectedLeftId)?.classList.remove('selected');
+  selectedLeftId=id; getEl('left',id).classList.add('selected');
 }
 
 function onRightTap(id) {
-  if (busy || matched.has(id)) return;
-  if (!selectedLeftId) { showToast('👆 Tap a sport first!', '#FF9800'); return; }
-  if (selectedLeftId === id) registerMatch(id);
-  else registerMismatch(id);
+  if(busy||matched.has(id)) return;
+  if(!selectedLeftId){showToast('👆 Tap a sport first!','#FF9800');return;}
+  selectedLeftId===id ? registerMatch(id) : registerMismatch(id);
 }
 
 function registerMatch(id) {
-  busy = true;
-  const leftEl  = getEl('left',  id);
-  const rightEl = getEl('right', id);
-  leftEl.classList.remove('selected');
-  leftEl.classList.add('matched');
-  rightEl.classList.remove('hint-anim');
-  rightEl.classList.add('matched');
-
-  if (!attempts[id] || attempts[id] === 0) score++;
-  document.getElementById('score-val').textContent = score;
-
-  drawLine(leftEl, rightEl, '#4CAF50');
-  showToast('⭐ Correct!', '#4CAF50');
-  matched.add(id);
-  selectedLeftId = null;
-  busy = false;
-
-  if (matched.size === PAIRS.length) onRoundComplete();
+  busy=true;
+  const lEl=getEl('left',id), rEl=getEl('right',id);
+  lEl.classList.remove('selected'); lEl.classList.add('matched');
+  rEl.classList.remove('hint-anim'); rEl.classList.add('matched');
+  if(!attempts[id]||attempts[id]===0) score++;
+  document.getElementById('score-val').textContent=score;
+  drawLine(lEl,rEl,'#4CAF50');
+  showToast('⭐ Correct!','#4CAF50');
+  matched.add(id); selectedLeftId=null; busy=false;
+  if(matched.size===PAIRS.length) onRoundComplete();
 }
 
-function registerMismatch(wrongRightId) {
-  busy = true;
-  if (!attempts[selectedLeftId]) attempts[selectedLeftId] = 0;
+function registerMismatch(wrongId) {
+  busy=true;
+  if(!attempts[selectedLeftId]) attempts[selectedLeftId]=0;
   attempts[selectedLeftId]++;
-
-  const leftEl      = getEl('left',  selectedLeftId);
-  const wrongRight  = getEl('right', wrongRightId);
-  const currentLeft = selectedLeftId;
-
-  leftEl.classList.add('wrong-anim');
-  wrongRight.classList.add('wrong-anim');
-  play(sndWrong);
-  showToast('❌ Try again!', '#f44336');
-
-  setTimeout(() => {
-    leftEl.classList.remove('wrong-anim');
-    wrongRight.classList.remove('wrong-anim');
-
-    if (attempts[currentLeft] >= 2) {
-      getEl('right', currentLeft)?.classList.remove('hint-anim');
-      selectedLeftId = currentLeft;
-      registerMatch(currentLeft);
-      busy = false;
+  const lEl=getEl('left',selectedLeftId), wEl=getEl('right',wrongId), cur=selectedLeftId;
+  lEl.classList.add('wrong-anim'); wEl.classList.add('wrong-anim');
+  play(sndWrong); showToast('❌ Try again!','#f44336');
+  setTimeout(()=>{
+    lEl.classList.remove('wrong-anim'); wEl.classList.remove('wrong-anim');
+    if(attempts[cur]>=2){
+      getEl('right',cur)?.classList.remove('hint-anim');
+      selectedLeftId=cur; registerMatch(cur); busy=false;
     } else {
-      getEl('right', currentLeft)?.classList.add('hint-anim');
-      leftEl.classList.add('selected');
-      busy = false;
+      getEl('right',cur)?.classList.add('hint-anim');
+      lEl.classList.add('selected'); busy=false;
     }
-  }, 800);
+  },800);
 }
 
-function drawLine(leftEl, rightEl, color) {
-  const svg     = document.getElementById('lines-svg');
-  const wrapper = document.getElementById('match-wrapper');
-  const wRect   = wrapper.getBoundingClientRect();
-  const lRect   = leftEl.getBoundingClientRect();
-  const rRect   = rightEl.getBoundingClientRect();
-
-  const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-  line.setAttribute('x1', lRect.right - wRect.left);
-  line.setAttribute('y1', lRect.top + lRect.height / 2 - wRect.top);
-  line.setAttribute('x2', rRect.left - wRect.left);
-  line.setAttribute('y2', rRect.top + rRect.height / 2 - wRect.top);
-  line.setAttribute('stroke', color);
-  line.setAttribute('stroke-width', '3');
-  line.setAttribute('stroke-linecap', 'round');
-  line.setAttribute('stroke-dasharray', '6,3');
+function drawLine(lEl,rEl,color) {
+  const svg=document.getElementById('lines-svg'), w=document.getElementById('match-wrapper');
+  const wr=w.getBoundingClientRect(), lr=lEl.getBoundingClientRect(), rr=rEl.getBoundingClientRect();
+  const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+  line.setAttribute('x1',lr.right-wr.left); line.setAttribute('y1',lr.top+lr.height/2-wr.top);
+  line.setAttribute('x2',rr.left-wr.left);  line.setAttribute('y2',rr.top+rr.height/2-wr.top);
+  line.setAttribute('stroke',color); line.setAttribute('stroke-width','3');
+  line.setAttribute('stroke-linecap','round'); line.setAttribute('stroke-dasharray','6,3');
   svg.appendChild(line);
 }
 
 /* ── COLORING ROUND ── */
 function buildColoringRound(idx) {
-  coloredItems = {}; selectedColor = null; wrongColor = {}; busy = false;
-
-  const roundData = COLORING_ROUNDS[idx];
-  currentInstruction = roundData.instruction;
-
+  coloredItems={}; selectedColor=null; wrongColor={}; busy=false;
+  const rd=COLORING_ROUNDS[idx];
+  currentInstruction=rd.instruction;
   updateHeader();
-  document.getElementById('instruction-txt').textContent = '🎨 ' + currentInstruction;
+  document.getElementById('instruction-txt').textContent='🎨 '+rd.instruction;
 
-  const swatchSize = Math.min(64, Math.floor((window.innerWidth - 80) / roundData.items.length) - 14);
+  const swSize=Math.min(64,Math.floor((window.innerWidth-80)/rd.items.length)-14);
 
-  document.getElementById('q-card').innerHTML = `
-    <div class="round-badge">Round ${currentRound + 1} of ${TOTAL_ROUNDS} — ${roundData.sport}</div>
+  document.getElementById('q-card').innerHTML=`
+    <div class="round-badge">Round ${currentRound+1} of ${TOTAL_ROUNDS} — ${rd.sport}</div>
     <div class="color-items-grid" id="color-items-grid"></div>
-    <div class="swatch-tray" id="swatch-tray"></div>
-  `;
+    <div class="swatch-tray" id="swatch-tray"></div>`;
 
-  const grid = document.getElementById('color-items-grid');
-  roundData.items.forEach(item => {
-    const el = document.createElement('div');
-    el.className = 'color-item';
-    el.dataset.id = item.id;
-
-    const visualHTML = item.img
-      ? `<div class="item-visual"><img src="${item.img}" alt="${item.name}"></div>`
-      : `<div class="item-visual">${item.emoji}</div>`;
-
-    el.innerHTML = `
-      ${visualHTML}
+  rd.items.forEach(item=>{
+    const el=document.createElement('div'); el.className='color-item'; el.dataset.id=item.id;
+    el.innerHTML=`
+      <div class="item-svg-wrap">${SVG[item.svgKey]}</div>
       <div class="item-name">${item.name}</div>
-      <div class="item-color-tag">
-        <span class="color-chip" style="background:${item.color}"></span>
-        ${item.colorLabel}
-      </div>
-    `;
-    el.addEventListener('click', () => onItemTap(item.id));
-    grid.appendChild(el);
+      <div class="item-color-tag"><span class="color-chip" style="background:${item.color}"></span>${item.colorLabel}</div>`;
+    el.addEventListener('click',()=>onItemTap(item.id));
+    document.getElementById('color-items-grid').appendChild(el);
   });
 
-  const tray = document.getElementById('swatch-tray');
-  shuffle([...roundData.items]).forEach(item => {
-    const sw = document.createElement('div');
-    sw.className = 'color-swatch';
-    sw.dataset.color = item.color;
-    sw.style.cssText = `background:${item.color};width:${swatchSize}px;height:${swatchSize}px;color:${item.textColor};`;
-    sw.textContent = item.colorLabel;
-    sw.addEventListener('click', () => onColorSelect(item.color, sw));
-    tray.appendChild(sw);
+  shuffle([...rd.items]).forEach(item=>{
+    const sw=document.createElement('div'); sw.className='color-swatch';
+    sw.style.cssText=`background:${item.color};width:${swSize}px;height:${swSize}px;color:${item.textColor};`;
+    sw.textContent=item.colorLabel;
+    sw.addEventListener('click',()=>onColorSelect(item.color,sw));
+    document.getElementById('swatch-tray').appendChild(sw);
   });
 
-  speak(currentInstruction);
+  speak(rd.instruction);
 }
 
-function onColorSelect(color, swEl) {
-  selectedColor = color;
-  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+function onColorSelect(color,swEl) {
+  selectedColor=color;
+  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
   swEl.classList.add('selected');
 }
 
 function onItemTap(itemId) {
-  if (busy) return;
-  const items = COLORING_ROUNDS[currentRound - 1].items;
-  const item  = items.find(it => it.id === itemId);
+  if(busy) return;
+  const items=COLORING_ROUNDS[currentRound-1].items;
+  const item=items.find(it=>it.id===itemId);
 
-  if (coloredItems[itemId]) { showToast('✅ Already coloured!', '#FF9800'); return; }
-  if (!selectedColor)       { showToast('👆 Pick a colour first!', '#FF9800'); speak('Pick a colour first!'); return; }
+  if(coloredItems[itemId]){showToast('✅ Already coloured!','#FF9800');return;}
+  if(!selectedColor){showToast('👆 Pick a colour first!','#FF9800');speak('Pick a colour first!');return;}
 
-  const correctItem = items.find(it => it.color === selectedColor);
-  const correctId   = correctItem.id;
+  const correctItem=items.find(it=>it.color===selectedColor);
+  const correctId=correctItem.id;
 
-  if (selectedColor === item.color) {
-    /* ✅ CORRECT */
-    if (!wrongColor[itemId]) score++;
-    document.getElementById('score-val').textContent = score;
-    coloredItems[itemId] = true;
-    fillItem(itemId, correctItem.color, correctItem.textColor);
-    showToast('✅ ' + correctItem.colorLabel + '!', '#4CAF50');
+  if(selectedColor===item.color) {
+    if(!wrongColor[itemId]) score++;
+    document.getElementById('score-val').textContent=score;
+    coloredItems[itemId]=true;
+    fillItem(itemId, correctItem.color);
+    showToast('✅ '+correctItem.colorLabel+'!','#4CAF50');
     clearColorHints();
-    selectedColor = null;
-    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
-    if (Object.keys(coloredItems).length === items.length) onRoundComplete();
+    selectedColor=null;
+    document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
+    if(Object.keys(coloredItems).length===items.length) onRoundComplete();
   } else {
-    /* ❌ WRONG */
-    if (!wrongColor[correctId]) wrongColor[correctId] = 0;
+    if(!wrongColor[correctId]) wrongColor[correctId]=0;
     wrongColor[correctId]++;
     play(sndWrong);
-    showToast('❌ Try again!', '#f44336');
+    showToast('❌ Try again!','#f44336');
+    const tEl=document.querySelector(`.color-item[data-id="${itemId}"]`);
+    if(tEl){tEl.classList.add('wrong-anim');tEl.addEventListener('animationend',()=>tEl.classList.remove('wrong-anim'),{once:true});}
 
-    const tappedEl = document.querySelector(`.color-item[data-id="${itemId}"]`);
-    if (tappedEl) {
-      tappedEl.classList.add('wrong-anim');
-      tappedEl.addEventListener('animationend', () => tappedEl.classList.remove('wrong-anim'), { once: true });
-    }
-
-    if (wrongColor[correctId] === 1) {
-      const hintId = correctId;
-      setTimeout(() => {
+    if(wrongColor[correctId]===1) {
+      const hid=correctId;
+      setTimeout(()=>{
         clearColorHints();
-        const el = document.querySelector(`.color-item[data-id="${hintId}"]`);
-        if (el && !coloredItems[hintId]) el.classList.add('hint-item');
-      }, 600);
+        const el=document.querySelector(`.color-item[data-id="${hid}"]`);
+        if(el&&!coloredItems[hid]) el.classList.add('hint-item');
+      },600);
     } else {
       clearColorHints();
-      if (!coloredItems[correctId]) {
-        coloredItems[correctId] = true;
-        fillItem(correctId, correctItem.color, correctItem.textColor);
+      if(!coloredItems[correctId]) {
+        coloredItems[correctId]=true;
+        fillItem(correctId, correctItem.color);
       }
-      selectedColor = null;
-      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
-      if (Object.keys(coloredItems).length === items.length) onRoundComplete();
+      selectedColor=null;
+      document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
+      if(Object.keys(coloredItems).length===items.length) onRoundComplete();
     }
   }
 }
 
-function fillItem(itemId, color, textColor) {
-  const el = document.querySelector(`.color-item[data-id="${itemId}"]`);
-  if (!el) return;
-  el.style.background = color;
-  el.style.borderColor = color;
-  el.classList.add('colored');
-  const light = textColor === '#fff';
-  el.querySelectorAll('.item-name').forEach(t => t.style.color = light ? 'rgba(255,255,255,0.95)' : 'rgba(0,0,0,0.75)');
-  el.querySelectorAll('.item-color-tag').forEach(t => t.style.color = light ? 'rgba(255,255,255,0.75)' : 'rgba(0,0,0,0.55)');
+function fillItem(itemId, color) {
+  const wrapper=document.querySelector(`.color-item[data-id="${itemId}"]`);
+  if(!wrapper) return;
+  wrapper.querySelectorAll('.fillable').forEach(el=>el.setAttribute('fill',color));
+  wrapper.classList.add('colored');
 }
 
 function clearColorHints() {
-  document.querySelectorAll('.color-item.hint-item').forEach(el => el.classList.remove('hint-item'));
+  document.querySelectorAll('.color-item.hint-item').forEach(el=>el.classList.remove('hint-item'));
 }
 
 /* ── ROUND COMPLETE ── */
 function onRoundComplete() {
   window.speechSynthesis?.cancel();
-  playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 600);
+  playClaps(); spawnConfetti(); setTimeout(spawnConfetti,600);
   currentRound++;
-  if (currentRound >= TOTAL_ROUNDS) setTimeout(showEnd, 3200);
-  else setTimeout(buildRound, 3200);
+  if(currentRound>=TOTAL_ROUNDS) setTimeout(showEnd,3200);
+  else setTimeout(buildRound,3200);
 }
 
 /* ── HELPERS ── */
 function updateHeader() {
-  document.getElementById('round-num').textContent  = currentRound + 1;
-  document.getElementById('prog-bar').style.width   = (currentRound / TOTAL_ROUNDS * 100) + '%';
-  document.getElementById('score-val').textContent  = score;
+  document.getElementById('round-num').textContent=currentRound+1;
+  document.getElementById('prog-bar').style.width=(currentRound/TOTAL_ROUNDS*100)+'%';
+  document.getElementById('score-val').textContent=score;
 }
 
 function startGame() {
-  document.getElementById('intro-screen').style.display = 'none';
-  document.getElementById('game-screen').style.display  = 'flex';
-  currentRound = 0; score = 0;
-  buildRound();
+  document.getElementById('intro-screen').style.display='none';
+  document.getElementById('game-screen').style.display='flex';
+  currentRound=0; score=0; buildRound();
 }
 
 function restartGame() {
   window.speechSynthesis?.cancel();
-  document.getElementById('end-screen').style.display  = 'none';
-  document.getElementById('game-screen').style.display = 'flex';
-  currentRound = 0; score = 0;
-  buildRound();
+  document.getElementById('end-screen').style.display='none';
+  document.getElementById('game-screen').style.display='flex';
+  currentRound=0; score=0; buildRound();
 }
 
 let toastTimer;
-function showToast(msg, color) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.style.background = color;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 1400);
+function showToast(msg,color) {
+  const t=document.getElementById('toast'); t.textContent=msg; t.style.background=color;
+  t.classList.add('show'); clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),1400);
 }
 
 function spawnConfetti() {
-  const colors = ['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF922B','#cc5de8','#ff6b81'];
-  for (let i = 0; i < 60; i++) {
-    const p = document.createElement('div');
-    p.className = 'confetti-piece';
-    p.style.cssText = `left:${Math.random()*100}vw;background:${colors[Math.floor(Math.random()*colors.length)]};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>0.5?'50%':'2px'};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*0.5}s;`;
-    document.body.appendChild(p);
-    p.addEventListener('animationend', () => p.remove());
+  const c=['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF922B','#cc5de8','#ff6b81'];
+  for(let i=0;i<60;i++){
+    const p=document.createElement('div'); p.className='confetti-piece';
+    p.style.cssText=`left:${Math.random()*100}vw;background:${c[Math.floor(Math.random()*c.length)]};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>0.5?'50%':'2px'};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*0.5}s;`;
+    document.body.appendChild(p); p.addEventListener('animationend',()=>p.remove());
   }
 }
 
 function showEnd() {
-  document.getElementById('game-screen').style.display = 'none';
-  document.getElementById('end-screen').style.display  = 'flex';
-  document.getElementById('final-score').textContent   = score;
-  document.getElementById('end-stars').textContent     = score >= 10 ? '⭐⭐⭐' : score >= 7 ? '⭐⭐' : '⭐';
-  document.getElementById('prog-bar').style.width      = '100%';
+  document.getElementById('game-screen').style.display='none';
+  document.getElementById('end-screen').style.display='flex';
+  document.getElementById('final-score').textContent=score;
+  document.getElementById('end-stars').textContent=score>=10?'⭐⭐⭐':score>=7?'⭐⭐':'⭐';
+  document.getElementById('prog-bar').style.width='100%';
   window.speechSynthesis?.cancel();
-  playClaps(); spawnConfetti(); setTimeout(spawnConfetti, 800);
+  playClaps(); spawnConfetti(); setTimeout(spawnConfetti,800);
 }
 </script>
 </body>
