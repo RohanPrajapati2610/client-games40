@@ -162,12 +162,16 @@
 <script>
 /* ── SVG SHAPES (coloring-book outlines, black border / white fill) ── */
 const SVG = {
-  bat: `<svg viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">
-    <rect class="fillable" x="16" y="4" width="68" height="88" rx="12" fill="white" stroke="#333" stroke-width="3.5"/>
-    <rect class="fillable" x="37" y="88" width="26" height="40" rx="5" fill="white" stroke="#333" stroke-width="3.5"/>
-    <line x1="37" y1="98"  x2="63" y2="98"  stroke="#bbb" stroke-width="2"/>
-    <line x1="37" y1="108" x2="63" y2="108" stroke="#bbb" stroke-width="2"/>
-    <line x1="37" y1="118" x2="63" y2="118" stroke="#bbb" stroke-width="2"/>
+  bat: `<svg viewBox="0 0 80 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- handle (thin, top) -->
+    <rect class="fillable" x="32" y="4" width="16" height="52" rx="5" fill="white" stroke="#333" stroke-width="3"/>
+    <!-- shoulder taper -->
+    <path class="fillable" d="M32,54 Q20,60,18,72 L18,170 Q18,184,40,184 Q62,184,62,170 L62,72 Q60,60,48,54 Z" fill="white" stroke="#333" stroke-width="3" stroke-linejoin="round"/>
+    <!-- grip lines on handle -->
+    <line x1="33" y1="18" x2="47" y2="18" stroke="#bbb" stroke-width="2"/>
+    <line x1="33" y1="28" x2="47" y2="28" stroke="#bbb" stroke-width="2"/>
+    <line x1="33" y1="38" x2="47" y2="38" stroke="#bbb" stroke-width="2"/>
+    <line x1="33" y1="48" x2="47" y2="48" stroke="#bbb" stroke-width="2"/>
   </svg>`,
 
   ball: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
