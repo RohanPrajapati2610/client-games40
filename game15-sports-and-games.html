@@ -65,16 +65,16 @@
     .color-items-grid { display: flex; gap: 14px; justify-content: center; align-items: flex-start; flex-wrap: wrap; width: 100%; }
 
     .color-item {
-      border-radius: 16px; border: 3px solid #e0e0e0; background: white;
+      border-radius: 20px; border: 3px solid transparent; background: transparent;
       cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s;
-      width: 120px; display: flex; flex-direction: column; align-items: center;
-      padding: 10px 8px 8px; gap: 6px; touch-action: manipulation;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 8px; gap: 8px; touch-action: manipulation;
     }
     .color-item:active:not(.colored) { transform: scale(0.95); }
-    .color-item.colored { border-color: #4CAF50; box-shadow: 0 0 0 3px rgba(76,175,80,0.25); cursor: default; }
+    .color-item.colored { cursor: default; }
 
-    .item-svg-wrap { width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; }
-    .item-svg-wrap svg { width: 90px; height: 90px; }
+    .item-svg-wrap { width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; }
+    .item-svg-wrap svg { width: 150px; height: 150px; }
 
     .item-name { font-size: 0.73em; font-weight: 800; color: #333; text-align: center; line-height: 1.2; }
     .item-color-tag { font-size: 0.68em; font-weight: 700; color: #888; display: flex; align-items: center; gap: 4px; }
@@ -116,15 +116,15 @@
       .q-card { padding: 14px 10px; gap: 12px; }
       .match-item { width: 110px; } .match-item img { height: 68px; }
       .middle-gap { width: 44px; } .hdr-title { display: none; }
-      .color-item { width: 100px; } .item-svg-wrap, .item-svg-wrap svg { width: 76px; height: 76px; }
+      .item-svg-wrap, .item-svg-wrap svg { width: 110px; height: 110px; }
     }
     @media (max-width: 480px) {
       .match-item { width: 90px; } .match-item img { height: 56px; }
       .middle-gap { width: 36px; }
       .match-item::after { width: 10px; height: 10px; }
       .left-col .match-item::after { right: -6px; } .right-col .match-item::after { left: -6px; }
-      .color-item { width: 86px; } .item-svg-wrap, .item-svg-wrap svg { width: 64px; height: 64px; }
-      .item-name { font-size: 0.63em; }
+      .item-svg-wrap, .item-svg-wrap svg { width: 90px; height: 90px; }
+      .item-name { font-size: 0.7em; }
     }
   </style>
 </head>
