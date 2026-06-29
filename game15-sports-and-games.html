@@ -240,14 +240,24 @@ const SVG = {
     <line x1="100" y1="22" x2="100" y2="86" stroke="#ccc" stroke-width="1.5"/>
   </svg>`,
 
-  boots: `<svg viewBox="0 0 162 112" xmlns="http://www.w3.org/2000/svg">
+  boots: `<svg viewBox="0 0 200 155" xmlns="http://www.w3.org/2000/svg">
+    <!-- Boot upper: low-cut ankle on left, toe pointing right -->
     <path class="fillable"
-      d="M18,12 Q16,4,26,4 L60,4 Q72,4,72,16 L72,56 Q74,68,86,68 L140,68 Q156,68,156,84 Q156,102,140,104 L22,104 Q5,104,5,86 L5,24 Q5,12,18,12 Z"
+      d="M44,16 Q20,16,20,42 L20,88 Q20,102,36,105 L154,105 Q175,105,175,88 Q175,70,156,64 L96,54 Q74,52,68,38 L60,22 Q56,16,48,16 Z"
       fill="white" stroke="#333" stroke-width="3.5" stroke-linejoin="round"/>
-    <line x1="12" y1="24" x2="68" y2="24" stroke="#bbb" stroke-width="2.5"/>
-    <line x1="12" y1="36" x2="68" y2="36" stroke="#bbb" stroke-width="2.5"/>
-    <line x1="12" y1="48" x2="68" y2="48" stroke="#bbb" stroke-width="2.5"/>
-    <line x1="22" y1="98" x2="138" y2="98" stroke="#999" stroke-width="2"/>
+    <!-- Sole (flat, slightly wider than upper) -->
+    <rect class="fillable" x="15" y="103" width="170" height="18" rx="7" fill="white" stroke="#333" stroke-width="3"/>
+    <!-- Studs / cleats -->
+    <rect class="fillable" x="30"  y="121" width="16" height="12" rx="3" fill="white" stroke="#333" stroke-width="2.5"/>
+    <rect class="fillable" x="62"  y="121" width="16" height="12" rx="3" fill="white" stroke="#333" stroke-width="2.5"/>
+    <rect class="fillable" x="95"  y="121" width="16" height="12" rx="3" fill="white" stroke="#333" stroke-width="2.5"/>
+    <rect class="fillable" x="128" y="121" width="16" height="12" rx="3" fill="white" stroke="#333" stroke-width="2.5"/>
+    <rect class="fillable" x="158" y="121" width="16" height="12" rx="3" fill="white" stroke="#333" stroke-width="2.5"/>
+    <!-- Lace lines on top of boot -->
+    <line x1="70" y1="62" x2="94" y2="58" stroke="#bbb" stroke-width="2"/>
+    <line x1="68" y1="72" x2="94" y2="68" stroke="#bbb" stroke-width="2"/>
+    <line x1="68" y1="82" x2="94" y2="79" stroke="#bbb" stroke-width="2"/>
+    <line x1="68" y1="92" x2="94" y2="89" stroke="#bbb" stroke-width="2"/>
   </svg>`,
 };
 
