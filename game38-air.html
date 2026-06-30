@@ -285,7 +285,7 @@ function tapCard(i){
   } else {
     if(card.classList.contains('wrong-locked'))return;
     card.classList.add('wrong','wrong-locked');
-    ri.textContent='&#10060;';
+    ri.textContent='❌';
     play(sndWrong);
     _circleWrong=true;
     _circleWrongCount++;
