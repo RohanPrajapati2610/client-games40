@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>My Community · LY2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,7 +25,10 @@
       display: flex; align-items: center; justify-content: center;
       border: 5px solid #FFD700; z-index: 200;
     }
-    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; cursor: pointer; }
+    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; cursor: pointer; opacity: 0; -webkit-user-drag: none; }
+    #intro-logo.loaded { opacity: 1; transition: opacity 0.3s; }
+    .helper-section img, .tool-wrap img { opacity: 0; -webkit-user-drag: none; }
+    .helper-section img.loaded, .tool-wrap img.loaded { opacity: 1; transition: opacity 0.3s; }
     @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 
     /* ── GAME SCREEN ── */
@@ -36,7 +41,7 @@
     .hdr { display:flex; align-items:center; justify-content:space-between; background:white; border-radius:18px; padding:10px 18px; margin-bottom:12px; box-shadow:0 4px 14px rgba(0,0,0,0.1); }
     .hdr-score { font-size:1.2em; font-weight:bold; color:#4CAF50; min-width:70px; }
     .hdr-title { font-size:clamp(0.75em,2.5vw,1em); color:#6a0dad; font-weight:bold; text-align:center; }
-    .mute-btn { width:38px; height:38px; border:2px solid #ddd; border-radius:50%; background:white; font-size:1.1em; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .mute-btn { width:38px; height:38px; border:2px solid #ddd; border-radius:50%; background:white; font-size:1.1em; cursor:pointer; display:flex; align-items:center; justify-content:center; touch-action:manipulation; min-height:44px; }
 
     .progress-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
     .progress-label { font-size:0.9em; color:#777; white-space:nowrap; }
@@ -117,7 +122,7 @@
 
     /* ── BOTTOM ── */
     .bottom-row { display:flex; justify-content:center; position:fixed; bottom:16px; left:0; right:0; z-index:50; pointer-events:none; }
-    .btn-restart { pointer-events:all; background:linear-gradient(135deg,#FF9800,#F57C00); color:white; border:none; padding:12px 32px; border-radius:40px; font-size:1em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 5px 14px rgba(255,152,0,0.4); }
+    .btn-restart { pointer-events:all; background:linear-gradient(135deg,#FF9800,#F57C00); color:white; border:none; padding:12px 32px; border-radius:40px; font-size:1em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 5px 14px rgba(255,152,0,0.4); touch-action:manipulation; min-height:44px; }
 
     /* ── TOAST ── */
     #toast { position:fixed; top:18%; left:50%; transform:translateX(-50%) scale(0.7); padding:14px 30px; border-radius:50px; font-size:1.5em; font-weight:bold; color:white; pointer-events:none; opacity:0; transition:opacity 0.2s,transform 0.2s; z-index:500; white-space:nowrap; box-shadow:0 8px 24px rgba(0,0,0,0.2); }
@@ -134,7 +139,7 @@
     .end-sub    { color:rgba(255,255,255,0.9); font-size:1.1em; }
     .end-score-box { background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.35); border-radius:20px; padding:16px 40px; color:white; font-size:1.8em; font-weight:bold; }
     .end-stars  { font-size:2.2em; letter-spacing:4px; }
-    .btn-play-again { background:#FFD700; color:#333; border:none; padding:15px 45px; border-radius:40px; font-size:1.2em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,0.2); margin-top:8px; }
+    .btn-play-again { background:#FFD700; color:#333; border:none; padding:15px 45px; border-radius:40px; font-size:1.2em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,0.2); margin-top:8px; touch-action:manipulation; min-height:44px; }
 
     @media (max-width: 768px) {
       #game-screen { padding: 10px 10px 70px; }
@@ -157,7 +162,7 @@
 <body>
 
 <div id="intro-screen">
-  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onclick="startGame()" onerror="this.style.display='none'">
+  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" draggable="false" onclick="startGame()" onerror="this.style.display='none'" onload="this.classList.add('loaded')">
 </div>
 <div id="toast"></div>
 
@@ -177,18 +182,18 @@
   <div class="scene-card">
     <!-- Helper (top) -->
     <div class="helper-section">
-      <img id="helper-img" src="" alt="">
+      <img id="helper-img" src="" alt="" draggable="false">
       <div class="helper-name" id="helper-name"></div>
     </div>
 
     <!-- Tools row (canvas overlay here) -->
     <div class="tools-section" id="tools-section">
       <div class="tool-wrap" id="tool-left-wrap">
-        <img id="tool-left-img"  src="" alt="">
+        <img id="tool-left-img"  src="" alt="" draggable="false">
         <div class="tool-label"  id="tool-left-label"></div>
       </div>
       <div class="tool-wrap" id="tool-right-wrap">
-        <img id="tool-right-img" src="" alt="">
+        <img id="tool-right-img" src="" alt="" draggable="false">
         <div class="tool-label"  id="tool-right-label"></div>
       </div>
       <canvas id="draw-canvas"></canvas>
@@ -288,6 +293,11 @@ const QUESTIONS = [
     correct: 'right', hintCx: 0.75, hintCy: 0.5
   },
 ];
+
+/* Preload all images */
+QUESTIONS.forEach(q => {
+  [q.helperImg, q.leftImg, q.rightImg].forEach(src => { if (src) new Image().src = src; });
+});
 
 /* ── STATE ── */
 let curQ = 0, score = 0, attempts = 0, answered = false, muted = false;
@@ -526,19 +536,26 @@ function loadQuestion() {
   const helperSection = document.querySelector('.helper-section');
   const toolsSection  = document.getElementById('tools-section');
 
+  function setImgSrc(el, src) {
+    el.classList.remove('loaded');
+    el.onload = () => el.classList.add('loaded');
+    if (src) el.src = src;
+    if (el.complete && el.naturalWidth > 0) el.classList.add('loaded');
+  }
+
   if (isBehavior) {
     helperSection.classList.add('hidden');
     toolsSection.classList.add('behavior-mode');
   } else {
     helperSection.classList.remove('hidden');
     toolsSection.classList.remove('behavior-mode');
-    document.getElementById('helper-img').src          = q.helperImg;
+    setImgSrc(document.getElementById('helper-img'), q.helperImg);
     document.getElementById('helper-name').textContent = q.helperLabel;
   }
 
-  document.getElementById('tool-left-img').src             = q.leftImg;
+  setImgSrc(document.getElementById('tool-left-img'), q.leftImg);
   document.getElementById('tool-left-label').textContent   = q.leftLabel;
-  document.getElementById('tool-right-img').src            = q.rightImg;
+  setImgSrc(document.getElementById('tool-right-img'), q.rightImg);
   document.getElementById('tool-right-label').textContent  = q.rightLabel;
 
   /* Sync canvas after images render */

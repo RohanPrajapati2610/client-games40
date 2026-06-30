@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Evolution of Light · LY4</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,7 +24,8 @@
       display: flex; align-items: center; justify-content: center;
       border: 5px solid #FFD700; z-index: 200; cursor: pointer;
     }
-    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; }
+    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; -webkit-user-drag: none; opacity: 0; transition: opacity 0.3s; }
+    #intro-logo.loaded { opacity: 1; }
     @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 
     /* ── GAME SCREEN ── */
@@ -31,13 +33,13 @@
       display: none; flex-direction: column;
       width: 100%; max-width: 860px;
       height: 100%; padding: 10px 10px 70px;
-      overflow: hidden;
+      overflow-y: auto;
     }
 
     .hdr { display:flex; align-items:center; justify-content:space-between; background:white; border-radius:18px; padding:8px 18px; margin-bottom:8px; box-shadow:0 4px 14px rgba(0,0,0,0.1); flex-shrink:0; }
     .hdr-score { font-size:1.1em; font-weight:bold; color:#4CAF50; min-width:80px; }
     .hdr-title { font-size:clamp(0.75em,2.5vw,1em); color:#6a0dad; font-weight:bold; text-align:center; }
-    .mute-btn { width:38px; height:38px; border:2px solid #ddd; border-radius:50%; background:white; font-size:1.1em; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .mute-btn { width:38px; height:38px; border:2px solid #ddd; border-radius:50%; background:white; font-size:1.1em; cursor:pointer; display:flex; align-items:center; justify-content:center; touch-action: manipulation; min-height: 44px; min-width: 44px; }
 
     .progress-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; flex-shrink:0; }
     .progress-label { font-size:0.9em; color:#777; white-space:nowrap; }
@@ -79,7 +81,10 @@
       border: 4px solid #FF9800;
       box-shadow: 0 4px 16px rgba(255,152,0,0.35);
       display: block;
+      -webkit-user-drag: none;
+      opacity: 0; transition: opacity 0.3s;
     }
+    .light-node.source-node img.loaded { opacity: 1; }
     .light-node.source-node .node-label { font-size: 0.82em; font-weight: 800; color: #E65100; }
 
     /* "FROM HERE" indicator on source */
@@ -100,9 +105,12 @@
       border-radius: 18px; padding: 7px;
       border: 3px solid #e0e0e0;
       box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-      transition: border-color 0.3s, box-shadow 0.3s;
+      transition: border-color 0.3s, box-shadow 0.3s, opacity 0.3s;
       display: block;
+      -webkit-user-drag: none;
+      opacity: 0;
     }
+    .light-node.option-node img.loaded { opacity: 1; }
     .light-node.option-node .node-label { font-size: 0.72em; font-weight: 800; color: #555; }
 
     /* States */
@@ -145,7 +153,7 @@
       animation: slideIn 0.4s ease; flex-shrink: 0;
     }
     @keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-    .tl-item img { width: 36px; height: 36px; object-fit: contain; pointer-events: none; }
+    .tl-item img { width: 36px; height: 36px; object-fit: contain; pointer-events: none; -webkit-user-drag: none; }
     .tl-num { font-size: 0.58em; font-weight: 800; color: #4CAF50; }
     .tl-item.tl-auto .tl-num { color: #FF9800; }
     .tl-arrow { font-size: 1.1em; color: #ccc; margin: 0 2px; padding-bottom: 14px; flex-shrink: 0; }
@@ -158,8 +166,11 @@
       border-radius: 16px; padding: 6px;
       border: 3px solid #e0e0e0;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      transition: border-color 0.3s, box-shadow 0.3s; display: block;
+      transition: border-color 0.3s, box-shadow 0.3s, opacity 0.3s; display: block;
+      -webkit-user-drag: none;
+      opacity: 0;
     }
+    .light-node.path-node img.loaded { opacity: 1; }
     .light-node.path-node .node-label { font-size: 0.7em; font-weight: 800; color: #555; text-align: center; }
     .light-node.path-start img {
       border-color: #2196F3;
@@ -186,6 +197,7 @@
       border: none; border-radius: 50px; padding: 13px 34px;
       font-size: 1em; font-family: inherit; font-weight: 800; cursor: pointer;
       box-shadow: 0 4px 16px rgba(255,152,0,0.4); z-index: 50; white-space: nowrap;
+      touch-action: manipulation; min-height: 44px;
     }
 
     #toast { position:fixed; top:18%; left:50%; transform:translateX(-50%) scale(0); color:white; padding:12px 26px; border-radius:50px; font-size:1.4em; font-weight:800; box-shadow:0 6px 24px rgba(0,0,0,0.25); z-index:100; transition:transform 0.2s,opacity 0.2s; opacity:0; pointer-events:none; white-space:nowrap; }
@@ -202,13 +214,27 @@
     .end-sub    { color:rgba(255,255,255,0.9); font-size:1.1em; text-align:center; }
     .end-score-box { background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.35); border-radius:20px; padding:16px 40px; color:white; font-size:1.8em; font-weight:bold; }
     .end-stars  { font-size:2.2em; letter-spacing:4px; }
-    .btn-play-again { background:#FFD700; color:#333; border:none; border-radius:50px; padding:14px 36px; font-size:1.1em; font-weight:800; font-family:inherit; cursor:pointer; box-shadow:0 4px 16px rgba(255,215,0,0.5); }
+    .btn-play-again { background:#FFD700; color:#333; border:none; border-radius:50px; padding:14px 36px; font-size:1.1em; font-weight:800; font-family:inherit; cursor:pointer; box-shadow:0 4px 16px rgba(255,215,0,0.5); touch-action: manipulation; min-height: 44px; }
+
+    @media (max-width: 768px) {
+      #game-screen { padding: 10px 10px 76px; }
+      .hdr-title { display: none; }
+    }
+    @media (max-width: 480px) {
+      .instruction { font-size: clamp(0.8em, 3.5vw, 1em); }
+      .hdr-score { font-size: 1em; }
+      .progress-label { font-size: 0.8em; }
+      .btn-restart { font-size: 0.9em; padding: 12px 26px; }
+      .light-node.source-node img { width: 80px; height: 80px; }
+      .light-node.option-node img { width: 70px; height: 70px; }
+      .light-node.path-node img   { width: 60px; height: 60px; }
+    }
   </style>
 </head>
 <body>
 
 <div id="intro-screen" onclick="startGame()">
-  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine">
+  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onload="this.classList.add('loaded')" style="-webkit-user-drag:none;">
 </div>
 
 <div id="toast"></div>
@@ -629,7 +655,7 @@ function addToTimeline(id, isAuto) {
   }
   const item = document.createElement('div');
   item.className = 'tl-item' + (isAuto ? ' tl-auto' : '');
-  item.innerHTML = `<img src="${LIGHTS[id].img}" alt="${LIGHTS[id].label}"><div class="tl-num">${tlItems.length}</div>`;
+  item.innerHTML = `<img src="${LIGHTS[id].img}" alt="${LIGHTS[id].label}" style="-webkit-user-drag:none;"><div class="tl-num">${tlItems.length}</div>`;
   strip.appendChild(item);
 }
 
@@ -665,7 +691,7 @@ function loadQuestion() {
       node.style.left = PATH_POSITIONS[i].left;
       node.style.top  = PATH_POSITIONS[i].top;
       if (i === 0) node.classList.add('path-start');
-      node.innerHTML = `<img src="${l.img}" alt="${l.label}"><div class="node-label">${l.label}</div>`;
+      node.innerHTML = `<img src="${l.img}" alt="${l.label}" onload="this.classList.add('loaded')" style="-webkit-user-drag:none;"><div class="node-label">${l.label}</div>`;
       card.appendChild(node);
     });
 
@@ -687,7 +713,7 @@ function loadQuestion() {
     src.className  = 'light-node source-node';
     src.style.left = SRC_POSITION.left;
     src.style.top  = SRC_POSITION.top;
-    src.innerHTML  = `<img src="${LIGHTS[q.from].img}" alt="${LIGHTS[q.from].label}"><div class="node-label">${LIGHTS[q.from].label}</div>`;
+    src.innerHTML  = `<img src="${LIGHTS[q.from].img}" alt="${LIGHTS[q.from].label}" onload="this.classList.add('loaded')" style="-webkit-user-drag:none;"><div class="node-label">${LIGHTS[q.from].label}</div>`;
     card.appendChild(src);
 
     const allOpts   = shuffle([q.correct, ...q.wrong]);
@@ -699,7 +725,7 @@ function loadQuestion() {
       node.style.left = positions[i].left;
       node.style.top  = positions[i].top;
       if (id === q.correct) node.classList.add('opt-correct');
-      node.innerHTML = `<img src="${LIGHTS[id].img}" alt="${LIGHTS[id].label}"><div class="node-label">${LIGHTS[id].label}</div>`;
+      node.innerHTML = `<img src="${LIGHTS[id].img}" alt="${LIGHTS[id].label}" onload="this.classList.add('loaded')" style="-webkit-user-drag:none;"><div class="node-label">${LIGHTS[id].label}</div>`;
       card.appendChild(node);
     });
 

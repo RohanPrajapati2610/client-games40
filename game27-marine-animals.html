@@ -24,7 +24,8 @@
       display: flex; align-items: center; justify-content: center;
       border: 5px solid #FFD700; z-index: 200; cursor: pointer;
     }
-    #intro-logo { width: 220px; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; }
+    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; -webkit-user-drag: none; opacity: 0; transition: opacity 0.3s; }
+    #intro-logo.loaded { opacity: 1; }
     @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
 
     /* ── GAME SCREEN ── */
@@ -36,7 +37,7 @@
         #0077bb 62%, #0099cc 80%, #00bbdd 100%
       );
       padding: 12px 14px 148px;
-      overflow: hidden; position: relative;
+      overflow-y: auto; position: relative;
     }
 
     /* ── LIGHT SHAFTS ── */
@@ -86,7 +87,7 @@
     }
     .hdr-score { font-size: 1.1em; font-weight: bold; color: #FFD700; min-width: 80px; }
     .hdr-title { font-size: clamp(0.72em,2.4vw,0.95em); color: white; font-weight: bold; text-align: center; }
-    .mute-btn  { width: 38px; height: 38px; border: 2px solid rgba(255,255,255,0.35); border-radius: 50%; background: rgba(255,255,255,0.12); font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .mute-btn  { width: 38px; height: 38px; border: 2px solid rgba(255,255,255,0.35); border-radius: 50%; background: rgba(255,255,255,0.12); font-size: 1.1em; cursor: pointer; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
 
     .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-shrink: 0; position: relative; z-index: 10; }
     .progress-label { font-size: 0.85em; color: rgba(255,255,255,0.75); white-space: nowrap; }
@@ -165,7 +166,10 @@
       pointer-events: none;
       position: relative; z-index: 2;
       filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
+      -webkit-user-drag: none;
+      opacity: 0; transition: opacity 0.3s;
     }
+    .bubble-emoji.loaded { opacity: 1; }
 
     /* ── BOB ANIMATION (applied to .bubble container via JS) ── */
     @keyframes bob {
@@ -271,7 +275,7 @@
 <body>
 
 <div id="intro-screen" onclick="startGame()">
-  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onerror="this.style.display='none'">
+  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onerror="this.style.display='none'" onload="this.classList.add('loaded')">
 </div>
 <div id="toast"></div>
 
@@ -313,6 +317,9 @@ const ALL_ANIMALS = [
   { name: 'Squid',     img: 'Assets/squid.png' },
   { name: 'Blowfish',  img: 'Assets/blowfish.png' },
 ];
+
+/* Preload all animal images */
+ALL_ANIMALS.forEach(a => { new Image().src = a.img; });
 
 /* Bob timing variety */
 const BOB_DURATIONS = ['2.9s','3.3s','2.6s','3.6s'];
@@ -406,7 +413,16 @@ function buildBubbles(q) {
     bubble.dataset.name = animal.name;
     bubble.style.animation = `bob ${BOB_DURATIONS[idx]} ease-in-out infinite ${BOB_DELAYS[idx]}`;
 
-    bubble.innerHTML = `<div class="bubble-shell"></div><img class="bubble-emoji" src="${animal.img}" alt="${animal.name}">`;
+    const shell = document.createElement('div');
+    shell.className = 'bubble-shell';
+    const img = document.createElement('img');
+    img.className = 'bubble-emoji';
+    img.src = animal.img;
+    img.alt = animal.name;
+    img.onload = () => img.classList.add('loaded');
+    if (img.complete) img.classList.add('loaded');
+    bubble.appendChild(shell);
+    bubble.appendChild(img);
     bubble.addEventListener('pointerdown', () => selectBubble(animal.name, bubble));
 
     slot.appendChild(bubble);

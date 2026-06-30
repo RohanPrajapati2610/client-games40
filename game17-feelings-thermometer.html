@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Feelings Thermometer · LY4 · Game 17</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
@@ -25,7 +26,8 @@
       display: flex; align-items: center; justify-content: center;
       border: 5px solid #FFD700; z-index: 200;
     }
-    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; cursor: pointer; }
+    #intro-logo { width: 220px; height: auto; filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)); animation: logoBounce 2s ease-in-out infinite; cursor: pointer; -webkit-user-drag: none; opacity: 0; transition: opacity 0.3s; }
+    #intro-logo.loaded { opacity: 1; }
     @keyframes logoBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 
     /* ── GAME ── */
@@ -157,7 +159,7 @@
 <body>
 
 <div id="intro-screen">
-  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onclick="startGame()" onerror="this.style.display='none'">
+  <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onclick="startGame()" onerror="this.style.display='none'" onload="this.classList.add('loaded')">
 </div>
 
 <div id="toast"></div>

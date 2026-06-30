@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>All About Air · LY3 · Game 38</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -16,7 +17,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .hdr{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:18px;padding:10px 18px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,0.1);flex-shrink:0}
 .hdr-score{font-size:1.1em;font-weight:bold;color:#4CAF50;min-width:70px}
 .hdr-title{font-size:clamp(0.72em,2.4vw,0.95em);color:#6a0dad;font-weight:bold;text-align:center}
-.mute-btn{width:38px;height:38px;border:2px solid #ddd;border-radius:50%;background:white;font-size:1.1em;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.mute-btn{width:44px;height:44px;min-height:44px;border:2px solid #ddd;border-radius:50%;background:white;font-size:1.1em;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
 .progress-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-shrink:0}
 .progress-label{font-size:0.85em;color:#777;white-space:nowrap}
 .progress-bar-wrap{flex:1;height:10px;background:#e0e0e0;border-radius:5px;overflow:hidden}
@@ -29,7 +30,8 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .circle-wrap{position:relative;width:100%;max-width:440px}
 .objects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%}
 .obj-card{background:#fafafa;border-radius:18px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;border:3px solid #e0e0e0;box-shadow:0 3px 10px rgba(0,0,0,0.07);transition:border-color 0.2s,background 0.2s;position:relative;pointer-events:none}
-.obj-card img{width:clamp(62px,14vw,90px);height:clamp(62px,14vw,90px);object-fit:contain}
+.obj-card img{width:clamp(62px,14vw,90px);height:clamp(62px,14vw,90px);object-fit:contain;-webkit-user-drag:none;opacity:0;transition:opacity 0.3s}
+.obj-card img.loaded{opacity:1}
 .obj-label{font-size:clamp(0.8em,2.5vw,1em);font-weight:800;color:#444;text-align:center}
 .obj-card.correct{border-color:#4CAF50;background:#E8F5E9}
 .obj-card.wrong-flash{border-color:#f44336;background:#FFEBEE;animation:shakeWrong 0.4s ease}
@@ -45,18 +47,18 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .draw-guide{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
 #draw-canvas{position:absolute;top:0;left:0;display:block;touch-action:none;cursor:crosshair;width:100%;height:100%}
 .palette{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
-.swatch{width:38px;height:38px;border-radius:50%;cursor:pointer;border:4px solid transparent;transition:transform 0.1s,border-color 0.1s;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.swatch{width:44px;height:44px;border-radius:50%;cursor:pointer;border:4px solid transparent;transition:transform 0.1s,border-color 0.1s;box-shadow:0 2px 8px rgba(0,0,0,0.2);touch-action:manipulation}
 .swatch.active{border-color:#333;transform:scale(1.2)}
 .tool-row{display:flex;gap:8px;align-items:center}
-.btn-eraser{padding:8px 16px;border:3px solid #bbb;border-radius:20px;background:white;font-size:0.85em;font-family:inherit;font-weight:700;cursor:pointer;color:#555}
+.btn-eraser{padding:8px 16px;border:3px solid #bbb;border-radius:20px;background:white;font-size:0.85em;font-family:inherit;font-weight:700;cursor:pointer;color:#555;min-height:44px;touch-action:manipulation}
 .btn-eraser.active{border-color:#f44336;color:#f44336}
 
 /* ── Buttons ── */
-.btn-next{background:linear-gradient(135deg,#4CAF50,#2E7D32);color:white;border:none;padding:13px 34px;border-radius:40px;font-size:1.05em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(76,175,80,0.4);transition:transform 0.1s,opacity 0.2s}
+.btn-next{background:linear-gradient(135deg,#4CAF50,#2E7D32);color:white;border:none;padding:13px 34px;border-radius:40px;font-size:1.05em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(76,175,80,0.4);transition:transform 0.1s,opacity 0.2s;min-height:44px;touch-action:manipulation}
 .btn-next:active{transform:scale(0.95)}
 .btn-next:disabled{opacity:0.35;cursor:not-allowed;transform:none}
 .bottom-row{display:flex;justify-content:center;position:fixed;bottom:16px;left:0;right:0;z-index:50;pointer-events:none}
-.btn-restart{pointer-events:all;background:linear-gradient(135deg,#FF9800,#F57C00);color:white;border:none;padding:12px 30px;border-radius:40px;font-size:1em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(255,152,0,0.4)}
+.btn-restart{pointer-events:all;background:linear-gradient(135deg,#FF9800,#F57C00);color:white;border:none;padding:12px 30px;border-radius:40px;font-size:1em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(255,152,0,0.4);min-height:44px;touch-action:manipulation}
 
 #toast{position:fixed;top:18%;left:50%;transform:translateX(-50%) scale(0.7);padding:13px 28px;border-radius:50px;font-size:1.35em;font-weight:bold;color:white;pointer-events:none;opacity:0;transition:opacity 0.2s,transform 0.2s;z-index:500;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
 #toast.show{opacity:1;transform:translateX(-50%) scale(1)}
@@ -70,10 +72,14 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .end-sub{color:rgba(255,255,255,0.9);font-size:1.1em}
 .end-score-box{background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.35);border-radius:20px;padding:16px 40px;color:white;font-size:1.8em;font-weight:bold}
 .end-stars{font-size:2.2em;letter-spacing:4px}
-.btn-play-again{background:#FFD700;color:#333;border:none;padding:15px 44px;border-radius:40px;font-size:1.2em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.2);margin-top:8px}
+.btn-play-again{background:#FFD700;color:#333;border:none;padding:15px 44px;border-radius:40px;font-size:1.2em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.2);margin-top:8px;min-height:44px;touch-action:manipulation}
 
 @keyframes shakeWrong{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 @keyframes trophySpin{from{transform:rotate(-20deg) scale(0)}60%{transform:rotate(10deg) scale(1.1)}to{transform:rotate(0) scale(1)}}
+@media(max-width:768px){
+  .hdr-title{display:none}
+  #game-screen{padding:10px 10px 76px}
+}
 @media(max-width:480px){
   #game-screen{padding:8px 10px 72px}
   .hdr{padding:8px 12px;margin-bottom:8px}
@@ -204,7 +210,13 @@ const SCREENS = [
   },
 ];
 
+/* Preload all images */
+SCREENS.forEach(s => { if (s.items) s.items.forEach(it => { new Image().src = it.img; }); });
+
 const DRAW_COLORS = ['#E53935','#1565C0','#2E7D32','#F57F17','#6A1B9A','#FF69B4','#00BCD4','#FF9800'];
+
+/* ── Helpers ── */
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 
 /* ── State ── */
 let curScreen=0, score=0, muted=false;
@@ -257,9 +269,12 @@ function loadScreen(){
 function renderCircle(s){
   _circleFound=0; _circleWrong=false; _circleWrongCount=0; _circleAutoRevealed=false;
   _correctCircles=[];
-  _circleTotalAir=s.items.filter(it=>it.air).length;
+  // Shuffle so correct answers are scattered each time
+  const items=shuffle([...s.items]);
+  s._display=items;
+  _circleTotalAir=items.filter(it=>it.air).length;
 
-  const cards=s.items.map((it,i)=>`
+  const cards=items.map((it,i)=>`
     <div class="obj-card" id="oc-${i}">
       <span class="result-icon" id="ri-${i}"></span>
       <img src="${it.img}" alt="${it.label}" onerror="this.style.display='none'">
@@ -271,6 +286,10 @@ function renderCircle(s){
       <div class="objects-grid" id="obj-grid">${cards}</div>
       <canvas id="circle-canvas"></canvas>
     </div>`;
+
+  document.querySelectorAll('#obj-grid .obj-card img').forEach(img => {
+    if (img.complete) { img.classList.add('loaded'); } else { img.onload = () => img.classList.add('loaded'); }
+  });
 
   requestAnimationFrame(()=>setupCircleCanvas(s));
 }
@@ -338,10 +357,11 @@ function evaluateCircle(s,cv,ctx,pts){
   const r=Math.max(dists.reduce((a,d)=>a+d,0)/dists.length,36);
 
   // Which card does the centroid fall on?
+  const dispItems=s._display||s.items;
   const cvRect=cv.getBoundingClientRect();
   const scale=cv.width/cvRect.width;
   let hitIdx=-1;
-  for(let i=0;i<s.items.length;i++){
+  for(let i=0;i<dispItems.length;i++){
     const card=document.getElementById('oc-'+i);
     if(!card)continue;
     const cr=card.getBoundingClientRect();
@@ -354,7 +374,7 @@ function evaluateCircle(s,cv,ctx,pts){
   const card=document.getElementById('oc-'+hitIdx);
   if(card.classList.contains('correct'))return;
 
-  if(s.items[hitIdx].air){
+  if(dispItems[hitIdx].air){
     // Correct — draw green circle, mark card
     _correctCircles.push({cx,cy,r});
     redrawCorrect(cv);
@@ -381,20 +401,19 @@ function evaluateCircle(s,cv,ctx,pts){
     if(_circleWrongCount===1){
       showToast('❌ Try again!','#f44336');
       setTimeout(()=>redrawCorrect(cv),800);
-      showHint(s.hint);
       // Dashed yellow hint circles around correct items after red clears
       setTimeout(()=>{
         drawHintCircles(s,cv,ctx);
         setTimeout(()=>redrawCorrect(cv),2000);
       },850);
     } else {
-      // 2nd wrong — flash red, then show green correct circles + "Correct answer!"
+      // 2nd wrong — auto-reveal exactly 1 remaining correct item, then let user find the rest
       _circleAutoRevealed=true;
       showToast('❌ Wrong!','#f44336');
       setTimeout(()=>{
-        hideHint();
-        s.items.forEach((it,idx)=>{
-          if(!it.air||document.getElementById('oc-'+idx).classList.contains('correct'))return;
+        const disp=s._display||s.items;
+        for(let idx=0;idx<disp.length;idx++){
+          if(!disp[idx].air||document.getElementById('oc-'+idx)?.classList.contains('correct'))continue;
           const c=document.getElementById('oc-'+idx);
           c.classList.add('correct');
           document.getElementById('ri-'+idx).textContent='✅';
@@ -404,10 +423,17 @@ function evaluateCircle(s,cv,ctx,pts){
           const ccy=((cr.top+cr.height/2)-cvRect2.top)*(cv.height/cvRect2.height);
           const rr=Math.min(cr.width,cr.height)*0.38*(cv.width/cvRect2.width);
           _correctCircles.push({cx:ccx,cy:ccy,r:rr});
-        });
+          _circleFound++;
+          break; // Only 1 revealed
+        }
         redrawCorrect(cv);
         showToast('💡 Correct answer!','#FF9800');
-        setTimeout(()=>nextScreen(),3000);
+        _circleWrongCount=0; // Reset so next 2 wrongs reveal 1 more
+        if(_circleFound>=_circleTotalAir){
+          setTimeout(()=>nextScreen(),3000);
+        } else {
+          _circleAutoRevealed=false; // Allow drawing to find remaining
+        }
       },1000);
     }
   }
@@ -433,7 +459,7 @@ function redrawCorrect(cv){
 function drawHintCircles(s,cv,ctx){
   const cvRect=cv.getBoundingClientRect();
   const scale=cv.width/cvRect.width;
-  s.items.forEach((it,idx)=>{
+  (s._display||s.items).forEach((it,idx)=>{
     if(!it.air||document.getElementById('oc-'+idx).classList.contains('correct'))return;
     const card=document.getElementById('oc-'+idx);
     const cr=card.getBoundingClientRect();

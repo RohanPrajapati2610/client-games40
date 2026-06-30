@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Sensorial Week · LY2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,7 +38,7 @@
     .hdr { display:flex; align-items:center; justify-content:space-between; background:white; border-radius:18px; padding:10px 18px; margin-bottom:10px; box-shadow:0 4px 14px rgba(0,0,0,0.1); flex-shrink:0; }
     .hdr-score { font-size:1.2em; font-weight:bold; color:#4CAF50; min-width:90px; }
     .hdr-title { font-size:clamp(0.75em,2.5vw,1em); color:#6a0dad; font-weight:bold; text-align:center; }
-    .mute-btn { width:38px; height:38px; border:2px solid #ddd; border-radius:50%; background:white; font-size:1.1em; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .mute-btn { width:44px; height:44px; min-height:44px; border:2px solid #ddd; border-radius:50%; background:white; font-size:1.1em; cursor:pointer; display:flex; align-items:center; justify-content:center; touch-action:manipulation; }
 
     .instruction { text-align:center; font-size:clamp(0.95em,3vw,1.1em); color:#333; font-weight:700; margin-bottom:12px; padding:0 4px; flex-shrink:0; line-height:1.4; }
 
@@ -50,7 +52,7 @@
     }
 
     /* ── FLIP CARD ── */
-    .card { aspect-ratio: 3/4; perspective: 700px; cursor: pointer; }
+    .card { aspect-ratio: 3/4; perspective: 700px; cursor: pointer; touch-action: manipulation; }
     .card-inner {
       width: 100%; height: 100%; position: relative;
       transform-style: preserve-3d;
@@ -88,7 +90,11 @@
       object-fit: contain;
       border-radius: 8px;
       flex-shrink: 0;
+      -webkit-user-drag: none;
+      opacity: 0;
+      transition: opacity 0.3s;
     }
+    .card-front img.loaded { opacity: 1; }
     .card-label { font-size: clamp(0.6em,1.8vw,0.78em); font-weight:800; color:#444; text-align:center; line-height:1.2; }
 
     /* ── STATES ── */
@@ -118,7 +124,7 @@
 
     /* ── BOTTOM ── */
     .bottom-row { display:flex; justify-content:center; position:fixed; bottom:16px; left:0; right:0; z-index:50; pointer-events:none; }
-    .btn-restart { pointer-events:all; background:linear-gradient(135deg,#FF9800,#F57C00); color:white; border:none; padding:12px 32px; border-radius:40px; font-size:1em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 5px 14px rgba(255,152,0,0.4); }
+    .btn-restart { pointer-events:all; background:linear-gradient(135deg,#FF9800,#F57C00); color:white; border:none; padding:12px 32px; border-radius:40px; font-size:1em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 5px 14px rgba(255,152,0,0.4); min-height:44px; touch-action:manipulation; }
 
     /* ── TOAST ── */
     #toast { position:fixed; top:18%; left:50%; transform:translateX(-50%) scale(0.7); padding:14px 30px; border-radius:50px; font-size:1.5em; font-weight:bold; color:white; pointer-events:none; opacity:0; transition:opacity 0.2s,transform 0.2s; z-index:500; white-space:nowrap; box-shadow:0 8px 24px rgba(0,0,0,0.2); }
@@ -135,7 +141,7 @@
     .end-sub    { color:rgba(255,255,255,0.9); font-size:1.1em; }
     .end-score-box { background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.35); border-radius:20px; padding:16px 40px; color:white; font-size:1.8em; font-weight:bold; }
     .end-stars  { font-size:2.2em; letter-spacing:4px; }
-    .btn-play-again { background:#FFD700; color:#333; border:none; padding:15px 45px; border-radius:40px; font-size:1.2em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,0.2); margin-top:8px; }
+    .btn-play-again { background:#FFD700; color:#333; border:none; padding:15px 45px; border-radius:40px; font-size:1.2em; font-family:inherit; font-weight:bold; cursor:pointer; box-shadow:0 6px 20px rgba(0,0,0,0.2); margin-top:8px; min-height:44px; touch-action:manipulation; }
 
     @media (max-width: 768px) {
       #game-screen { padding: 10px 10px 70px; }
@@ -306,10 +312,12 @@ function buildGrid() {
           </div>
         </div>
         <div class="card-front">
-          <img src="${c.img}" alt="${c.label}">
+          <img src="${c.img}" alt="${c.label}" style="-webkit-user-drag:none">
           <div class="card-label">${c.label}</div>
         </div>
       </div>`;
+    const img = card.querySelector('img');
+    if (img.complete) { img.classList.add('loaded'); } else { img.onload = () => img.classList.add('loaded'); }
     card.addEventListener('click',    () => flipCard(card));
     card.addEventListener('touchend', e  => { e.preventDefault(); flipCard(card); }, { passive: false });
     grid.appendChild(card);
