@@ -21,24 +21,21 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .progress-label{font-size:0.85em;color:#777;white-space:nowrap}
 .progress-bar-wrap{flex:1;height:10px;background:#e0e0e0;border-radius:5px;overflow:hidden}
 .progress-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#4CAF50,#8BC34A);transition:width 0.5s ease}
-.instruction{text-align:center;font-size:clamp(0.92em,3vw,1.15em);color:#333;font-weight:800;margin-bottom:8px;padding:0 6px;line-height:1.4;flex-shrink:0}
+.instruction{text-align:center;font-size:clamp(0.92em,3vw,1.15em);color:#333;font-weight:800;margin-bottom:6px;padding:0 6px;line-height:1.4;flex-shrink:0}
+.draw-tip{text-align:center;font-size:clamp(0.78em,2.4vw,0.9em);color:#888;margin-bottom:8px;flex-shrink:0}
 .act-card{background:white;border-radius:24px;padding:18px 14px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;flex-shrink:0}
 
 /* ── Circle Activity ── */
-.objects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:100%;max-width:440px}
-.obj-card{background:#fafafa;border-radius:18px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;border:4px solid #e0e0e0;box-shadow:0 3px 10px rgba(0,0,0,0.07);transition:transform 0.15s,border-color 0.2s,background 0.2s;touch-action:manipulation;position:relative}
-.obj-card:active{transform:scale(0.94)}
-.img-ring{position:relative;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;border:5px solid transparent;padding:6px;transition:border-color 0.3s,box-shadow 0.3s}
-.obj-card img{width:clamp(60px,14vw,88px);height:clamp(60px,14vw,88px);object-fit:contain;display:block}
+.circle-wrap{position:relative;width:100%;max-width:440px}
+.objects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%}
+.obj-card{background:#fafafa;border-radius:18px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;border:3px solid #e0e0e0;box-shadow:0 3px 10px rgba(0,0,0,0.07);transition:border-color 0.2s,background 0.2s;position:relative;pointer-events:none}
+.obj-card img{width:clamp(62px,14vw,90px);height:clamp(62px,14vw,90px);object-fit:contain}
 .obj-label{font-size:clamp(0.8em,2.5vw,1em);font-weight:800;color:#444;text-align:center}
-.obj-card.correct{background:#E8F5E9}
-.obj-card.correct .img-ring{border-color:#4CAF50;box-shadow:0 0 0 4px rgba(76,175,80,0.25);animation:circleAppear 0.4s ease}
-.obj-card.wrong{animation:shakeWrong 0.4s ease}
-.obj-card.wrong .img-ring{border-color:#f44336;box-shadow:0 0 0 4px rgba(244,67,54,0.2)}
-.obj-card.hint-pulse .img-ring{border-color:#FFD700;animation:pulseHint 0.9s ease-in-out 2}
-.result-icon{position:absolute;top:-10px;right:-10px;font-size:1.8em;display:none}
-.obj-card.correct .result-icon,.obj-card.wrong .result-icon{display:block}
-@keyframes circleAppear{0%{transform:scale(0.6);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.obj-card.correct{border-color:#4CAF50;background:#E8F5E9}
+.obj-card.wrong-flash{border-color:#f44336;background:#FFEBEE;animation:shakeWrong 0.4s ease}
+.result-icon{position:absolute;top:-12px;right:-12px;font-size:1.8em;display:none}
+.obj-card.correct .result-icon{display:block}
+#circle-canvas{position:absolute;top:0;left:0;width:100%;height:100%;touch-action:none;cursor:crosshair;z-index:10}
 
 /* ── Shape badge ── */
 .shape-badge{color:white;font-size:1.3em;font-weight:800;padding:8px 28px;border-radius:50px;letter-spacing:0.05em}
@@ -63,8 +60,8 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 
 #toast{position:fixed;top:18%;left:50%;transform:translateX(-50%) scale(0.7);padding:13px 28px;border-radius:50px;font-size:1.35em;font-weight:bold;color:white;pointer-events:none;opacity:0;transition:opacity 0.2s,transform 0.2s;z-index:500;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
 #toast.show{opacity:1;transform:translateX(-50%) scale(1)}
-#hint-guide{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) scale(0);background:#FF9800;color:white;padding:10px 22px;border-radius:16px;font-size:clamp(0.85em,2.8vw,1em);font-weight:800;z-index:500;transition:transform 0.3s;max-width:88vw;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.2)}
-#hint-guide.show{transform:translateX(-50%) scale(1)}
+#hint-bar{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) scale(0);background:#FF9800;color:white;padding:10px 22px;border-radius:16px;font-size:clamp(0.85em,2.8vw,1em);font-weight:800;z-index:500;transition:transform 0.3s;max-width:88vw;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.2)}
+#hint-bar.show{transform:translateX(-50%) scale(1)}
 
 .confetti{position:fixed;pointer-events:none;z-index:9998;border-radius:2px}
 #end-screen{display:none;position:fixed;inset:0;background:linear-gradient(160deg,#4a148c,#7b1fa2,#ab47bc);flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:200;text-align:center;padding:30px}
@@ -75,9 +72,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .end-stars{font-size:2.2em;letter-spacing:4px}
 .btn-play-again{background:#FFD700;color:#333;border:none;padding:15px 44px;border-radius:40px;font-size:1.2em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.2);margin-top:8px}
 
-@keyframes popCorrect{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
 @keyframes shakeWrong{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-@keyframes pulseHint{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.7),0 3px 10px rgba(0,0,0,0.07)}50%{box-shadow:0 0 0 12px rgba(255,215,0,0),0 3px 10px rgba(0,0,0,0.07)}}
 @keyframes trophySpin{from{transform:rotate(-20deg) scale(0)}60%{transform:rotate(10deg) scale(1.1)}to{transform:rotate(0) scale(1)}}
 @media(max-width:480px){
   #game-screen{padding:8px 10px 72px}
@@ -86,7 +81,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   .shape-badge{font-size:1.1em;padding:6px 18px}
   .btn-next{padding:11px 24px;font-size:0.95em}
   .btn-restart{padding:10px 22px;font-size:0.92em}
-  .objects-grid{gap:10px}
+  .objects-grid{gap:8px}
   .obj-card{padding:10px 6px;gap:6px}
 }
 </style>
@@ -97,7 +92,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   <img id="intro-logo" src="Assets/innovinelogo.png" alt="Innovine" onerror="this.style.display='none'">
 </div>
 <div id="toast"></div>
-<div id="hint-guide"></div>
+<div id="hint-bar"></div>
 
 <div id="game-screen">
   <div class="hdr">
@@ -110,6 +105,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
   <div class="instruction" id="instruction-txt"></div>
+  <div class="draw-tip" id="draw-tip-txt"></div>
   <div class="act-card" id="act-area"></div>
   <div class="bottom-row">
     <button class="btn-restart" onclick="restartGame()">&#128260; &nbsp;Restart</button>
@@ -166,8 +162,8 @@ const SCREENS = [
   },
   {
     type: 'draw',
-    instr: 'Colour the Kite! &#129001; Kites fly high using wind!',
-    tts: 'Colour the kite! Kites use wind to fly high in the sky!',
+    instr: 'Colour the Kite! Kites fly high using wind!',
+    tts: 'Colour the kite!',
     shapeName: 'Kite', shapeColor: '#1565C0',
     guideSVG: `
       <polygon points="140,18 262,140 140,262 18,140" fill="none" stroke="#BDBDBD" stroke-width="4" stroke-dasharray="9,5"/>
@@ -178,8 +174,8 @@ const SCREENS = [
   },
   {
     type: 'draw',
-    instr: 'Colour the Hot Air Balloon! &#127920; Hot air makes it rise!',
-    tts: 'Colour the hot air balloon! Hot air fills the balloon and makes it rise into the sky!',
+    instr: 'Colour the Hot Air Balloon! Hot air makes it rise!',
+    tts: 'Colour the hot air balloon!',
     shapeName: 'Balloon', shapeColor: '#E65100',
     guideSVG: `
       <ellipse cx="140" cy="118" rx="90" ry="102" fill="none" stroke="#BDBDBD" stroke-width="4" stroke-dasharray="9,5"/>
@@ -193,8 +189,8 @@ const SCREENS = [
   },
   {
     type: 'draw',
-    instr: 'Colour the Windmill! &#127807; Wind spins the blades!',
-    tts: 'Colour the windmill! Wind turns the blades of the windmill around and around!',
+    instr: 'Colour the Windmill! Wind spins the blades!',
+    tts: 'Colour the windmill!',
     shapeName: 'Windmill', shapeColor: '#2E7D32',
     guideSVG: `
       <polygon points="122,268 158,268 150,100 130,100" fill="none" stroke="#BDBDBD" stroke-width="4" stroke-dasharray="9,5"/>
@@ -213,6 +209,7 @@ const DRAW_COLORS = ['#E53935','#1565C0','#2E7D32','#F57F17','#6A1B9A','#FF69B4'
 /* ── State ── */
 let curScreen=0, score=0, muted=false;
 let _circleFound=0, _circleTotalAir=0, _circleWrong=false, _circleWrongCount=0, _circleAutoRevealed=false;
+let _correctCircles=[];
 let drawColor='#E53935', isErasing=false;
 
 /* ── Audio ── */
@@ -244,90 +241,202 @@ function loadScreen(){
   const s=SCREENS[curScreen];
   document.getElementById('step-num').textContent=curScreen+1;
   document.getElementById('prog-bar').style.width=((curScreen/SCREENS.length)*100)+'%';
-  document.getElementById('instruction-txt').innerHTML=s.instr;
+  document.getElementById('instruction-txt').textContent=s.instr;
   speak(s.tts);
   hideHint();
-  if(s.type==='circle') renderCircle(s);
-  else renderDraw(s);
+  if(s.type==='circle'){
+    document.getElementById('draw-tip-txt').textContent='✏️ Draw a circle around each correct object!';
+    renderCircle(s);
+  } else {
+    document.getElementById('draw-tip-txt').textContent='';
+    renderDraw(s);
+  }
 }
 
 /* ── Circle Activity ── */
 function renderCircle(s){
   _circleFound=0; _circleWrong=false; _circleWrongCount=0; _circleAutoRevealed=false;
+  _correctCircles=[];
   _circleTotalAir=s.items.filter(it=>it.air).length;
 
   const cards=s.items.map((it,i)=>`
-    <div class="obj-card" id="oc-${i}" onclick="tapCard(${i})">
+    <div class="obj-card" id="oc-${i}">
       <span class="result-icon" id="ri-${i}"></span>
-      <div class="img-ring" id="ring-${i}">
-        <img src="${it.img}" alt="${it.label}" onerror="this.style.display='none'">
-      </div>
+      <img src="${it.img}" alt="${it.label}" onerror="this.style.display='none'">
       <div class="obj-label">${it.label}</div>
     </div>`).join('');
 
-  document.getElementById('act-area').innerHTML=`<div class="objects-grid">${cards}</div>`;
+  document.getElementById('act-area').innerHTML=`
+    <div class="circle-wrap" id="circle-wrap">
+      <div class="objects-grid" id="obj-grid">${cards}</div>
+      <canvas id="circle-canvas"></canvas>
+    </div>`;
+
+  requestAnimationFrame(()=>setupCircleCanvas(s));
 }
 
-function tapCard(i){
-  if(_circleAutoRevealed)return;
-  const s=SCREENS[curScreen];
-  const card=document.getElementById('oc-'+i);
-  const ri=document.getElementById('ri-'+i);
-  if(!card||card.classList.contains('correct'))return;
+function setupCircleCanvas(s){
+  const cv=document.getElementById('circle-canvas');
+  const grid=document.getElementById('obj-grid');
+  if(!cv||!grid)return;
+  const r=grid.getBoundingClientRect();
+  cv.width=r.width; cv.height=r.height;
+  const ctx=cv.getContext('2d');
+  let drawing=false, pathPts=[];
 
-  const item=s.items[i];
-  if(item.air){
-    card.classList.remove('hint-pulse');
+  cv.addEventListener('pointerdown',e=>{
+    if(_circleAutoRevealed)return;
+    e.preventDefault();
+    drawing=true; pathPts=[];
+    cv.setPointerCapture(e.pointerId);
+    const p=cvXY(cv,e); pathPts.push(p);
+    ctx.beginPath(); ctx.moveTo(p.x,p.y);
+  },{passive:false});
+
+  cv.addEventListener('pointermove',e=>{
+    if(!drawing)return; e.preventDefault();
+    const p=cvXY(cv,e); pathPts.push(p);
+    ctx.lineTo(p.x,p.y);
+    ctx.strokeStyle='rgba(50,150,80,0.75)';
+    ctx.lineWidth=6; ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x,p.y);
+  },{passive:false});
+
+  cv.addEventListener('pointerup',()=>{
+    if(!drawing)return; drawing=false;
+    redrawCorrect(cv);
+    if(pathPts.length>=6) evaluateCircle(s,cv,ctx,pathPts);
+    pathPts=[];
+  });
+  cv.addEventListener('pointercancel',()=>{drawing=false;redrawCorrect(cv);pathPts=[];});
+}
+
+function cvXY(cv,e){
+  const r=cv.getBoundingClientRect();
+  return {x:(e.clientX-r.left)*(cv.width/r.width), y:(e.clientY-r.top)*(cv.height/r.height)};
+}
+
+function evaluateCircle(s,cv,ctx,pts){
+  // Min stroke length
+  let len=0;
+  for(let i=1;i<pts.length;i++) len+=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y);
+  if(len<50)return;
+
+  // Centroid
+  const cx=pts.reduce((a,p)=>a+p.x,0)/pts.length;
+  const cy=pts.reduce((a,p)=>a+p.y,0)/pts.length;
+
+  // Angular coverage — must be at least 210° to count as a circle
+  const angles=pts.map(p=>Math.atan2(p.y-cy,p.x-cx));
+  const sorted=[...angles].sort((a,b)=>a-b);
+  let maxGap=sorted[0]+Math.PI*2-sorted[sorted.length-1];
+  for(let i=1;i<sorted.length;i++) maxGap=Math.max(maxGap,sorted[i]-sorted[i-1]);
+  if(maxGap>(150*Math.PI/180))return; // gap >150° → not a circle
+
+  // Average radius
+  const dists=pts.map(p=>Math.hypot(p.x-cx,p.y-cy));
+  const r=Math.max(dists.reduce((a,d)=>a+d,0)/dists.length,36);
+
+  // Which card does the centroid fall on?
+  const cvRect=cv.getBoundingClientRect();
+  const scale=cv.width/cvRect.width;
+  let hitIdx=-1;
+  for(let i=0;i<s.items.length;i++){
+    const card=document.getElementById('oc-'+i);
+    if(!card)continue;
+    const cr=card.getBoundingClientRect();
+    const l=(cr.left-cvRect.left)*scale, t=(cr.top-cvRect.top)*scale;
+    const rr=l+cr.width*scale, b=t+cr.height*scale;
+    if(cx>=l&&cx<=rr&&cy>=t&&cy<=b){hitIdx=i;break;}
+  }
+  if(hitIdx<0)return;
+
+  const card=document.getElementById('oc-'+hitIdx);
+  if(card.classList.contains('correct'))return;
+
+  if(s.items[hitIdx].air){
+    // Correct — draw green circle, mark card
+    _correctCircles.push({cx,cy,r});
+    redrawCorrect(cv);
     card.classList.add('correct');
-    ri.textContent='✅';
+    document.getElementById('ri-'+hitIdx).textContent='✅';
     _circleFound++;
-    // Only celebrate when ALL correct items found
     if(_circleFound===_circleTotalAir){
       if(!_circleWrong){score++;document.getElementById('score-val').textContent=score;}
-      showToast('&#11088; Well done!','#4CAF50');
+      showToast('⭐ Well done!','#4CAF50');
       speak('Well done!');
       play(sndClaps);
       spawnConfetti();
       setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},2500);
     }
   } else {
-    if(card.classList.contains('wrong-locked'))return;
-    card.classList.add('wrong','wrong-locked');
-    ri.textContent='❌';
+    // Wrong — flash red circle, erase after 900ms
+    _circleWrong=true; _circleWrongCount++;
+    drawArc(ctx,cx,cy,r,'#f44336',0.85,7,false);
     play(sndWrong);
-    _circleWrong=true;
-    _circleWrongCount++;
-    setTimeout(()=>{card.classList.remove('wrong');ri.textContent='';},900);
+    showToast('❌ Try again!','#f44336');
+    setTimeout(()=>redrawCorrect(cv),900);
 
     if(_circleWrongCount===1){
-      showToast('&#10060; Try again!','#f44336');
       showHint(s.hint);
-      // Pulse the correct cards as a clue
+      // Pulse dashed yellow hint circles around correct unfound items
       setTimeout(()=>{
-        s.items.forEach((it,idx)=>{
-          if(it.air&&!document.getElementById('oc-'+idx).classList.contains('correct'))
-            document.getElementById('oc-'+idx).classList.add('hint-pulse');
-        });
-        setTimeout(()=>document.querySelectorAll('.hint-pulse').forEach(c=>c.classList.remove('hint-pulse')),2200);
+        drawHintCircles(s,cv,ctx);
+        setTimeout(()=>redrawCorrect(cv),2000);
       },950);
     } else {
-      // Second+ wrong: auto-reveal remaining correct items and advance
-      showToast('&#128161; These need air!','#FF9800');
+      // 2nd wrong — auto reveal
       _circleAutoRevealed=true;
+      showToast('💡 These need air!','#FF9800');
       setTimeout(()=>{
         s.items.forEach((it,idx)=>{
-          if(it.air){
-            const c=document.getElementById('oc-'+idx);
-            const r=document.getElementById('ri-'+idx);
-            c.classList.remove('hint-pulse');
-            c.classList.add('correct');
-            r.textContent='✅';
-          }
+          if(!it.air||document.getElementById('oc-'+idx).classList.contains('correct'))return;
+          const c=document.getElementById('oc-'+idx);
+          c.classList.add('correct');
+          document.getElementById('ri-'+idx).textContent='✅';
+          const cvRect2=cv.getBoundingClientRect();
+          const cr=c.getBoundingClientRect();
+          const ccx=((cr.left+cr.width/2)-cvRect2.left)*(cv.width/cvRect2.width);
+          const ccy=((cr.top+cr.height/2)-cvRect2.top)*(cv.height/cvRect2.height);
+          const rr=Math.min(cr.width,cr.height)*0.38*(cv.width/cvRect2.width);
+          _correctCircles.push({cx:ccx,cy:ccy,r:rr});
         });
+        redrawCorrect(cv);
         setTimeout(()=>nextScreen(),2000);
       },1000);
     }
   }
+}
+
+function drawArc(ctx,cx,cy,r,color,alpha,width,dashed){
+  ctx.save();
+  ctx.strokeStyle=color; ctx.lineWidth=width; ctx.globalAlpha=alpha;
+  ctx.shadowColor=color; ctx.shadowBlur=14; ctx.lineCap='round';
+  if(dashed) ctx.setLineDash([10,6]); else ctx.setLineDash([]);
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+  ctx.restore();
+}
+
+function redrawCorrect(cv){
+  if(!cv)cv=document.getElementById('circle-canvas');
+  if(!cv)return;
+  const ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,cv.width,cv.height);
+  _correctCircles.forEach(c=>drawArc(ctx,c.cx,c.cy,c.r,'#4CAF50',1,7,false));
+}
+
+function drawHintCircles(s,cv,ctx){
+  const cvRect=cv.getBoundingClientRect();
+  const scale=cv.width/cvRect.width;
+  s.items.forEach((it,idx)=>{
+    if(!it.air||document.getElementById('oc-'+idx).classList.contains('correct'))return;
+    const card=document.getElementById('oc-'+idx);
+    const cr=card.getBoundingClientRect();
+    const ccx=((cr.left+cr.width/2)-cvRect.left)*scale;
+    const ccy=((cr.top+cr.height/2)-cvRect.top)*scale;
+    const rr=Math.min(cr.width,cr.height)*0.4*scale;
+    drawArc(ctx,ccx,ccy,rr,'#FFD700',0.9,5,true);
+  });
 }
 
 /* ── Draw / Colour Activity ── */
@@ -391,7 +500,7 @@ function canvasXY(canvas,e){
 
 function finishStep(){
   score++; document.getElementById('score-val').textContent=score;
-  showToast('&#11088; Beautiful!','#4CAF50');
+  showToast('⭐ Beautiful!','#4CAF50');
   window.speechSynthesis?.cancel();
   play(sndClaps); spawnConfetti();
   setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},3000);
@@ -420,18 +529,18 @@ function restartGame(){
 let toastTimer=null, hintTimer=null;
 function showToast(msg,bg){
   const el=document.getElementById('toast');
-  el.innerHTML=msg; el.style.background=bg;
+  el.textContent=msg; el.style.background=bg;
   el.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>el.classList.remove('show'),1600);
 }
 function showHint(msg){
-  const h=document.getElementById('hint-guide');
-  h.textContent='&#128161; '+msg; h.classList.add('show');
+  const h=document.getElementById('hint-bar');
+  h.textContent='💡 '+msg; h.classList.add('show');
   clearTimeout(hintTimer);
   hintTimer=setTimeout(()=>h.classList.remove('show'),3500);
 }
-function hideHint(){clearTimeout(hintTimer);document.getElementById('hint-guide').classList.remove('show');}
+function hideHint(){clearTimeout(hintTimer);document.getElementById('hint-bar').classList.remove('show');}
 
 /* ── Confetti ── */
 const CC=['#FFD700','#FF6B6B','#4CAF50','#2196F3','#FF9800','#AB47BC','#26C6DA'];
