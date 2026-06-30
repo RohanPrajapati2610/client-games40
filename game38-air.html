@@ -362,33 +362,37 @@ function evaluateCircle(s,cv,ctx,pts){
     document.getElementById('ri-'+hitIdx).textContent='✅';
     _circleFound++;
     if(_circleFound===_circleTotalAir){
+      // All correct found — full celebration
       if(!_circleWrong){score++;document.getElementById('score-val').textContent=score;}
-      showToast('⭐ Well done!','#4CAF50');
-      speak('Well done!');
+      window.speechSynthesis?.cancel();
+      showToast('⭐ Correct!','#4CAF50');
       play(sndClaps);
       spawnConfetti();
-      setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},2500);
+      setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},3200);
+    } else {
+      // Found one, still need more
+      showToast('✅ Good! Find one more!','#4CAF50');
     }
   } else {
     // Wrong — flash red circle, erase after 900ms
     _circleWrong=true; _circleWrongCount++;
     drawArc(ctx,cx,cy,r,'#f44336',0.85,7,false);
     play(sndWrong);
-    showToast('❌ Try again!','#f44336');
-    setTimeout(()=>redrawCorrect(cv),900);
-
     if(_circleWrongCount===1){
+      showToast('❌ Try again!','#f44336');
+      setTimeout(()=>redrawCorrect(cv),800);
       showHint(s.hint);
-      // Pulse dashed yellow hint circles around correct unfound items
+      // Dashed yellow hint circles around correct items after red clears
       setTimeout(()=>{
         drawHintCircles(s,cv,ctx);
         setTimeout(()=>redrawCorrect(cv),2000);
-      },950);
+      },850);
     } else {
-      // 2nd wrong — auto reveal
+      // 2nd wrong — flash red, then show green correct circles + "Correct answer!"
       _circleAutoRevealed=true;
-      showToast('💡 These need air!','#FF9800');
+      showToast('❌ Wrong!','#f44336');
       setTimeout(()=>{
+        hideHint();
         s.items.forEach((it,idx)=>{
           if(!it.air||document.getElementById('oc-'+idx).classList.contains('correct'))return;
           const c=document.getElementById('oc-'+idx);
@@ -402,7 +406,8 @@ function evaluateCircle(s,cv,ctx,pts){
           _correctCircles.push({cx:ccx,cy:ccy,r:rr});
         });
         redrawCorrect(cv);
-        setTimeout(()=>nextScreen(),2000);
+        showToast('💡 Correct answer!','#FF9800');
+        setTimeout(()=>nextScreen(),3000);
       },1000);
     }
   }
