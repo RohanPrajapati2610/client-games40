@@ -36,7 +36,7 @@
         #001a33 0%, #003366 18%, #005599 42%,
         #0077bb 62%, #0099cc 80%, #00bbdd 100%
       );
-      padding: 12px 14px 148px;
+      padding: 12px 14px 72px;
       overflow-y: auto; position: relative;
     }
 
@@ -124,8 +124,8 @@
 
     /* ── THE BUBBLE — container only, no visual styling ── */
     .bubble {
-      width: clamp(130px, 26vh, 210px);
-      height: clamp(130px, 26vh, 210px);
+      width: clamp(108px, 22vh, 190px);
+      height: clamp(108px, 22vh, 190px);
       position: relative;
       cursor: pointer; touch-action: manipulation;
       display: flex; align-items: center; justify-content: center;
@@ -266,9 +266,14 @@
       .bubbles-grid{ gap:14px; }
     }
     @media(max-height:640px){
-      .bubble{ width:clamp(96px,22vw,130px); height:clamp(96px,22vw,130px); }
-      .bubble-emoji{ font-size:clamp(2.4em,6.5vw,3.4em); }
-      .bubbles-grid{ gap:12px; }
+      #game-screen{ padding-bottom:64px; }
+      .bubble{ width:clamp(88px,19vh,130px); height:clamp(88px,19vh,130px); }
+      .bubbles-grid{ gap:clamp(8px,2vh,14px); }
+      .instruction{ font-size:clamp(0.95em,3.5vw,1.2em); margin-bottom:8px; }
+    }
+    @media(max-height:520px){
+      .bubble{ width:clamp(76px,17vh,110px); height:clamp(76px,17vh,110px); }
+      .bubbles-grid{ gap:8px; }
     }
   </style>
 </head>
