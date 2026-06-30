@@ -156,6 +156,17 @@ QUESTIONS.forEach(q=>{ const i=new Image(); i.src=q.img; });
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
+/* Shuffle but guarantee no two consecutive questions share the same word */
+function shuffleMixed(arr){
+  let result;
+  let tries=0;
+  do{
+    result=shuffle(arr);
+    tries++;
+  } while(tries<200 && result.some((q,i)=>i>0&&q.word===result[i-1].word));
+  return result;
+}
+
 function scramble(word){
   const letters=word.split('');
   let result;
@@ -348,7 +359,7 @@ function startGame(){
   document.getElementById('intro-screen').style.display='none';
   document.getElementById('game-screen').style.display='flex';
   curQ=0; score=0;
-  shuffledQ=shuffle(QUESTIONS);
+  shuffledQ=shuffleMixed(QUESTIONS);
   loadQuestion();
 }
 
@@ -357,7 +368,7 @@ function restartGame(){
   document.getElementById('end-screen').style.display='none';
   document.getElementById('game-screen').style.display='flex';
   curQ=0; score=0;
-  shuffledQ=shuffle(QUESTIONS);
+  shuffledQ=shuffleMixed(QUESTIONS);
   loadQuestion();
 }
 
