@@ -28,13 +28,17 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .objects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:100%;max-width:440px}
 .obj-card{background:#fafafa;border-radius:18px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;border:4px solid #e0e0e0;box-shadow:0 3px 10px rgba(0,0,0,0.07);transition:transform 0.15s,border-color 0.2s,background 0.2s;touch-action:manipulation;position:relative}
 .obj-card:active{transform:scale(0.94)}
-.obj-card img{width:clamp(65px,15vw,95px);height:clamp(65px,15vw,95px);object-fit:contain}
+.img-ring{position:relative;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;border:5px solid transparent;padding:6px;transition:border-color 0.3s,box-shadow 0.3s}
+.obj-card img{width:clamp(60px,14vw,88px);height:clamp(60px,14vw,88px);object-fit:contain;display:block}
 .obj-label{font-size:clamp(0.8em,2.5vw,1em);font-weight:800;color:#444;text-align:center}
-.obj-card.correct{border-color:#4CAF50;background:#E8F5E9}
-.obj-card.wrong{border-color:#f44336;background:#FFEBEE;animation:shakeWrong 0.4s ease}
-.obj-card.hint-pulse{border-color:#FFD700;animation:pulseHint 0.9s ease-in-out 2}
-.result-icon{position:absolute;top:-12px;right:-12px;font-size:1.8em;display:none}
+.obj-card.correct{background:#E8F5E9}
+.obj-card.correct .img-ring{border-color:#4CAF50;box-shadow:0 0 0 4px rgba(76,175,80,0.25);animation:circleAppear 0.4s ease}
+.obj-card.wrong{animation:shakeWrong 0.4s ease}
+.obj-card.wrong .img-ring{border-color:#f44336;box-shadow:0 0 0 4px rgba(244,67,54,0.2)}
+.obj-card.hint-pulse .img-ring{border-color:#FFD700;animation:pulseHint 0.9s ease-in-out 2}
+.result-icon{position:absolute;top:-10px;right:-10px;font-size:1.8em;display:none}
 .obj-card.correct .result-icon,.obj-card.wrong .result-icon{display:block}
+@keyframes circleAppear{0%{transform:scale(0.6);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
 
 /* ── Shape badge ── */
 .shape-badge{color:white;font-size:1.3em;font-weight:800;padding:8px 28px;border-radius:50px;letter-spacing:0.05em}
@@ -126,8 +130,8 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 const SCREENS = [
   {
     type: 'circle',
-    instr: 'Circle the objects that need air! &#128168;',
-    tts: 'Circle the objects that need air! Tap all the things that use air to work or move!',
+    instr: 'Circle the objects that need air!',
+    tts: 'Circle the objects that need air!',
     hint: 'Things that fly or inflate need air!',
     items: [
       { img:'Assets/balloon.png',  label:'Balloon',  air:true  },
@@ -138,8 +142,8 @@ const SCREENS = [
   },
   {
     type: 'circle',
-    instr: 'Which ones need air to work? &#127800;',
-    tts: 'Which ones need air to work? Tap all the correct ones!',
+    instr: 'Which ones need air to work?',
+    tts: 'Which ones need air to work?',
     hint: 'Tyres need air inside, and windmills spin with wind!',
     items: [
       { img:'Assets/windmill.png', label:'Windmill', air:true  },
@@ -150,8 +154,8 @@ const SCREENS = [
   },
   {
     type: 'circle',
-    instr: 'Tap things that use air! &#9992;&#65039;',
-    tts: 'Tap things that use air! Some fly, some sail — which need air?',
+    instr: 'Circle the things that use air!',
+    tts: 'Circle the things that use air!',
     hint: 'Aeroplanes fly through air, and sail boats use wind!',
     items: [
       { img:'Assets/aeroplane.png', label:'Aeroplane', air:true  },
@@ -255,7 +259,9 @@ function renderCircle(s){
   const cards=s.items.map((it,i)=>`
     <div class="obj-card" id="oc-${i}" onclick="tapCard(${i})">
       <span class="result-icon" id="ri-${i}"></span>
-      <img src="${it.img}" alt="${it.label}" onerror="this.style.display='none'">
+      <div class="img-ring" id="ring-${i}">
+        <img src="${it.img}" alt="${it.label}" onerror="this.style.display='none'">
+      </div>
       <div class="obj-label">${it.label}</div>
     </div>`).join('');
 
@@ -275,12 +281,14 @@ function tapCard(i){
     card.classList.add('correct');
     ri.textContent='✅';
     _circleFound++;
-    play(sndClaps);
-    showToast('&#11088; Correct!','#4CAF50');
-    spawnConfetti();
+    // Only celebrate when ALL correct items found
     if(_circleFound===_circleTotalAir){
       if(!_circleWrong){score++;document.getElementById('score-val').textContent=score;}
-      setTimeout(()=>nextScreen(),1800);
+      showToast('&#11088; Well done!','#4CAF50');
+      speak('Well done!');
+      play(sndClaps);
+      spawnConfetti();
+      setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;nextScreen();},2500);
     }
   } else {
     if(card.classList.contains('wrong-locked'))return;
@@ -292,9 +300,9 @@ function tapCard(i){
     setTimeout(()=>{card.classList.remove('wrong');ri.textContent='';},900);
 
     if(_circleWrongCount===1){
-      // First wrong: show hint + pulse correct cards
       showToast('&#10060; Try again!','#f44336');
       showHint(s.hint);
+      // Pulse the correct cards as a clue
       setTimeout(()=>{
         s.items.forEach((it,idx)=>{
           if(it.air&&!document.getElementById('oc-'+idx).classList.contains('correct'))
@@ -303,7 +311,7 @@ function tapCard(i){
         setTimeout(()=>document.querySelectorAll('.hint-pulse').forEach(c=>c.classList.remove('hint-pulse')),2200);
       },950);
     } else {
-      // Second+ wrong: auto-reveal all remaining correct items
+      // Second+ wrong: auto-reveal remaining correct items and advance
       showToast('&#128161; These need air!','#FF9800');
       _circleAutoRevealed=true;
       setTimeout(()=>{
