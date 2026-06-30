@@ -123,7 +123,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
     <span class="progress-label">Q <span id="q-num">1</span> / 7</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
-  <div class="instruction" id="instruction-txt">Find the matching word!</div>
+  <div class="instruction" id="instruction-txt">Find the branch of Indian Armed Forces!</div>
   <div class="q-card" id="q-card"></div>
   <div class="bottom-row">
     <button class="btn-restart" onclick="restartGame()">&#128260; &nbsp;Restart</button>
@@ -141,13 +141,13 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 
 <script>
 const QUESTIONS = [
-  { img:'Assets/army.png',        label:'Army Soldier', word:'ARMY',     question:'Find the matching word!', gradient:'linear-gradient(135deg,#43A047,#1B5E20)', confetti:['#1B5E20','#4CAF50','#43A047','#A5D6A7','#8BC34A'] },
-  { img:'Assets/tank.png',        label:'Tank',         word:'ARMY',     question:'Find the matching word!', gradient:'linear-gradient(135deg,#43A047,#1B5E20)', confetti:['#1B5E20','#4CAF50','#43A047','#A5D6A7','#8BC34A'] },
-  { img:'Assets/navy.png',        label:'Navy Officer', word:'NAVY',     question:'Find the matching word!', gradient:'linear-gradient(135deg,#1976D2,#0D47A1)', confetti:['#0D47A1','#1565C0','#1976D2','#42A5F5','#90CAF9'] },
-  { img:'Assets/anchor.png',      label:'Anchor',       word:'NAVY',     question:'Find the matching word!', gradient:'linear-gradient(135deg,#1976D2,#0D47A1)', confetti:['#0D47A1','#1565C0','#1976D2','#42A5F5','#90CAF9'] },
-  { img:'Assets/ship.png',        label:'Ship',         word:'NAVY',     question:'Find the matching word!', gradient:'linear-gradient(135deg,#1976D2,#0D47A1)', confetti:['#0D47A1','#1565C0','#1976D2','#42A5F5','#90CAF9'] },
-  { img:'Assets/air force.png',   label:'Air Force',    word:'AIRFORCE', question:'Find the matching word!', gradient:'linear-gradient(135deg,#3949AB,#1A237E)', confetti:['#1A237E','#3949AB','#42A5F5','#90CAF9','#E3F2FD'] },
-  { img:'Assets/fighter-jet.png', label:'Fighter Jet',  word:'AIRFORCE', question:'Find the matching word!', gradient:'linear-gradient(135deg,#3949AB,#1A237E)', confetti:['#1A237E','#3949AB','#42A5F5','#90CAF9','#E3F2FD'] },
+  { img:'Assets/army.png',        label:'Army Soldier', word:'ARMY',     question:'Find the branch of Indian Armed Forces!', gradient:'linear-gradient(135deg,#43A047,#1B5E20)', confetti:['#1B5E20','#4CAF50','#43A047','#A5D6A7','#8BC34A'] },
+  { img:'Assets/tank.png',        label:'Tank',         word:'ARMY',     question:'Find the branch that uses this equipment!', gradient:'linear-gradient(135deg,#43A047,#1B5E20)', confetti:['#1B5E20','#4CAF50','#43A047','#A5D6A7','#8BC34A'] },
+  { img:'Assets/navy.png',        label:'Navy Officer', word:'NAVY',     question:'Find the branch of Indian Armed Forces!', gradient:'linear-gradient(135deg,#1976D2,#0D47A1)', confetti:['#0D47A1','#1565C0','#1976D2','#42A5F5','#90CAF9'] },
+  { img:'Assets/anchor.png',      label:'Anchor',       word:'NAVY',     question:'Find the branch that uses this equipment!', gradient:'linear-gradient(135deg,#1976D2,#0D47A1)', confetti:['#0D47A1','#1565C0','#1976D2','#42A5F5','#90CAF9'] },
+  { img:'Assets/ship.png',        label:'Ship',         word:'NAVY',     question:'Find the branch that uses this equipment!', gradient:'linear-gradient(135deg,#1976D2,#0D47A1)', confetti:['#0D47A1','#1565C0','#1976D2','#42A5F5','#90CAF9'] },
+  { img:'Assets/air force.png',   label:'Air Force',    word:'AIRFORCE', question:'Find the branch of Indian Armed Forces!', gradient:'linear-gradient(135deg,#3949AB,#1A237E)', confetti:['#1A237E','#3949AB','#42A5F5','#90CAF9','#E3F2FD'] },
+  { img:'Assets/fighter-jet.png', label:'Fighter Jet',  word:'AIRFORCE', question:'Find the branch that uses this equipment!', gradient:'linear-gradient(135deg,#3949AB,#1A237E)', confetti:['#1A237E','#3949AB','#42A5F5','#90CAF9','#E3F2FD'] },
 ];
 
 /* Preload all images */
