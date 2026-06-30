@@ -152,6 +152,10 @@ const QUESTIONS = [
   { q:'Is this a tree?',      img:'Assets/flower.png',   answer:'no'  },
 ];
 
+/* Shuffle questions so YES/NO are mixed */
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+shuffle(QUESTIONS);
+
 /* Preload all images */
 QUESTIONS.forEach(q=>{ const i=new Image(); i.src=q.img; });
 
