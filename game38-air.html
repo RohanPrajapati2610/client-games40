@@ -32,6 +32,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .obj-label{font-size:clamp(0.8em,2.5vw,1em);font-weight:800;color:#444;text-align:center}
 .obj-card.correct{border-color:#4CAF50;background:#E8F5E9}
 .obj-card.wrong{border-color:#f44336;background:#FFEBEE;animation:shakeWrong 0.4s ease}
+.obj-card.hint-pulse{border-color:#FFD700;animation:pulseHint 0.9s ease-in-out 2}
 .result-icon{position:absolute;top:-12px;right:-12px;font-size:1.8em;display:none}
 .obj-card.correct .result-icon,.obj-card.wrong .result-icon{display:block}
 
@@ -72,7 +73,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 
 @keyframes popCorrect{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
 @keyframes shakeWrong{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-@keyframes pulseHint{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.6)}50%{box-shadow:0 0 0 14px rgba(255,215,0,0)}}
+@keyframes pulseHint{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.7),0 3px 10px rgba(0,0,0,0.07)}50%{box-shadow:0 0 0 12px rgba(255,215,0,0),0 3px 10px rgba(0,0,0,0.07)}}
 @keyframes trophySpin{from{transform:rotate(-20deg) scale(0)}60%{transform:rotate(10deg) scale(1.1)}to{transform:rotate(0) scale(1)}}
 @media(max-width:480px){
   #game-screen{padding:8px 10px 72px}
@@ -207,7 +208,7 @@ const DRAW_COLORS = ['#E53935','#1565C0','#2E7D32','#F57F17','#6A1B9A','#FF69B4'
 
 /* ── State ── */
 let curScreen=0, score=0, muted=false;
-let _circleFound=0, _circleTotalAir=0, _circleWrong=false;
+let _circleFound=0, _circleTotalAir=0, _circleWrong=false, _circleWrongCount=0, _circleAutoRevealed=false;
 let drawColor='#E53935', isErasing=false;
 
 /* ── Audio ── */
@@ -248,7 +249,7 @@ function loadScreen(){
 
 /* ── Circle Activity ── */
 function renderCircle(s){
-  _circleFound=0; _circleWrong=false;
+  _circleFound=0; _circleWrong=false; _circleWrongCount=0; _circleAutoRevealed=false;
   _circleTotalAir=s.items.filter(it=>it.air).length;
 
   const cards=s.items.map((it,i)=>`
@@ -262,13 +263,15 @@ function renderCircle(s){
 }
 
 function tapCard(i){
+  if(_circleAutoRevealed)return;
   const s=SCREENS[curScreen];
   const card=document.getElementById('oc-'+i);
   const ri=document.getElementById('ri-'+i);
-  if(!card||card.classList.contains('correct')||card.classList.contains('wrong-locked'))return;
+  if(!card||card.classList.contains('correct'))return;
 
   const item=s.items[i];
   if(item.air){
+    card.classList.remove('hint-pulse');
     card.classList.add('correct');
     ri.textContent='✅';
     _circleFound++;
@@ -280,13 +283,42 @@ function tapCard(i){
       setTimeout(()=>nextScreen(),1800);
     }
   } else {
-    card.classList.add('wrong');
-    ri.textContent='❌';
+    if(card.classList.contains('wrong-locked'))return;
+    card.classList.add('wrong','wrong-locked');
+    ri.textContent='&#10060;';
     play(sndWrong);
-    showToast('&#10060; Try again!','#f44336');
-    showHint(s.hint);
     _circleWrong=true;
+    _circleWrongCount++;
     setTimeout(()=>{card.classList.remove('wrong');ri.textContent='';},900);
+
+    if(_circleWrongCount===1){
+      // First wrong: show hint + pulse correct cards
+      showToast('&#10060; Try again!','#f44336');
+      showHint(s.hint);
+      setTimeout(()=>{
+        s.items.forEach((it,idx)=>{
+          if(it.air&&!document.getElementById('oc-'+idx).classList.contains('correct'))
+            document.getElementById('oc-'+idx).classList.add('hint-pulse');
+        });
+        setTimeout(()=>document.querySelectorAll('.hint-pulse').forEach(c=>c.classList.remove('hint-pulse')),2200);
+      },950);
+    } else {
+      // Second+ wrong: auto-reveal all remaining correct items
+      showToast('&#128161; These need air!','#FF9800');
+      _circleAutoRevealed=true;
+      setTimeout(()=>{
+        s.items.forEach((it,idx)=>{
+          if(it.air){
+            const c=document.getElementById('oc-'+idx);
+            const r=document.getElementById('ri-'+idx);
+            c.classList.remove('hint-pulse');
+            c.classList.add('correct');
+            r.textContent='✅';
+          }
+        });
+        setTimeout(()=>nextScreen(),2000);
+      },1000);
+    }
   }
 }
 
