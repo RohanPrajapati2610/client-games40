@@ -18,7 +18,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 @keyframes logoBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
 /* ── GAME SCREEN ── */
-#game-screen{display:none;flex-direction:column;width:100%;max-width:620px;height:100%;padding:14px 14px 76px;overflow:hidden}
+#game-screen{display:none;flex-direction:column;width:100%;max-width:600px;height:100%;padding:12px 14px 14px;overflow:hidden}
 
 /* ── HEADER ── */
 .hdr{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:18px;padding:10px 18px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,0.1);flex-shrink:0}
@@ -33,52 +33,31 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .progress-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#4CAF50,#8BC34A);transition:width 0.5s ease}
 
 /* ── INSTRUCTION ── */
-.instruction{text-align:center;font-size:clamp(0.95em,3.2vw,1.15em);color:#333;font-weight:800;margin-bottom:8px;padding:0 6px;line-height:1.3;flex-shrink:0}
+.instruction{text-align:center;font-size:clamp(1em,3.4vw,1.2em);color:#333;font-weight:800;margin-bottom:8px;padding:0 6px;line-height:1.3;flex-shrink:0}
 
 /* ── Q CARD ── */
-.q-card{background:white;border-radius:24px;padding:18px 16px 20px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:12px;flex:1;min-height:0;justify-content:center;overflow:hidden;width:100%}
+.q-card{background:white;border-radius:24px;padding:18px 16px 20px;box-shadow:0 6px 24px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:center;gap:14px;flex:1;min-height:0;justify-content:center;overflow:hidden;width:100%}
 
-/* ── MAIN IMAGE ── */
-.main-img-wrap{display:flex;flex-direction:column;align-items:center;gap:7px;flex-shrink:0}
-.main-img{max-height:clamp(90px,20vh,165px);max-width:84%;object-fit:contain;border-radius:14px;filter:drop-shadow(0 4px 14px rgba(0,0,0,0.14));opacity:0;transition:opacity 0.3s;-webkit-user-drag:none}
-.main-img.loaded{opacity:1}
-.branch-badge{font-size:clamp(0.8em,2.8vw,1.05em);font-weight:800;padding:5px 18px;border-radius:22px;color:white;letter-spacing:0.06em}
+/* ── IMAGE ── */
+.img-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0}
+.q-img{max-height:clamp(110px,28vh,220px);max-width:90%;object-fit:contain;border-radius:16px;filter:drop-shadow(0 4px 18px rgba(0,0,0,0.16));opacity:0;transition:opacity 0.3s;-webkit-user-drag:none}
+.q-img.loaded{opacity:1}
+.img-label{font-size:clamp(0.85em,2.8vw,1.05em);font-weight:800;color:#555;background:#f5f7fa;border-radius:22px;padding:5px 20px;letter-spacing:0.04em}
 
-/* ── ITEMS USED ── */
-.items-section{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;width:100%}
-.items-label{font-size:clamp(0.72em,2.3vw,0.88em);font-weight:800;color:#666;text-align:center;letter-spacing:0.03em}
-.items-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.item-card{display:flex;flex-direction:column;align-items:center;gap:4px;background:#f5f7fa;border-radius:14px;padding:8px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.07)}
-.item-img{height:clamp(44px,9vh,64px);width:auto;max-width:80px;object-fit:contain;opacity:0;transition:opacity 0.3s}
-.item-img.loaded{opacity:1}
-.item-label{font-size:clamp(0.64em,2vw,0.8em);font-weight:800;color:#444;text-align:center}
+/* ── CHOICE BUTTONS ── */
+.choices{display:flex;flex-direction:column;gap:10px;width:100%;flex-shrink:0}
+.choice-btn{width:100%;padding:14px 20px;border:4px solid transparent;border-radius:18px;font-size:clamp(1em,4vw,1.25em);font-family:inherit;font-weight:800;color:white;cursor:pointer;touch-action:manipulation;letter-spacing:0.06em;transition:transform 0.1s,box-shadow 0.2s,border-color 0.2s;box-shadow:0 4px 14px rgba(0,0,0,0.18);position:relative;overflow:hidden}
+.choice-btn:active{transform:scale(0.96)}
 
-/* ── DIVIDER ── */
-.divider{width:100%;border-top:2px dashed #ebebeb;flex-shrink:0}
+/* States */
+.choice-btn.correct{border-color:#4CAF50 !important;box-shadow:0 0 0 6px rgba(76,175,80,0.45),0 0 30px rgba(76,175,80,0.5) !important;animation:correctPulse 0.5s ease}
+.choice-btn.wrong{animation:shakeBtn 0.45s ease}
+.choice-btn.hint{border-color:#FFD700 !important;box-shadow:0 0 0 6px rgba(255,215,0,0.45),0 0 24px rgba(255,215,0,0.5) !important;animation:hintPulse 0.9s ease-in-out infinite}
+.choice-btn.disabled{opacity:0.45;pointer-events:none}
 
-/* ── ANSWER SLOTS ── */
-.answer-row{display:flex;gap:clamp(4px,1.4vw,8px);justify-content:center;flex-shrink:0;flex-wrap:wrap}
-.answer-slot{border-radius:10px;border:3px solid #ddd;background:#fafafa;display:flex;align-items:center;justify-content:center;font-weight:900;font-family:inherit;color:#333;transition:border-color 0.2s,background 0.2s,color 0.2s;flex-shrink:0}
-.answer-slot.current{border-color:#42A5F5;box-shadow:0 0 0 3px rgba(66,165,245,0.22);animation:currentPulse 1.4s ease-in-out infinite}
-.answer-slot.filled{border-color:#1565C0;background:white;animation:slotPop 0.25s ease}
-.answer-slot.auto-filled{border-color:#FF9800!important;background:#fff8e1!important;color:#E65100!important}
-.answer-slot.all-correct{border-color:#4CAF50!important;background:#e8f5e9!important;color:#2E7D32!important;box-shadow:0 0 0 4px rgba(76,175,80,0.25)!important}
-@keyframes currentPulse{0%,100%{box-shadow:0 0 0 3px rgba(66,165,245,0.3)}50%{box-shadow:0 0 0 7px rgba(66,165,245,0.08)}}
-@keyframes slotPop{0%{transform:scale(0.7)}70%{transform:scale(1.1)}100%{transform:scale(1)}}
-
-/* ── TILE POOL ── */
-.tile-pool{display:flex;gap:clamp(6px,1.8vw,10px);justify-content:center;flex-wrap:wrap;flex-shrink:0;width:100%;padding:2px 0}
-.letter-tile{border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-family:inherit;color:white;cursor:pointer;touch-action:manipulation;transition:transform 0.1s,opacity 0.25s;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,0.2)}
-.letter-tile:active{transform:scale(0.9)}
-.letter-tile.tile-used{opacity:0.18;pointer-events:none}
-.letter-tile.shake{animation:shakeT 0.4s ease}
-@keyframes shakeT{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.letter-tile.hint-glow{animation:hintGlow 0.85s ease-in-out infinite}
-@keyframes hintGlow{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.85)}50%{box-shadow:0 0 0 10px rgba(255,215,0,0)}}
-
-/* ── BOTTOM ── */
-.bottom-row{display:flex;justify-content:center;position:fixed;bottom:16px;left:0;right:0;z-index:50;pointer-events:none}
-.btn-restart{pointer-events:all;background:linear-gradient(135deg,#FF9800,#F57C00);color:white;border:none;padding:12px 32px;border-radius:40px;font-size:1em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(255,152,0,0.4);min-height:44px;touch-action:manipulation}
+@keyframes correctPulse{0%{transform:scale(1)}40%{transform:scale(1.05)}100%{transform:scale(1)}}
+@keyframes shakeBtn{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-7px)}80%{transform:translateX(7px)}}
+@keyframes hintPulse{0%,100%{box-shadow:0 0 0 4px rgba(255,215,0,0.5),0 0 20px rgba(255,215,0,0.4)}50%{box-shadow:0 0 0 10px rgba(255,215,0,0.1),0 0 36px rgba(255,215,0,0.2)}}
 
 /* ── TOAST ── */
 #toast{position:fixed;top:18%;left:50%;transform:translateX(-50%) scale(0.7);padding:14px 30px;border-radius:50px;font-size:1.4em;font-weight:bold;color:white;pointer-events:none;opacity:0;transition:opacity 0.2s,transform 0.2s;z-index:500;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
@@ -95,24 +74,30 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .end-stars{font-size:2.2em;letter-spacing:4px}
 .btn-play-again{background:#FFD700;color:#333;border:none;padding:15px 45px;border-radius:40px;font-size:1.2em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.2);margin-top:8px;min-height:44px;touch-action:manipulation}
 
+/* ── RESTART ── */
+.bottom-row{display:flex;justify-content:center;margin-top:10px;flex-shrink:0}
+.btn-restart{background:linear-gradient(135deg,#FF9800,#F57C00);color:white;border:none;padding:12px 32px;border-radius:40px;font-size:1em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(255,152,0,0.4);min-height:44px;touch-action:manipulation}
+
 @media(max-width:768px){.hdr-title{display:none}}
 @media(max-width:480px){
-  #game-screen{padding:8px 10px 68px}
+  #game-screen{padding:8px 10px 10px}
   .hdr{padding:8px 14px;margin-bottom:7px}
   .q-card{padding:14px 12px 16px;gap:10px}
-  .instruction{font-size:clamp(0.88em,3vw,1.05em);margin-bottom:5px}
+  .instruction{font-size:clamp(0.9em,3.2vw,1.1em);margin-bottom:5px}
+  .choice-btn{padding:12px 16px;font-size:clamp(0.95em,3.8vw,1.15em)}
 }
 @media(max-height:700px){
-  .main-img{max-height:clamp(76px,16vh,130px)}
-  .item-img{height:clamp(36px,7vh,52px)}
-  .q-card{gap:9px}
+  .q-img{max-height:clamp(90px,22vh,160px)}
+  .q-card{gap:10px}
+  .choices{gap:7px}
+  .choice-btn{padding:11px 16px}
 }
 @media(max-height:620px){
-  .main-img{max-height:clamp(64px,13vh,105px)}
-  .item-img{height:clamp(30px,5.5vh,42px)}
-  .q-card{gap:7px;padding:10px 10px 12px}
-  .items-section{gap:4px}
-  .branch-badge{padding:3px 12px;font-size:clamp(0.72em,2.4vw,0.9em)}
+  .q-img{max-height:clamp(72px,18vh,120px)}
+  .q-card{gap:8px;padding:10px 10px 12px}
+  .choices{gap:6px}
+  .choice-btn{padding:9px 14px;font-size:clamp(0.88em,3.5vw,1.05em)}
+  .instruction{margin-bottom:4px}
 }
 </style>
 </head>
@@ -126,15 +111,15 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 3</div>
+    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 8</div>
     <div class="hdr-title">Armed Forces &middot; LY3</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">&#128266;</button>
   </div>
   <div class="progress-row">
-    <span class="progress-label">Q <span id="q-num">1</span> / 3</span>
+    <span class="progress-label">Q <span id="q-num">1</span> / 8</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
-  <div class="instruction" id="instruction-txt">UNSCRAMBLE THE NAME!</div>
+  <div class="instruction">Which branch uses this?</div>
   <div class="q-card" id="q-card"></div>
   <div class="bottom-row">
     <button class="btn-restart" onclick="restartGame()">&#128260; &nbsp;Restart</button>
@@ -145,54 +130,35 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   <div class="end-trophy">&#127942;</div>
   <div class="end-title">Amazing! You did it!</div>
   <div class="end-sub">You know all the Armed Forces!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 3</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 8</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">&#9654; &nbsp;Play Again</button>
 </div>
 
 <script>
 const QUESTIONS = [
-  {
-    name: 'ARMY',
-    display: 'ARMY',
-    mainImg: 'Assets/army.png',
-    items: [
-      { img: 'Assets/tank.png',   label: 'Tank'   },
-    ],
-    gradient: 'linear-gradient(135deg,#43A047,#1B5E20)',
-    confetti: ['#1B5E20','#4CAF50','#43A047','#A5D6A7','#8BC34A'],
-  },
-  {
-    name: 'NAVY',
-    display: 'NAVY',
-    mainImg: 'Assets/navy.png',
-    items: [
-      { img: 'Assets/anchor.png', label: 'Anchor' },
-      { img: 'Assets/ship.png',   label: 'Ship'   },
-    ],
-    gradient: 'linear-gradient(135deg,#1976D2,#0D47A1)',
-    confetti: ['#0D47A1','#1565C0','#1976D2','#42A5F5','#90CAF9'],
-  },
-  {
-    name: 'AIRFORCE',
-    display: 'AIR FORCE',
-    mainImg: 'Assets/air force.png',
-    items: [
-      { img: 'Assets/aeroplane.png',  label: 'Aeroplane'  },
-      { img: 'Assets/fighter-jet.png', label: 'Fighter Jet' },
-    ],
-    gradient: 'linear-gradient(135deg,#3949AB,#1A237E)',
-    confetti: ['#1A237E','#3949AB','#42A5F5','#90CAF9','#E3F2FD'],
-  },
+  { img:'Assets/army.png',        label:'Army Soldier', answer:'ARMY'      },
+  { img:'Assets/tank.png',        label:'Tank',         answer:'ARMY'      },
+  { img:'Assets/navy.png',        label:'Navy Officer', answer:'NAVY'      },
+  { img:'Assets/anchor.png',      label:'Anchor',       answer:'NAVY'      },
+  { img:'Assets/ship.png',        label:'Ship',         answer:'NAVY'      },
+  { img:'Assets/air force.png',   label:'Air Force',    answer:'AIR FORCE' },
+  { img:'Assets/aeroplane.png',   label:'Aeroplane',    answer:'AIR FORCE' },
+  { img:'Assets/fighter-jet.png', label:'Fighter Jet',  answer:'AIR FORCE' },
+];
+
+const CHOICES = [
+  { text:'ARMY',      bg:'linear-gradient(135deg,#43A047,#1B5E20)', confetti:['#1B5E20','#4CAF50','#43A047','#A5D6A7','#8BC34A'] },
+  { text:'NAVY',      bg:'linear-gradient(135deg,#1976D2,#0D47A1)', confetti:['#0D47A1','#1565C0','#1976D2','#42A5F5','#90CAF9'] },
+  { text:'AIR FORCE', bg:'linear-gradient(135deg,#3949AB,#1A237E)', confetti:['#1A237E','#3949AB','#42A5F5','#90CAF9','#E3F2FD'] },
 ];
 
 /* Preload all images */
-QUESTIONS.forEach(q=>{
-  new Image().src = q.mainImg;
-  q.items.forEach(it=>{ new Image().src = it.img; });
-});
+QUESTIONS.forEach(q=>{ const i=new Image(); i.src=q.img; });
 
-let curQ=0, score=0, slotIndex=0, slotAttempts=[], answered=false, muted=false;
+let shuffledQ=[], curQ=0, score=0, attempts=0, answered=false, muted=false;
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 /* ── Audio ── */
 const sndWrong=new Audio('Assets/wrong.mp3');
@@ -201,13 +167,12 @@ function unlockAudio(){[sndWrong,sndClaps].forEach(s=>{s.play().catch(()=>{});s.
 document.addEventListener('pointerdown',unlockAudio);
 function play(s){if(muted)return;window.speechSynthesis?.cancel();s.currentTime=0;s.play().catch(()=>{})}
 function speak(text){
-  sndClaps.pause();sndClaps.currentTime=0;
   if(!('speechSynthesis' in window)||muted)return;
   window.speechSynthesis.cancel();
   setTimeout(()=>{
     if(muted)return;
     const u=new SpeechSynthesisUtterance(text);
-    u.lang='en-US';u.rate=0.68;u.pitch=1.0;
+    u.lang='en-US';u.rate=0.72;u.pitch=1.0;
     const v=window.speechSynthesis.getVoices();
     const voice=v.find(x=>x.lang.startsWith('en')&&!x.name.includes('Google'))||v.find(x=>x.lang.startsWith('en'))||v[0];
     if(voice)u.voice=voice;
@@ -218,198 +183,112 @@ window.speechSynthesis.getVoices();
 window.speechSynthesis.addEventListener('voiceschanged',()=>window.speechSynthesis.getVoices());
 function playClaps(){if(muted)return;sndClaps.currentTime=0;sndClaps.play().catch(()=>{});setTimeout(()=>{sndClaps.pause();sndClaps.currentTime=0;},3000)}
 
-function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-
-/* Tile / slot size based on word length */
-function getTileSize(len){
-  if(len<=4) return {sz:58,fs:'1.55em'};
-  if(len<=6) return {sz:48,fs:'1.3em'};
-  return            {sz:38,fs:'1.05em'};
-}
-
 /* ── Load question ── */
 function loadQuestion(){
-  if(curQ>=QUESTIONS.length){showEnd();return;}
-  slotIndex=0; slotAttempts=[]; answered=false;
-  const q=QUESTIONS[curQ];
+  if(curQ>=shuffledQ.length){showEnd();return;}
+  attempts=0; answered=false;
+  const q=shuffledQ[curQ];
 
   document.getElementById('q-num').textContent=curQ+1;
   document.getElementById('score-val').textContent=score;
-  document.getElementById('prog-bar').style.width=(curQ/QUESTIONS.length*100)+'%';
-  document.getElementById('instruction-txt').textContent='UNSCRAMBLE THE NAME!';
+  document.getElementById('prog-bar').style.width=(curQ/shuffledQ.length*100)+'%';
 
   renderCard(q);
-  speak(`Unscramble the name. ${q.display}`);
+  speak('Which branch uses this? '+q.label);
 }
 
 function renderCard(q){
   const card=document.getElementById('q-card');
   card.innerHTML='';
 
-  /* ── Main image + badge ── */
-  const imgWrap=document.createElement('div');
-  imgWrap.className='main-img-wrap';
+  /* ── Image ── */
+  const wrap=document.createElement('div');
+  wrap.className='img-wrap';
 
   const img=document.createElement('img');
-  img.className='main-img'; img.alt=q.display; img.src=q.mainImg;
-  img.onerror=()=>imgWrap.remove();
+  img.className='q-img'; img.alt=q.label; img.src=q.img;
+  img.onerror=()=>wrap.style.display='none';
   img.onload=()=>img.classList.add('loaded');
   if(img.complete&&img.naturalWidth>0)img.classList.add('loaded');
-  imgWrap.appendChild(img);
-
-  const badge=document.createElement('div');
-  badge.className='branch-badge';
-  badge.style.background=q.gradient;
-  badge.textContent='🎖️  '+q.display;
-  imgWrap.appendChild(badge);
-
-  card.appendChild(imgWrap);
-
-  /* ── Items used ── */
-  const sec=document.createElement('div');
-  sec.className='items-section';
+  wrap.appendChild(img);
 
   const lbl=document.createElement('div');
-  lbl.className='items-label';
-  lbl.textContent='🔍  They use:';
-  sec.appendChild(lbl);
+  lbl.className='img-label';
+  lbl.textContent=q.label;
+  wrap.appendChild(lbl);
 
-  const row=document.createElement('div');
-  row.className='items-row';
-  q.items.forEach(it=>{
-    const ic=document.createElement('div');
-    ic.className='item-card';
-    const ii=document.createElement('img');
-    ii.className='item-img'; ii.alt=it.label; ii.src=it.img;
-    ii.onload=()=>ii.classList.add('loaded');
-    if(ii.complete&&ii.naturalWidth>0)ii.classList.add('loaded');
-    const il=document.createElement('div');
-    il.className='item-label'; il.textContent=it.label;
-    ic.appendChild(ii); ic.appendChild(il);
-    row.appendChild(ic);
+  card.appendChild(wrap);
+
+  /* ── Choice buttons ── */
+  const choicesDiv=document.createElement('div');
+  choicesDiv.className='choices';
+
+  CHOICES.forEach(ch=>{
+    const btn=document.createElement('button');
+    btn.className='choice-btn';
+    btn.style.background=ch.bg;
+    btn.textContent='🎖️  '+ch.text;
+    btn.dataset.choice=ch.text;
+    btn.addEventListener('click',()=>pickChoice(btn,ch.text,q));
+    btn.addEventListener('touchend',e=>{e.preventDefault();pickChoice(btn,ch.text,q);},{passive:false});
+    choicesDiv.appendChild(btn);
   });
-  sec.appendChild(row);
-  card.appendChild(sec);
 
-  /* ── Divider ── */
-  const div=document.createElement('div');
-  div.className='divider';
-  card.appendChild(div);
-
-  /* ── Answer slots ── */
-  const {sz,fs}=getTileSize(q.name.length);
-  const ansRow=document.createElement('div');
-  ansRow.className='answer-row'; ansRow.id='answer-row';
-  for(let i=0;i<q.name.length;i++){
-    const slot=document.createElement('div');
-    slot.className='answer-slot'+(i===0?' current':'');
-    slot.id=`slot-${i}`;
-    slot.style.cssText=`width:${sz}px;height:${sz}px;font-size:${fs}`;
-    ansRow.appendChild(slot);
-  }
-  card.appendChild(ansRow);
-
-  /* ── Tile pool ── */
-  const pool=document.createElement('div');
-  pool.className='tile-pool'; pool.id='tile-pool';
-  shuffle([...q.name]).forEach(letter=>{
-    const tile=document.createElement('div');
-    tile.className='letter-tile';
-    tile.dataset.letter=letter;
-    tile.textContent=letter;
-    tile.style.cssText=`width:${sz}px;height:${sz}px;font-size:${fs};background:${q.gradient}`;
-    tile.addEventListener('click',()=>tapTile(tile,letter));
-    tile.addEventListener('touchend',e=>{e.preventDefault();tapTile(tile,letter);},{passive:false});
-    pool.appendChild(tile);
-  });
-  card.appendChild(pool);
+  card.appendChild(choicesDiv);
 }
 
-/* ── Mark which slot is active ── */
-function updateCurrentSlot(){
-  document.querySelectorAll('.answer-slot').forEach((s,i)=>{
-    s.classList.toggle('current',i===slotIndex&&!s.classList.contains('filled')&&!s.classList.contains('auto-filled'));
-  });
-}
+function pickChoice(btn,chosen,q){
+  if(answered)return;
 
-/* ── Tap a letter tile ── */
-function tapTile(tile,letter){
-  if(answered||tile.classList.contains('tile-used'))return;
-  const q=QUESTIONS[curQ];
-  if(slotIndex>=q.name.length)return;
-
-  if(letter===q.name[slotIndex]){
+  if(chosen===q.answer){
     /* ✅ Correct */
-    tile.classList.add('tile-used');
-    const slot=document.getElementById(`slot-${slotIndex}`);
-    slot.textContent=letter;
-    slot.classList.add('filled'); slot.classList.remove('current');
-    slotAttempts[slotIndex]=0;
-    slotIndex++;
-    clearTileHints();
-    if(slotIndex>=q.name.length) setTimeout(registerComplete,400);
-    else updateCurrentSlot();
+    answered=true;
+    score++;
+    document.getElementById('score-val').textContent=score;
+    btn.classList.add('correct');
+    disableOtherBtns(btn);
+    window.speechSynthesis?.cancel();
+    playClaps();
+    const conf=CHOICES.find(c=>c.text===q.answer)?.confetti||[];
+    spawnConfetti(conf);
+    showToast('⭐ '+q.answer+'!','#4CAF50');
+    setTimeout(()=>{curQ++;loadQuestion();},1800);
   } else {
     /* ❌ Wrong */
-    slotAttempts[slotIndex]=(slotAttempts[slotIndex]||0)+1;
+    attempts++;
     play(sndWrong);
-    tile.classList.add('shake');
-    tile.addEventListener('animationend',()=>tile.classList.remove('shake'),{once:true});
-    if(slotAttempts[slotIndex]===1){
+    btn.classList.add('wrong');
+    btn.addEventListener('animationend',()=>btn.classList.remove('wrong'),{once:true});
+
+    if(attempts===1){
       showToast('❌ Try again!','#f44336');
-      highlightCorrectTile(q.name[slotIndex]);
     } else {
-      autoFillSlot(q.name[slotIndex]);
+      /* 2nd wrong — reveal correct, auto-advance */
+      answered=true;
+      disableOtherBtns(null);
+      const allBtns=document.querySelectorAll('.choice-btn');
+      allBtns.forEach(b=>{
+        if(b.dataset.choice===q.answer) b.classList.add('hint');
+        else b.classList.add('disabled');
+      });
+      showToast('💡 It\'s '+q.answer+'!','#FF9800');
+      setTimeout(()=>{curQ++;loadQuestion();},2000);
     }
   }
 }
 
-function highlightCorrectTile(expected){
-  clearTileHints();
-  const found=[...document.querySelectorAll('.letter-tile:not(.tile-used)')].find(t=>t.dataset.letter===expected);
-  if(found){
-    found.classList.add('hint-glow');
-    setTimeout(()=>found.classList.remove('hint-glow'),2000);
-  }
-}
-
-function clearTileHints(){
-  document.querySelectorAll('.hint-glow').forEach(t=>t.classList.remove('hint-glow'));
-}
-
-function autoFillSlot(expected){
-  clearTileHints();
-  const tile=[...document.querySelectorAll('.letter-tile:not(.tile-used)')].find(t=>t.dataset.letter===expected);
-  if(tile) tile.classList.add('tile-used');
-  const slot=document.getElementById(`slot-${slotIndex}`);
-  slot.textContent=expected;
-  slot.classList.add('auto-filled'); slot.classList.remove('current');
-  showToast(`💡 It's "${expected}"!`,'#FF9800');
-  slotAttempts[slotIndex]=0;
-  slotIndex++;
-  if(slotIndex>=QUESTIONS[curQ].name.length) setTimeout(registerComplete,1500);
-  else updateCurrentSlot();
-}
-
-function registerComplete(){
-  answered=true;
-  score++;
-  document.getElementById('score-val').textContent=score;
-  document.querySelectorAll('.answer-slot').forEach(s=>{
-    s.classList.add('all-correct'); s.classList.remove('current');
+function disableOtherBtns(correctBtn){
+  document.querySelectorAll('.choice-btn').forEach(b=>{
+    if(b!==correctBtn) b.classList.add('disabled');
   });
-  window.speechSynthesis?.cancel();
-  playClaps();
-  showToast('⭐ '+QUESTIONS[curQ].display+'!','#4CAF50');
-  spawnConfetti(QUESTIONS[curQ].confetti);
-  setTimeout(()=>{curQ++;loadQuestion();},3200);
 }
 
-/* ── Navigation ── */
+/* ── Start / Restart ── */
 function startGame(){
   document.getElementById('intro-screen').style.display='none';
   document.getElementById('game-screen').style.display='flex';
   curQ=0; score=0;
+  shuffledQ=shuffle(QUESTIONS);
   loadQuestion();
 }
 
@@ -418,6 +297,7 @@ function restartGame(){
   document.getElementById('end-screen').style.display='none';
   document.getElementById('game-screen').style.display='flex';
   curQ=0; score=0;
+  shuffledQ=shuffle(QUESTIONS);
   loadQuestion();
 }
 
@@ -436,7 +316,7 @@ function toggleMute(){
   muted=!muted;
   document.getElementById('mute-btn').innerHTML=muted?'&#128263;':'&#128266;';
   if(muted){window.speechSynthesis?.cancel();sndClaps.pause();}
-  else if(curQ<QUESTIONS.length) speak('Unscramble the name. '+QUESTIONS[curQ].display);
+  else if(curQ<shuffledQ.length) speak('Which branch uses this? '+shuffledQ[curQ].label);
 }
 
 /* ── End ── */
@@ -444,10 +324,11 @@ function showEnd(){
   document.getElementById('game-screen').style.display='none';
   document.getElementById('end-screen').style.display='flex';
   document.getElementById('final-score').textContent=score;
-  document.getElementById('end-stars').innerHTML=score>=3?'&#11088;&#11088;&#11088;':score>=2?'&#11088;&#11088;':'&#11088;';
+  const stars=score>=7?'⭐⭐⭐':score>=5?'⭐⭐':'⭐';
+  document.getElementById('end-stars').textContent=stars;
   window.speechSynthesis?.cancel();
   playClaps(); spawnConfetti(['#FFD700','#4CAF50','#42A5F5','#FF9800','#AB47BC']);
-  setTimeout(spawnConfetti,800);
+  setTimeout(()=>spawnConfetti(['#FFD700','#4CAF50','#42A5F5','#FF9800','#AB47BC']),800);
 }
 
 /* ── Confetti ── */
