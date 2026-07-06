@@ -44,13 +44,14 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   border-left:5px solid #ffb3ba!important;
 }
 .match-row{display:flex;align-items:center;justify-content:center;gap:clamp(12px,4vw,28px);width:100%;flex-wrap:wrap}
-.match-box{min-width:clamp(90px,22vw,140px);min-height:clamp(54px,11vh,74px);display:flex;align-items:center;justify-content:center;border-radius:16px;font-size:clamp(1.5em,5.5vw,2.2em);font-weight:800}
+.match-box{min-width:clamp(80px,20vw,120px);min-height:clamp(44px,8vh,58px);display:flex;align-items:center;justify-content:center;border-radius:14px;font-size:clamp(1.2em,4.5vw,1.8em);font-weight:800}
 .match-box.target-word{background:linear-gradient(135deg,#6a0dad,#ab47bc);color:white;box-shadow:0 4px 16px rgba(106,13,173,0.35)}
 .match-box.drop-box{border:4px dashed #ccc;color:#ccc;font-size:clamp(1.8em,6vw,2.6em)}
 .match-box.drop-box.filled{border:4px solid #4CAF50!important;color:#2e7d32!important;background:#e8f5e9!important;box-shadow:0 0 0 4px rgba(76,175,80,0.2)!important;animation:popBox 0.4s ease}
 @keyframes popBox{0%{transform:scale(1)}45%{transform:scale(1.12)}100%{transform:scale(1)}}
 .match-arrow{font-size:clamp(1.4em,5vw,2em);color:#bbb}
-.match-content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(20px,4vh,32px);width:100%;position:relative}
+.match-content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(10px,2.5vh,18px);width:100%;position:relative}
+.match-pairs-col{display:flex;flex-direction:column;gap:clamp(6px,1.5vh,12px);width:100%}
 .match-box.drop-box.drag-over{border-color:#6a0dad!important;background:#f3e5f5!important;transform:scale(1.06)}
 .pencil-l,.pencil-r{position:absolute;top:50%;height:clamp(52px,11vh,72px);opacity:0.55;pointer-events:none;-webkit-user-drag:none}
 .pencil-l{left:-6px;transform:translateY(-50%) rotate(25deg)}
@@ -166,12 +167,12 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 
 <div id="game-screen">
   <div class="hdr">
-    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 14</div>
+    <div class="hdr-score">&#11088; <span id="score-val">0</span> / 9</div>
     <div class="hdr-title">Sight Words Activities &middot; LY4</div>
     <button class="mute-btn" id="mute-btn" onclick="toggleMute()">&#128266;</button>
   </div>
   <div class="progress-row">
-    <span class="progress-label">Q <span id="q-num">1</span> / 14</span>
+    <span class="progress-label">Q <span id="q-num">1</span> / 9</span>
     <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
   </div>
   <div class="instruction" id="instr-txt"></div>
@@ -185,7 +186,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
   <div class="end-trophy">&#127942;</div>
   <div class="end-title">Well Done!</div>
   <div class="end-sub">You know your sight words!</div>
-  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 14</div>
+  <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 9</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">&#9654; &nbsp;Play Again</button>
 </div>
@@ -195,14 +196,21 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
    DATA
    ════════════════════════════════════════ */
 const T1_DATA = [
-  { word:'are',  choices:['are','to','all'] },
-  { word:'to',   choices:['to','go','the'] },
-  { word:'this', choices:['this','that','the'] },
-  { word:'that', choices:['that','this','all'] },
-  { word:'all',  choices:['all','are','no'] },
-  { word:'no',   choices:['no','go','all'] },
-  { word:'go',   choices:['go','to','no'] },
-  { word:'the',  choices:['the','are','to'] },
+  { words:[
+    {word:'are', wrong:'all'},
+    {word:'to',  wrong:'go'},
+    {word:'this',wrong:'that'},
+  ]},
+  { words:[
+    {word:'that',wrong:'this'},
+    {word:'all', wrong:'are'},
+    {word:'no',  wrong:'go'},
+  ]},
+  { words:[
+    {word:'go',  wrong:'to'},
+    {word:'the', wrong:'are'},
+    {word:'on',  wrong:'no'},
+  ]},
 ];
 
 const T2_DATA = [
@@ -241,7 +249,7 @@ function buildQList(){
 let QUESTIONS=[], curQ=0, score=0, answered=false, muted=false;
 
 /* per-question state */
-let t1Attempts=0;
+let t1Attempts=0, t1Filled=0;
 let t2SelEl=null, t2SelWord=null, t2ConnAttempts=0, t2ConnectedCount=0, t2TotalPairs=0;
 let t3ActiveIdx=0, t3Attempts=0, t3CellEls=[];
 
@@ -277,7 +285,7 @@ window.speechSynthesis.addEventListener('voiceschanged',()=>window.speechSynthes
    ════════════════════════════════════════ */
 function loadQuestion(){
   if(curQ>=QUESTIONS.length){showEnd();return;}
-  answered=false; t1Attempts=0;
+  answered=false; t1Attempts=0; t1Filled=0;
   t2SelEl=null; t2SelWord=null; t2ConnAttempts=0; t2ConnectedCount=0;
   t3ActiveIdx=0; t3Attempts=0; t3CellEls=[];
 
@@ -317,12 +325,14 @@ function onDragMove(e){
   const cw=dragClone.offsetWidth, ch=dragClone.offsetHeight;
   dragClone.style.left=(p.clientX-cw/2)+'px';
   dragClone.style.top=(p.clientY-ch/2)+'px';
-  /* detect hover over drop-box */
+  /* detect hover over any drop-box */
   dragClone.style.display='none';
   const el=document.elementFromPoint(p.clientX,p.clientY);
   dragClone.style.display='';
-  const db=document.getElementById('drop-box');
-  if(db)db.classList.toggle('drag-over',!!(el&&(el===db||el.closest('#drop-box'))));
+  document.querySelectorAll('.drop-box').forEach(db=>{
+    const over=!!(el&&(el===db||el.closest('.drop-box')===db));
+    db.classList.toggle('drag-over',over);
+  });
 }
 
 function onDragEnd(e){
@@ -332,11 +342,11 @@ function onDragEnd(e){
   const el=document.elementFromPoint(p.clientX,p.clientY);
   dragClone.remove(); dragClone=null;
   if(dragTile)dragTile.style.opacity='';
-  const db=document.getElementById('drop-box');
-  if(db)db.classList.remove('drag-over');
+  document.querySelectorAll('.drop-box').forEach(db=>db.classList.remove('drag-over'));
   const w=dragWord, t=dragTile, q=dragQ;
   dragTile=null; dragWord=null; dragQ=null;
-  if(el&&db&&(el===db||el.closest('#drop-box'))) handleDrop(w,t,q);
+  const db=el&&(el.classList.contains('drop-box')?el:el.closest('.drop-box'));
+  if(db&&w&&q) handleDrop(w,t,q,db);
 }
 
 document.addEventListener('mousemove',onDragMove);
@@ -363,28 +373,37 @@ function renderMatch(q){
   pR.src='Assets/1pencil.png'; pR.className='pencil-r'; pR.alt='';
   content.appendChild(pR);
 
-  const matchRow=document.createElement('div');
-  matchRow.className='match-row';
+  /* 3 word-pair rows */
+  const pairsCol=document.createElement('div');
+  pairsCol.className='match-pairs-col';
+  q.words.forEach(wObj=>{
+    const row=document.createElement('div');
+    row.className='match-row';
 
-  const tgt=document.createElement('div');
-  tgt.className='match-box target-word';
-  tgt.textContent=q.word;
+    const tgt=document.createElement('div');
+    tgt.className='match-box target-word';
+    tgt.textContent=wObj.word;
 
-  const arr=document.createElement('div');
-  arr.className='match-arrow';
-  arr.textContent='→';
+    const arr=document.createElement('div');
+    arr.className='match-arrow';
+    arr.textContent='→';
 
-  const drop=document.createElement('div');
-  drop.className='match-box drop-box';
-  drop.id='drop-box';
-  drop.textContent='?';
+    const drop=document.createElement('div');
+    drop.className='match-box drop-box';
+    drop.dataset.target=wObj.word;
+    drop.dataset.attempts='0';
+    drop.textContent='?';
 
-  matchRow.appendChild(tgt); matchRow.appendChild(arr); matchRow.appendChild(drop);
-  content.appendChild(matchRow);
+    row.appendChild(tgt); row.appendChild(arr); row.appendChild(drop);
+    pairsCol.appendChild(row);
+  });
+  content.appendChild(pairsCol);
 
+  /* Tile pool: 3 correct + 3 distractors shuffled */
+  const tileWords=shuffle([...q.words.map(w=>w.word),...q.words.map(w=>w.wrong)]);
   const tilesRow=document.createElement('div');
   tilesRow.className='tiles-row';
-  shuffle([...q.choices]).forEach(word=>{
+  tileWords.forEach(word=>{
     const tile=document.createElement('div');
     tile.className='word-tile';
     tile.dataset.word=word;
@@ -397,41 +416,47 @@ function renderMatch(q){
   card.appendChild(content);
 }
 
-function handleDrop(word,tile,q){
-  if(answered||!word||!q)return;
-  if(word===q.word){
-    answered=true; score++;
-    document.getElementById('score-val').textContent=score;
-    document.querySelectorAll('.word-tile').forEach(t=>t.classList.remove('hint'));
-    if(tile){tile.classList.add('correct');tile.style.opacity='';}
-    document.querySelectorAll('.word-tile').forEach(t=>{if(t!==tile)t.classList.add('used');});
-    const drop=document.getElementById('drop-box');
-    if(drop){drop.textContent=word;drop.classList.add('filled');}
-    window.speechSynthesis?.cancel();
-    playClaps(); showToast('⭐ Correct!','#4CAF50'); spawnConfetti();
-    setTimeout(()=>{curQ++;loadQuestion();},3200);
+function handleDrop(word,tile,q,dropBox){
+  if(answered||!word||!q||!dropBox)return;
+  if(dropBox.classList.contains('filled'))return;
+  const target=dropBox.dataset.target;
+
+  if(word===target){
+    document.querySelectorAll('.word-tile.hint').forEach(t=>t.classList.remove('hint'));
+    if(tile){tile.classList.add('correct');tile.classList.add('used');tile.style.opacity='';}
+    dropBox.textContent=word; dropBox.classList.add('filled');
+    t1Filled++;
+    if(t1Filled>=q.words.length){
+      answered=true; score++;
+      document.getElementById('score-val').textContent=score;
+      window.speechSynthesis?.cancel();
+      playClaps(); showToast('⭐ All matched!','#4CAF50'); spawnConfetti();
+      setTimeout(()=>{curQ++;loadQuestion();},3200);
+    } else {
+      showToast('⭐ Match!','#4CAF50');
+    }
   } else {
-    t1Attempts++;
+    const att=parseInt(dropBox.dataset.attempts||'0')+1;
+    dropBox.dataset.attempts=att;
     play(sndWrong);
     if(tile){tile.classList.add('wrong');setTimeout(()=>tile.classList.remove('wrong'),400);}
-    if(t1Attempts===1){
+    if(att===1){
       showToast('❌ Try again!','#f44336');
       setTimeout(()=>{
-        const h=document.querySelector(`.word-tile[data-word="${q.word}"]`);
+        const h=document.querySelector(`.word-tile[data-word="${target}"]:not(.used):not(.correct)`);
         if(h)h.classList.add('hint');
       },600);
     } else {
-      answered=true;
-      showToast('❌ Wrong!','#f44336');
+      showToast('💡 Correct answer!','#FF9800');
       setTimeout(()=>{
-        document.querySelectorAll('.word-tile').forEach(t=>t.classList.remove('hint'));
-        const ct=document.querySelector(`.word-tile[data-word="${q.word}"]`);
-        if(ct){ct.classList.add('correct');document.querySelectorAll('.word-tile').forEach(t=>{if(t!==ct)t.classList.add('used');});}
-        const drop=document.getElementById('drop-box');
-        if(drop){drop.textContent=q.word;drop.classList.add('filled');}
-        showToast('💡 Correct answer!','#FF9800');
-        setTimeout(()=>{curQ++;loadQuestion();},3000);
-      },1000);
+        document.querySelectorAll('.word-tile.hint').forEach(t=>t.classList.remove('hint'));
+        const ct=document.querySelector(`.word-tile[data-word="${target}"]:not(.used):not(.correct)`);
+        if(ct) handleDrop(target,ct,q,dropBox);
+        else { dropBox.textContent=target; dropBox.classList.add('filled');
+          t1Filled++;
+          if(t1Filled>=q.words.length){answered=true;score++;document.getElementById('score-val').textContent=score;window.speechSynthesis?.cancel();playClaps();showToast('⭐ All matched!','#4CAF50');spawnConfetti();setTimeout(()=>{curQ++;loadQuestion();},3200);}
+        }
+      },800);
     }
   }
 }
@@ -757,7 +782,7 @@ function showEnd(){
   document.getElementById('game-screen').style.display='none';
   document.getElementById('end-screen').style.display='flex';
   document.getElementById('final-score').textContent=score;
-  document.getElementById('end-stars').innerHTML=score>=12?'&#11088;&#11088;&#11088;':score>=8?'&#11088;&#11088;':'&#11088;';
+  document.getElementById('end-stars').innerHTML=score>=8?'&#11088;&#11088;&#11088;':score>=6?'&#11088;&#11088;':'&#11088;';
   window.speechSynthesis?.cancel();
   playClaps(); spawnConfetti(); setTimeout(spawnConfetti,800);
 }
