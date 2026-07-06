@@ -346,7 +346,7 @@ document.addEventListener('touchend',onDragEnd,{passive:false});
 
 function renderMatch(q){
   document.getElementById('instr-txt').textContent='✋ Drag the matching word into the empty box!';
-  speak('Can you find the word '+q.word+'? Drag it into the box!');
+  speak('Drag the matching word into the empty box!');
 
   const card=document.getElementById('q-card');
   card.innerHTML='';
@@ -747,7 +747,7 @@ function toggleMute(){
   if(muted){window.speechSynthesis?.cancel();sndClaps.pause();}
   else if(curQ<QUESTIONS.length){
     const q=QUESTIONS[curQ];
-    if(q.type==='match') speak('Can you find the word '+q.word+'?');
+    if(q.type==='match') speak('Drag the matching word into the empty box!');
     else if(q.type==='connect') speak('Tap the same words to connect them!');
     else speak('Colour each word with the correct colour!');
   }
