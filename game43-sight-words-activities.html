@@ -72,6 +72,7 @@ body{font-family:'Nunito',Arial,sans-serif;background:linear-gradient(135deg,#fc
 .connect-wrap{position:relative;width:100%;flex:1;min-height:0;display:flex;padding:4px;background:linear-gradient(white,white) padding-box,linear-gradient(135deg,#FF6B6B,#FFD700,#4CAF50,#2196F3,#9C27B0,#FF6B6B) border-box;border:3px solid transparent;border-radius:18px}
 .connect-area{position:relative;width:100%;flex:1;min-height:240px;overflow:visible;background-image:radial-gradient(circle,#c4cde8 1.3px,transparent 1.3px);background-size:20px 20px;background-color:#f8faff;border-radius:15px}
 .connect-line{position:absolute;height:4px;border-radius:2px;pointer-events:none;z-index:1;opacity:0.85;transform-origin:0 50%}
+.preview-line{opacity:0.5!important;z-index:1}
 .word-chip{position:absolute;z-index:2;font-size:clamp(1.2em,4vw,1.8em);font-weight:800;font-family:inherit;cursor:pointer;touch-action:manipulation;min-height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;white-space:nowrap;background:transparent;border:none;padding:4px 8px;border-radius:8px;transition:transform 0.12s,opacity 0.2s;user-select:none;-webkit-user-select:none}
 .word-chip:active{transform:scale(0.88)}
 .word-chip.selected{background:rgba(255,215,0,0.38)!important;border-radius:8px;transform:scale(1.18)!important;z-index:5}
@@ -249,7 +250,7 @@ let QUESTIONS=[], curQ=0, score=0, answered=false, muted=false;
 
 /* per-question state */
 let t1Attempts=0, t1Filled=0;
-let t2SelEl=null, t2SelWord=null, t2ConnAttempts=0, t2ConnectedCount=0, t2TotalPairs=0;
+let t2Drawing=false, t2DrawStart=null, t2PreviewLine=null, t2ConnectedCount=0, t2TotalPairs=0;
 let t3ActiveIdx=0, t3Attempts=0, t3CellEls=[];
 
 /* ════════════════════════════════════════
@@ -285,7 +286,7 @@ window.speechSynthesis.addEventListener('voiceschanged',()=>window.speechSynthes
 function loadQuestion(){
   if(curQ>=QUESTIONS.length){showEnd();return;}
   answered=false; t1Attempts=0; t1Filled=0;
-  t2SelEl=null; t2SelWord=null; t2ConnAttempts=0; t2ConnectedCount=0;
+  t2Drawing=false; t2DrawStart=null; if(t2PreviewLine){t2PreviewLine.remove();t2PreviewLine=null;} t2ConnectedCount=0;
   t3ActiveIdx=0; t3Attempts=0; t3CellEls=[];
 
   const q=QUESTIONS[curQ];
@@ -348,10 +349,10 @@ function onDragEnd(e){
   if(db&&w&&q) handleDrop(w,t,q,db);
 }
 
-document.addEventListener('mousemove',onDragMove);
-document.addEventListener('mouseup',onDragEnd);
-document.addEventListener('touchmove',onDragMove,{passive:false});
-document.addEventListener('touchend',onDragEnd,{passive:false});
+document.addEventListener('mousemove',e=>{onDragMove(e);onT2DrawMove(e);});
+document.addEventListener('mouseup',e=>{onDragEnd(e);onT2DrawEnd(e);});
+document.addEventListener('touchmove',e=>{onDragMove(e);onT2DrawMove(e);},{passive:false});
+document.addEventListener('touchend',e=>{onDragEnd(e);onT2DrawEnd(e);},{passive:false});
 
 function renderMatch(q){
   document.getElementById('instr-txt').textContent='✋ Drag the matching word into the empty box!';
@@ -479,8 +480,8 @@ const BASE_POSITIONS=[
 ];
 
 function renderConnect(q){
-  document.getElementById('instr-txt').textContent='🔗 Tap the same words to connect them!';
-  speak('Tap the same words to connect them!');
+  document.getElementById('instr-txt').textContent='✏️ Draw a line to connect the matching words!';
+  speak('Draw a line to connect the matching words!');
 
   const card=document.getElementById('q-card');
   card.innerHTML='';
@@ -498,20 +499,19 @@ function renderConnect(q){
   area.className='connect-area';
   area.id='connect-area';
 
-
-
   words.forEach((word,i)=>{
     const pos=positions[i]||{l:10+i*10,t:10+i*8};
-    const chip=document.createElement('button');
+    const chip=document.createElement('div');
     chip.className='word-chip';
     chip.dataset.word=word;
-    chip.dataset.id=String(i);
+    chip.dataset.connAttempts='0';
     chip.textContent=word;
     chip.style.left=pos.l+'%';
     chip.style.top=pos.t+'%';
     chip.style.color=WORD_COLORS[word]||'#6a0dad';
-    chip.addEventListener('touchend',e=>{e.preventDefault();handleChipTap(chip,word);},{passive:false});
-    chip.onclick=()=>handleChipTap(chip,word);
+    chip.style.cursor='crosshair';
+    chip.addEventListener('mousedown',e=>{e.preventDefault();startDraw(e,chip,word);});
+    chip.addEventListener('touchstart',e=>{e.preventDefault();startDraw(e,chip,word);},{passive:false});
     area.appendChild(chip);
   });
 
@@ -519,41 +519,86 @@ function renderConnect(q){
   card.appendChild(wrap);
 }
 
-function handleChipTap(el,word){
-  if(answered)return;
-  if(el.classList.contains('connected'))return;
+function startDraw(e,chip,word){
+  if(answered||chip.classList.contains('connected'))return;
+  t2Drawing=true;
+  t2DrawStart={el:chip,word};
+  document.querySelectorAll('.word-chip.hint').forEach(c=>c.classList.remove('hint'));
+  chip.classList.add('selected');
+  speak(word);
 
-  if(!t2SelEl){
-    t2SelEl=el; t2SelWord=word; t2ConnAttempts=0;
-    el.classList.add('selected');
-    document.querySelectorAll('.word-chip.hint').forEach(c=>c.classList.remove('hint'));
-    speak(word);
-  } else if(el===t2SelEl){
-    t2SelEl.classList.remove('selected');
-    t2SelEl=null; t2SelWord=null;
-    document.querySelectorAll('.word-chip.hint').forEach(c=>c.classList.remove('hint'));
-  } else if(word===t2SelWord){
-    connectPair(t2SelEl,el);
+  const area=document.getElementById('connect-area');
+  if(!area)return;
+  t2PreviewLine=document.createElement('div');
+  t2PreviewLine.className='connect-line preview-line';
+  area.insertBefore(t2PreviewLine,area.firstChild);
+
+  const p=e.touches?e.touches[0]:e;
+  updatePreviewLine(p.clientX,p.clientY);
+}
+
+function updatePreviewLine(cx,cy){
+  if(!t2PreviewLine||!t2DrawStart)return;
+  const area=document.getElementById('connect-area');
+  if(!area)return;
+  const ar=area.getBoundingClientRect();
+  const r1=t2DrawStart.el.getBoundingClientRect();
+  const x1=r1.left-ar.left+r1.width/2;
+  const y1=r1.top-ar.top+r1.height/2;
+  const x2=cx-ar.left;
+  const y2=cy-ar.top;
+  const len=Math.hypot(x2-x1,y2-y1);
+  const angle=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
+  const color=WORD_COLORS[t2DrawStart.word]||'#6a0dad';
+  t2PreviewLine.style.cssText=`position:absolute;height:4px;border-radius:2px;pointer-events:none;transform-origin:0 50%;width:${len}px;left:${x1}px;top:${y1-2}px;background:${color};transform:rotate(${angle}deg);opacity:0.5;z-index:1`;
+}
+
+function onT2DrawMove(e){
+  if(!t2Drawing)return;
+  if(e.cancelable)e.preventDefault();
+  const p=e.touches?e.touches[0]:e;
+  updatePreviewLine(p.clientX,p.clientY);
+}
+
+function onT2DrawEnd(e){
+  if(!t2Drawing)return;
+  const p=e.changedTouches?e.changedTouches[0]:e;
+
+  if(t2PreviewLine)t2PreviewLine.style.display='none';
+  const el=document.elementFromPoint(p.clientX,p.clientY);
+  if(t2PreviewLine)t2PreviewLine.style.display='';
+
+  const startEl=t2DrawStart.el;
+  const startWord=t2DrawStart.word;
+  t2Drawing=false; t2DrawStart=null;
+
+  if(t2PreviewLine){t2PreviewLine.remove();t2PreviewLine=null;}
+  startEl.classList.remove('selected');
+
+  const targetChip=el&&(el.classList.contains('word-chip')?el:el.closest&&el.closest('.word-chip'));
+  if(!targetChip||targetChip===startEl||targetChip.classList.contains('connected'))return;
+
+  if(targetChip.dataset.word===startWord){
+    connectPair(startEl,targetChip);
   } else {
-    t2ConnAttempts++;
-    el.classList.add('wrong');
+    const att=parseInt(startEl.dataset.connAttempts||'0')+1;
+    startEl.dataset.connAttempts=att;
+    targetChip.classList.add('wrong');
     play(sndWrong);
-    setTimeout(()=>el.classList.remove('wrong'),400);
-    if(t2ConnAttempts===1){
+    setTimeout(()=>targetChip.classList.remove('wrong'),400);
+    if(att===1){
       showToast('❌ Try again!','#f44336');
       setTimeout(()=>{
-        const m=findMatchChip(t2SelWord,t2SelEl);
+        const m=findMatchChip(startWord,startEl);
         if(m)m.classList.add('hint');
       },600);
     } else {
       showToast('💡 Correct answer!','#FF9800');
-      const m=findMatchChip(t2SelWord,t2SelEl);
-      if(m){
-        setTimeout(()=>{
-          document.querySelectorAll('.word-chip.hint').forEach(c=>c.classList.remove('hint'));
-          connectPair(t2SelEl,m);
-        },700);
-      }
+      const m=findMatchChip(startWord,startEl);
+      if(m)setTimeout(()=>{
+        document.querySelectorAll('.word-chip.hint').forEach(c=>c.classList.remove('hint'));
+        connectPair(startEl,m);
+      },700);
     }
   }
 }
@@ -570,7 +615,6 @@ function connectPair(el1,el2){
   el2.classList.remove('hint');
   el1.classList.add('connected');
   el2.classList.add('connected');
-  t2SelEl=null; t2SelWord=null; t2ConnAttempts=0;
   requestAnimationFrame(()=>drawLine(el1,el2));
   t2ConnectedCount++;
   if(t2ConnectedCount<t2TotalPairs){
