@@ -234,7 +234,7 @@ function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Mat
 function buildQList(){
   const q1=shuffle([...T1_DATA]).map(q=>({...q,type:'match'}));
   const q2=shuffle([...T2_DATA]).map(q=>({...q,type:'connect'}));
-  const q3=shuffle([...T3_DATA]).map(q=>({...q,type:'colour'}));
+  const q3=shuffle([...T3_DATA]).map(q=>({...q,type:'colour',grid:shuffle([...q.grid])}));
   return [...q1,...q2,...q3];
 }
 
