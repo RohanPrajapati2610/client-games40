@@ -106,7 +106,7 @@
       border-radius: 40px; font-size: 1.2em; font-family: inherit;
       font-weight: bold; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.2);
     }
-    #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 199; }
+    #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 210; }
   </style>
 </head>
 <body>
@@ -242,13 +242,23 @@ document.addEventListener('pointerdown', function u() {
 function playSound(s){if(muted)return;s.currentTime=0;s.play().catch(()=>{});}
 function toggleMute(){muted=!muted;document.getElementById('mute-btn').textContent=muted?'🔇':'🔊';}
 function speakThen(text, cb) {
-  if (!window.speechSynthesis) { cb(); return; }
+  if (!window.speechSynthesis || muted) { if (cb) setTimeout(cb, 100); return; }
   speechSynthesis.cancel();
-  const utt = new SpeechSynthesisUtterance(text);
-  utt.rate = 0.92; utt.pitch = 1.1;
-  utt.onend = cb; utt.onerror = cb;
-  speechSynthesis.speak(utt);
+  setTimeout(() => {
+    if (muted) { if (cb) setTimeout(cb, 100); return; }
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = 'en-US'; utt.rate = 0.82; utt.pitch = 1.0;
+    const voices = speechSynthesis.getVoices();
+    const v = voices.find(v => v.lang.startsWith('en') && !v.name.includes('Google'))
+           || voices.find(v => v.lang.startsWith('en')) || voices[0];
+    if (v) utt.voice = v;
+    if (cb) { utt.onend = cb; utt.onerror = cb; }
+    speechSynthesis.speak(utt);
+  }, 150);
 }
+function speak(text) { speakThen(text, null); }
+window.speechSynthesis?.getVoices();
+window.speechSynthesis?.addEventListener('voiceschanged', () => speechSynthesis.getVoices());
 
 // ── ASSETS ──
 const boyImg = new Image();
@@ -612,10 +622,12 @@ function handleWrongFood(wrongRoom) {
   wrongOverlay.style.display = 'block';
   scheduleDraw();
 
-  speakThen('Oops! Try another healthy path.', () => {
-    playSound(sndWrong);
-    setTimeout(finishWrong, 900);
-  });
+  playSound(sndWrong);
+  setTimeout(() => {
+    speakThen('Oops! That is not a healthy food. Try another healthy path, or click Start Over to try again.', () => {
+      setTimeout(finishWrong, 400);
+    });
+  }, 600);
 
   function finishWrong() {
     wrongOverlay.style.display = 'none';
@@ -737,15 +749,24 @@ function resetMaze(){
 }
 
 // ── VICTORY ──
+function playClaps() {
+  if (muted) return;
+  sndClaps.currentTime = 0; sndClaps.play().catch(()=>{});
+  setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 3000);
+}
 function showVictory(){
   const perfect=wrongAttempts===0;
-  document.getElementById('end-stars').textContent=perfect?'⭐⭐':'⭐';
+  document.getElementById('end-stars').textContent=perfect?'⭐⭐⭐':'⭐⭐';
   document.getElementById('end-score').textContent=healthyCount;
-  speakThen('Great choice! Healthy foods help us grow strong!', () => {
-    playSound(sndClaps);
-    document.getElementById('end-screen').style.display='flex';
-    launchConfetti();
-    errorShowing=false;
+  errorShowing=false;
+  launchConfetti();
+  playClaps();
+  speakThen('Great job! You found all the healthy foods! Keep eating healthy and stay strong!', () => {
+    setTimeout(() => {
+      document.getElementById('end-screen').style.display='flex';
+      launchConfetti();
+      playClaps();
+    }, 600);
   });
 }
 function playAgain(){
@@ -790,6 +811,7 @@ function startGame(){
   // Wait two animation frames so the browser finishes laying out the flex container
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
     setupCanvas(); updateFoodCount(); scheduleDraw();
+    setTimeout(() => speak('Help Joy reach the finish flag! Trace your path through healthy foods only. If you get stuck, click Start Over to try again!'), 600);
   }));
 }
 window.addEventListener('resize',()=>{
