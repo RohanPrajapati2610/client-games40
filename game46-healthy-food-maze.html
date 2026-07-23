@@ -57,6 +57,13 @@
     #maze-canvas { display: block; touch-action: none; cursor: crosshair;
       border-radius: 8px; box-shadow: 0 6px 22px rgba(0,0,0,0.25); }
 
+    #wrong-overlay {
+      position: fixed; display: none; pointer-events: none; z-index: 20;
+      background: rgba(220,30,30,0.72); border-radius: 4px;
+      animation: wrongBlink 0.18s step-end infinite;
+    }
+    @keyframes wrongBlink { 0%,100%{opacity:1} 50%{opacity:0} }
+
     #feedback {
       position: fixed; top: 46%; left: 50%; transform: translate(-50%,-50%);
       background: rgba(30,0,60,0.9); color: white;
@@ -121,6 +128,7 @@
   </div>
 </div>
 
+<div id="wrong-overlay"></div>
 <div id="feedback"></div>
 
 <div id="end-screen">
@@ -209,7 +217,7 @@ const SOLUTION_PATH = [
 // ── STATE ──
 let CELL = 50, WALL_T = 8, ROOM_W = 42;
 let tracing = false, isAnimating = false, errorShowing = false;
-let wrongCell = null, wrongCellT = 0;
+const wrongOverlay = document.getElementById('wrong-overlay');
 let tracedRooms = [];        // [{r,c}] visited rooms
 let visitedSet  = new Set();
 let charPos = { r:0, c:0 };
@@ -388,14 +396,6 @@ function draw() {
     ctx.restore();
   }
 
-  // ── wrong cell red glow ──
-  if (wrongCell) {
-    const pulse = 0.55 + 0.45 * Math.sin((Date.now() - wrongCellT) / 90);
-    const { x: wx, y: wy } = roomXY(wrongCell.r, wrongCell.c);
-    ctx.fillStyle = `rgba(220,30,30,${(pulse * 0.75).toFixed(2)})`;
-    ctx.fillRect(wx, wy, ROOM_W, ROOM_W);
-    scheduleDraw();
-  }
 
   // ── hint cell pulse ──
   if (hintCell) {
@@ -600,8 +600,16 @@ function handleWrongFood(wrongRoom) {
   } else {
     hintCell = null;
   }
-  // Show red glow on wrong cell immediately (drawn inside draw() loop)
-  wrongCell = wrongRoom; wrongCellT = Date.now();
+  // Position CSS overlay over wrong cell — no canvas involvement
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  const cssScale = rect.width / (canvas.width / dpr);
+  const { x: wx, y: wy } = roomXY(wrongRoom.r, wrongRoom.c);
+  wrongOverlay.style.left   = (rect.left + wx * cssScale) + 'px';
+  wrongOverlay.style.top    = (rect.top  + wy * cssScale) + 'px';
+  wrongOverlay.style.width  = (ROOM_W * cssScale) + 'px';
+  wrongOverlay.style.height = (ROOM_W * cssScale) + 'px';
+  wrongOverlay.style.display = 'block';
   scheduleDraw();
 
   speakThen('Oops! Try another healthy path.', () => {
@@ -610,7 +618,7 @@ function handleWrongFood(wrongRoom) {
   });
 
   function finishWrong() {
-    wrongCell = null;
+    wrongOverlay.style.display = 'none';
     // Erase red path — trim back to lastHealthyRoom
     let idx = -1;
     for (let i = tracedRooms.length - 1; i >= 0; i--) {
@@ -720,7 +728,8 @@ function resetMaze(){
   healthyCount=0;wrongAttempts=0;
   tracing=false;isAnimating=false;errorShowing=false;
   pathError=false;
-  hintCell=null; hintWrongCount=0; wrongCell=null; wrongCellT=0;
+  hintCell=null; hintWrongCount=0;
+  wrongOverlay.style.display='none';
   sparkles=[];lastHoveredKey=null;
   speechSynthesis.cancel();
   feedbackEl.classList.remove('show');
