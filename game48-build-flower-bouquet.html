@@ -462,8 +462,9 @@ function levelComplete(){
   autoPlacing=false;
   currentLevel++;
   if(currentLevel>=TOTAL){
-    // Last level: TTS "Amazing!" → end screen with confetti+claps+TTS together
-    speakThen('Amazing! You built a beautiful bouquet!',()=>{ setTimeout(showEnd,300); });
+    // Last level: confetti+claps+TTS "Amazing!" → then end screen
+    launchConfetti();playClaps();
+    speakThen('Amazing! You built a beautiful bouquet!',()=>{ stopConfetti();setTimeout(showEnd,300); });
   } else {
     // Middle levels: confetti+claps+TTS → stop → next level
     launchConfetti();playClaps();
