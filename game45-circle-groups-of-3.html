@@ -397,20 +397,22 @@ document.addEventListener('pointerdown', unlockAudio);
 
 function play(s) { if (muted) return; s.currentTime = 0; s.play().catch(() => {}); }
 
-function speak(text) {
+function speak(text) { speakThen(text, null); }
+function speakThen(text, cb) {
   sndClaps.pause(); sndClaps.currentTime = 0;
-  if (!('speechSynthesis' in window)) return;
+  if (!('speechSynthesis' in window)) { if (cb) setTimeout(cb, 400); return; }
   window.speechSynthesis.cancel();
-  if (muted) return;
+  if (muted) { if (cb) setTimeout(cb, 100); return; }
   setTimeout(() => {
-    if (muted) return;
+    if (muted) { if (cb) setTimeout(cb, 100); return; }
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.0;
+    u.lang = 'en-US'; u.rate = 0.75; u.pitch = 1.0;
     const voices = window.speechSynthesis.getVoices();
     const enVoice = voices.find(v => v.lang.startsWith('en') && !v.name.includes('Google'))
                  || voices.find(v => v.lang.startsWith('en'))
                  || voices[0];
     if (enVoice) u.voice = enVoice;
+    if (cb) { u.onend = cb; u.onerror = cb; }
     window.speechSynthesis.speak(u);
   }, 150);
 }
@@ -591,7 +593,6 @@ function registerCorrect(cellIdx) {
   document.getElementById('score-val').textContent = score;
 
   flashPath('#4CAF50', 1.0, 8);
-  speak('Excellent, that\'s a group of three!');
   showToast('⭐ Excellent!', '#4CAF50');
 
   document.querySelectorAll('.group-cell')[cellIdx].classList.add('correct-pulse');
@@ -610,14 +611,16 @@ function registerCorrect(cellIdx) {
     const allDone = getTargets().every(i => circledCorrect.has(i));
     if (allDone) {
       const isLast = curQ >= QUESTIONS.length - 1;
-      window.speechSynthesis?.cancel();
       if (isLast) {
-        setTimeout(() => showEnd(true), 900);
+        speakThen('Excellent, that\'s a group of three!', () => { setTimeout(() => showEnd(true), 300); });
       } else {
-        playClaps(); spawnConfetti();
-        setTimeout(() => { curQ++; loadQuestion(); }, 3200);
+        speakThen('Excellent, that\'s a group of three!', () => {
+          playClaps(); spawnConfetti();
+          setTimeout(() => { curQ++; loadQuestion(); }, 1800);
+        });
       }
     } else {
+      speak('Excellent, that\'s a group of three!');
       locked = false;
     }
   }, 550);
@@ -760,8 +763,13 @@ function renderGroup(cellEl, group, imgList) {
   cellEl.innerHTML = '';
   const makeImg = (src, cls) => {
     const img = document.createElement('img');
-    img.src = src; img.className = cls; img.draggable = false;
+    img.className = cls; img.draggable = false;
+    img.style.opacity = '0';
+    img.style.transition = 'opacity 0.25s';
+    img.onload  = () => { img.style.opacity = '1'; };
     img.onerror = () => { img.style.opacity = '0.3'; };
+    img.src = src;
+    if (img.complete && img.naturalWidth > 0) img.style.opacity = '1';
     if (imgList) imgList.push(img);
     return img;
   };
