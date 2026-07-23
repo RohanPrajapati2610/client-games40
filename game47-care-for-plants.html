@@ -44,7 +44,7 @@
     .opt-card:not(.disabled):active{transform:scale(0.95)}
 
     .opt-card .card-img-wrap{width:100%;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:10px;background:#f7f7f7}
-    .opt-card .card-img-wrap img{width:100%;height:100%;object-fit:cover;border-radius:10px;opacity:0;transition:opacity 0.35s;-webkit-user-drag:none;display:block}
+    .opt-card .card-img-wrap img{width:100%;height:100%;object-fit:contain;border-radius:10px;opacity:0;transition:opacity 0.35s;-webkit-user-drag:none;display:block}
     .opt-card .card-img-wrap img.loaded{opacity:1}
 
     /* ── CARD STATES ── */
@@ -164,7 +164,7 @@ const LEVELS = [
     banner: '♻️ Which child is putting waste in the dustbin?',
     options: [
       { src:'Assets/child%20putting%20waste%20in%20the%20dustin.png', label:'Putting waste in the dustbin', correct:true },
-      { src:'Assets/chils%20throwing%20litter.webp',              label:'Throwing litter near plants',     correct:false },
+      { src:'Assets/chils%20throwing%20litter.jpg',               label:'Throwing litter near plants',     correct:false },
       { src:'Assets/child%20throwing%20stones%20at%20the%20plant.png', label:'Throwing stones at the plant', correct:false },
     ]
   },

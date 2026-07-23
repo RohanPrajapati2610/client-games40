@@ -526,14 +526,14 @@ canvas.addEventListener('pointermove', e => {
   tracedRooms.push({r:room.r, c:room.c});
   visitedSet.add(key);
   charPos = {r:room.r, c:room.c};
-  hintWrongCount = 0;
-  hintCell = null;
 
   if (food?.healthy) {
     lastHealthyRoom = {r:room.r, c:room.c};
     healthyCount++;
     updateFoodCount();
     sparkles.push({r:room.r,c:room.c,t:Date.now()});
+    hintWrongCount = 0;
+    hintCell = null;
   }
 
   if (room.r===END.r && room.c===END.c) {
