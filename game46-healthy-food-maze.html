@@ -580,59 +580,55 @@ function handleWrongFood(wrongRoom) {
   errorShowing = true;
   pathError = true;
 
-  // Move boy INTO the wrong food cell first
-  charPos = { r: wrongRoom.r, c: wrongRoom.c };
+  // Boy stays at lastHealthyRoom — never steps into the wrong cell
+  charPos = { ...lastHealthyRoom };
+  charAnimPos = null;
 
-  // 1st wrong → glow the next healthy food as a hint
+  // 1st wrong → glow next healthy food as hint
   if (hintWrongCount === 1) {
     const target = findNextHealthyTarget();
     hintCell = target ? target.cell : null;
   } else {
-    hintCell = null; // 2nd wrong → no glow, will auto-advance
+    hintCell = null;
   }
   scheduleDraw();
 
   speakThen('Oops! Try another healthy path.', () => {
     playSound(sndWrong);
+    // Flash red ON the wrong food cell emoji (boy is not there)
     let flashes = 0;
     const iv = setInterval(() => {
       const { x, y } = roomXY(wrongRoom.r, wrongRoom.c);
-      ctx.fillStyle = flashes % 2 === 0 ? 'rgba(220,30,30,0.65)' : 'rgba(0,0,0,0)';
+      ctx.fillStyle = flashes % 2 === 0 ? 'rgba(220,30,30,0.7)' : 'rgba(0,0,0,0)';
       ctx.fillRect(x, y, ROOM_W, ROOM_W);
       if (++flashes >= 6) {
         clearInterval(iv);
-        doBackThenMaybeAuto();
+        finishWrong();
       }
     }, 130);
   });
 
-  function doBackThenMaybeAuto() {
+  function finishWrong() {
+    // Erase red path — trim back to lastHealthyRoom
     let idx = -1;
     for (let i = tracedRooms.length - 1; i >= 0; i--) {
       if (tracedRooms[i].r === lastHealthyRoom.r && tracedRooms[i].c === lastHealthyRoom.c) { idx = i; break; }
     }
-    const pathSegment = tracedRooms.slice(idx >= 0 ? idx : 0).reverse();
-    const backPath = [wrongRoom, ...pathSegment];
+    tracedRooms = idx >= 0 ? tracedRooms.slice(0, idx + 1) : [{ r:0, c:0 }];
+    visitedSet = new Set(tracedRooms.map(r => `${r.r},${r.c}`));
+    charPos = { ...lastHealthyRoom };
+    charAnimPos = null;
+    healthyCount = tracedRooms.filter(r => FOOD[`${r.r},${r.c}`]?.healthy).length;
+    updateFoodCount();
+    pathError = false;
 
-    animateBack(backPath, () => {
-      // Trim tracedRooms to lastHealthy
-      tracedRooms = idx >= 0 ? tracedRooms.slice(0, idx + 1) : [{ r:0, c:0 }];
-      visitedSet = new Set(tracedRooms.map(r => `${r.r},${r.c}`));
-      charPos = { ...lastHealthyRoom };
-      charAnimPos = null;
-      healthyCount = tracedRooms.filter(r => FOOD[`${r.r},${r.c}`]?.healthy).length;
-      updateFoodCount();
-      pathError = false;
-
-      if (hintWrongCount >= 2) {
-        // Auto-advance to next healthy food on the solution path
-        autoAdvanceToNextHealthy();
-      } else {
-        errorShowing = false;
-        isAnimating = false;
-        scheduleDraw();
-      }
-    });
+    if (hintWrongCount >= 2) {
+      autoAdvanceToNextHealthy();
+    } else {
+      errorShowing = false;
+      isAnimating = false;
+      scheduleDraw();
+    }
   }
 }
 
