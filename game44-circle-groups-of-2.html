@@ -230,13 +230,21 @@
     /* Responsive */
     @media (max-width: 480px) {
       #game-screen { padding: 9px 9px 70px; }
-      .grid-card { padding: 8px; }
+      .grid-card { padding: 6px; }
+      #groups-grid { gap: 5px; }
       .hdr-title { display: none; }
-      .group-cell { min-height: 95px; }
+      .group-cell { min-height: 80px; max-height: 110px; padding: 5px; }
+    }
+    @media (max-height: 700px) {
+      .group-cell { min-height: 75px; max-height: 100px; padding: 4px; }
+      #groups-grid { gap: 4px; }
+      .grid-card { padding: 5px; }
+      .question-txt { font-size: 0.9em; margin-bottom: 4px; }
+      .draw-tip { font-size: 0.78em; margin-bottom: 5px; }
     }
     @media (max-height: 600px) {
-      .group-cell { min-height: 85px; max-height: 120px; }
-      .question-txt { font-size: 0.88em; margin-bottom: 4px; }
+      .group-cell { min-height: 65px; max-height: 90px; }
+      .question-txt { font-size: 0.88em; margin-bottom: 3px; }
       .draw-tip { display: none; }
     }
   </style>
