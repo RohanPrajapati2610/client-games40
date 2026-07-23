@@ -209,6 +209,7 @@ const SOLUTION_PATH = [
 // ── STATE ──
 let CELL = 50, WALL_T = 8, ROOM_W = 42;
 let tracing = false, isAnimating = false, errorShowing = false;
+let wrongCell = null, wrongCellT = 0;
 let tracedRooms = [];        // [{r,c}] visited rooms
 let visitedSet  = new Set();
 let charPos = { r:0, c:0 };
@@ -385,6 +386,15 @@ function draw() {
     });
     ctx.stroke();
     ctx.restore();
+  }
+
+  // ── wrong cell red glow ──
+  if (wrongCell) {
+    const pulse = 0.55 + 0.45 * Math.sin((Date.now() - wrongCellT) / 90);
+    const { x: wx, y: wy } = roomXY(wrongCell.r, wrongCell.c);
+    ctx.fillStyle = `rgba(220,30,30,${(pulse * 0.75).toFixed(2)})`;
+    ctx.fillRect(wx, wy, ROOM_W, ROOM_W);
+    scheduleDraw();
   }
 
   // ── hint cell pulse ──
@@ -591,24 +601,17 @@ function handleWrongFood(wrongRoom) {
   } else {
     hintCell = null;
   }
+  // Show red glow on wrong cell immediately (drawn inside draw() loop)
+  wrongCell = wrongRoom; wrongCellT = Date.now();
   scheduleDraw();
 
   speakThen('Oops! Try another healthy path.', () => {
     playSound(sndWrong);
-    // Flash red ON the wrong food cell emoji (boy is not there)
-    let flashes = 0;
-    const iv = setInterval(() => {
-      const { x, y } = roomXY(wrongRoom.r, wrongRoom.c);
-      ctx.fillStyle = flashes % 2 === 0 ? 'rgba(220,30,30,0.7)' : 'rgba(0,0,0,0)';
-      ctx.fillRect(x, y, ROOM_W, ROOM_W);
-      if (++flashes >= 6) {
-        clearInterval(iv);
-        finishWrong();
-      }
-    }, 130);
+    setTimeout(finishWrong, 900);
   });
 
   function finishWrong() {
+    wrongCell = null;
     // Erase red path — trim back to lastHealthyRoom
     let idx = -1;
     for (let i = tracedRooms.length - 1; i >= 0; i--) {
@@ -719,7 +722,7 @@ function resetMaze(){
   healthyCount=0;wrongAttempts=0;
   tracing=false;isAnimating=false;errorShowing=false;
   pathError=false;
-  hintCell=null; hintWrongCount=0;
+  hintCell=null; hintWrongCount=0; wrongCell=null; wrongCellT=0;
   sparkles=[];lastHoveredKey=null;
   speechSynthesis.cancel();
   feedbackEl.classList.remove('show');
