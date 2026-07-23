@@ -588,7 +588,6 @@ function handleWrongFood(wrongRoom) {
   hintWrongCount++;
   tracing = false;
   errorShowing = true;
-  pathError = true;
 
   // Boy stays at lastHealthyRoom — never steps into the wrong cell
   charPos = { ...lastHealthyRoom };
@@ -623,7 +622,6 @@ function handleWrongFood(wrongRoom) {
     charAnimPos = null;
     healthyCount = tracedRooms.filter(r => FOOD[`${r.r},${r.c}`]?.healthy).length;
     updateFoodCount();
-    pathError = false;
 
     if (hintWrongCount >= 2) {
       autoAdvanceToNextHealthy();
