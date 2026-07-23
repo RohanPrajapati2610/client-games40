@@ -71,14 +71,13 @@
     .btn-row {
       display: flex; gap: 10px; margin-top: 7px; flex-shrink: 0;
     }
-    #reset-btn, #hint-btn {
-      padding: 8px 20px;
+    #reset-btn {
+      padding: 8px 24px;
       font-size: clamp(0.8em,2.3vw,0.92em); font-weight: bold;
       border: none; border-radius: 22px;
       cursor: pointer; flex-shrink: 0; font-family: inherit;
+      background: #7b1fa2; color: white;
     }
-    #reset-btn { background: #7b1fa2; color: white; }
-    #hint-btn  { background: #f9a825; color: #333; }
 
     #end-screen {
       display: none; position: fixed; inset: 0;
@@ -119,7 +118,6 @@
   <div id="canvas-wrap"><canvas id="maze-canvas"></canvas></div>
   <div class="btn-row">
     <button id="reset-btn" onclick="resetMaze()">🔄 Start Over</button>
-    <button id="hint-btn"  onclick="showHint()">💡 Hint</button>
   </div>
 </div>
 
@@ -219,7 +217,8 @@ let lastHealthyRoom = { r:0, c:0 };
 let healthyCount = 0, wrongAttempts = 0;
 let muted = false;
 let pathError = false;
-let hintCell = null, hintTimeout = null;
+let hintCell = null;
+let hintWrongCount = 0;
 let sparkles = [], animId = null;
 let lastHoveredKey = null;
 let gameStarted = false;
@@ -527,6 +526,8 @@ canvas.addEventListener('pointermove', e => {
   tracedRooms.push({r:room.r, c:room.c});
   visitedSet.add(key);
   charPos = {r:room.r, c:room.c};
+  hintWrongCount = 0;
+  hintCell = null;
 
   if (food?.healthy) {
     lastHealthyRoom = {r:room.r, c:room.c};
@@ -545,27 +546,21 @@ canvas.addEventListener('pointerup',     () => { tracing=false; });
 canvas.addEventListener('pointercancel', () => { tracing=false; });
 canvas.addEventListener('pointerleave',  () => { tracing=false; });
 
-// ── HINT ──
-function showHint() {
-  if (isAnimating || errorShowing) return;
-  if (tracedRooms.length === 0) return;
-
-  // Find the furthest point the player has reached that's on SOLUTION_PATH
-  let solIdx = -1;
+// ── HINT HELPERS ──
+function currentSolIdx() {
   for (let si = SOLUTION_PATH.length - 1; si >= 0; si--) {
-    const sp = SOLUTION_PATH[si];
-    if (visitedSet.has(`${sp.r},${sp.c}`)) { solIdx = si; break; }
+    if (visitedSet.has(`${SOLUTION_PATH[si].r},${SOLUTION_PATH[si].c}`)) return si;
   }
+  return -1;
+}
 
-  const nextIdx = solIdx + 1;
-  if (nextIdx >= SOLUTION_PATH.length) return; // already at end
-
-  // Clear previous hint
-  if (hintTimeout) clearTimeout(hintTimeout);
-  hintCell = SOLUTION_PATH[nextIdx];
-  scheduleDraw();
-
-  hintTimeout = setTimeout(() => { hintCell = null; scheduleDraw(); }, 3000);
+function findNextHealthyTarget() {
+  const si = currentSolIdx();
+  for (let i = si + 1; i < SOLUTION_PATH.length; i++) {
+    const sp = SOLUTION_PATH[i];
+    if (FOOD[`${sp.r},${sp.c}`]?.healthy) return { cell: sp, idx: i };
+  }
+  return null;
 }
 
 function recomputeLastHealthy() {
@@ -580,52 +575,118 @@ const feedbackEl = document.getElementById('feedback');
 
 function handleWrongFood(wrongRoom) {
   wrongAttempts++;
+  hintWrongCount++;
   tracing = false;
   errorShowing = true;
   pathError = true;
 
-  // Move boy INTO the wrong food cell first, then draw
+  // Move boy INTO the wrong food cell first
   charPos = { r: wrongRoom.r, c: wrongRoom.c };
-  scheduleDraw();
 
-  const food = FOOD[`${wrongRoom.r},${wrongRoom.c}`];
+  // 1st wrong → glow the next healthy food as a hint
+  if (hintWrongCount === 1) {
+    const target = findNextHealthyTarget();
+    hintCell = target ? target.cell : null;
+  } else {
+    hintCell = null; // 2nd wrong → no glow, will auto-advance
+  }
+  scheduleDraw();
 
   speakThen('Oops! Try another healthy path.', () => {
     playSound(sndWrong);
-    // Flash the wrong cell, then animate back (from wrongRoom → through path → lastHealthy)
-    let flashes=0;
-    const iv = setInterval(()=>{
-      const {x,y}=roomXY(wrongRoom.r,wrongRoom.c);
-      ctx.fillStyle = flashes%2===0?'rgba(220,30,30,0.65)':'rgba(0,0,0,0)';
-      ctx.fillRect(x,y,ROOM_W,ROOM_W);
-      if(++flashes>=6){
+    let flashes = 0;
+    const iv = setInterval(() => {
+      const { x, y } = roomXY(wrongRoom.r, wrongRoom.c);
+      ctx.fillStyle = flashes % 2 === 0 ? 'rgba(220,30,30,0.65)' : 'rgba(0,0,0,0)';
+      ctx.fillRect(x, y, ROOM_W, ROOM_W);
+      if (++flashes >= 6) {
         clearInterval(iv);
-        let idx=-1;
-        for(let i=tracedRooms.length-1;i>=0;i--){
-          if(tracedRooms[i].r===lastHealthyRoom.r&&tracedRooms[i].c===lastHealthyRoom.c){idx=i;break;}
-        }
-        // Back path starts at wrongRoom, goes through existing path to lastHealthy
-        const pathSegment = tracedRooms.slice(idx>=0?idx:0).reverse();
-        const backPath = [wrongRoom, ...pathSegment];
-        animateBack(backPath,()=>{
-          if(idx>=0){
-            tracedRooms=tracedRooms.slice(0,idx+1);
-          } else {
-            tracedRooms=[{r:0,c:0}];
-          }
-          visitedSet=new Set(tracedRooms.map(r=>`${r.r},${r.c}`));
-          charPos={...lastHealthyRoom};
-          charAnimPos=null;
-          healthyCount=tracedRooms.filter(r=>FOOD[`${r.r},${r.c}`]?.healthy).length;
-          updateFoodCount();
-          pathError=false;
-          errorShowing=false;
-          isAnimating=false;
-          scheduleDraw();
-        });
+        doBackThenMaybeAuto();
       }
-    },130);
+    }, 130);
   });
+
+  function doBackThenMaybeAuto() {
+    let idx = -1;
+    for (let i = tracedRooms.length - 1; i >= 0; i--) {
+      if (tracedRooms[i].r === lastHealthyRoom.r && tracedRooms[i].c === lastHealthyRoom.c) { idx = i; break; }
+    }
+    const pathSegment = tracedRooms.slice(idx >= 0 ? idx : 0).reverse();
+    const backPath = [wrongRoom, ...pathSegment];
+
+    animateBack(backPath, () => {
+      // Trim tracedRooms to lastHealthy
+      tracedRooms = idx >= 0 ? tracedRooms.slice(0, idx + 1) : [{ r:0, c:0 }];
+      visitedSet = new Set(tracedRooms.map(r => `${r.r},${r.c}`));
+      charPos = { ...lastHealthyRoom };
+      charAnimPos = null;
+      healthyCount = tracedRooms.filter(r => FOOD[`${r.r},${r.c}`]?.healthy).length;
+      updateFoodCount();
+      pathError = false;
+
+      if (hintWrongCount >= 2) {
+        // Auto-advance to next healthy food on the solution path
+        autoAdvanceToNextHealthy();
+      } else {
+        errorShowing = false;
+        isAnimating = false;
+        scheduleDraw();
+      }
+    });
+  }
+}
+
+function autoAdvanceToNextHealthy() {
+  const target = findNextHealthyTarget();
+  if (!target) { errorShowing = false; isAnimating = false; scheduleDraw(); return; }
+
+  const si = currentSolIdx();
+  // Slice the solution path from current position to target (inclusive)
+  const forwardPath = SOLUTION_PATH.slice(si, target.idx + 1);
+
+  animateForward(forwardPath, () => {
+    // Commit all cells along the forward path to state
+    for (const rm of forwardPath) {
+      const key = `${rm.r},${rm.c}`;
+      if (!visitedSet.has(key)) {
+        tracedRooms.push(rm);
+        visitedSet.add(key);
+        const f = FOOD[key];
+        if (f?.healthy) { healthyCount++; lastHealthyRoom = rm; }
+      }
+    }
+    charPos = { ...target.cell };
+    charAnimPos = null;
+    updateFoodCount();
+    sparkles.push({ r: target.cell.r, c: target.cell.c, t: Date.now() });
+    hintWrongCount = 0;
+    hintCell = null;
+    errorShowing = false;
+    isAnimating = false;
+    scheduleDraw();
+  });
+}
+
+function animateForward(path, onDone) {
+  if (path.length < 2) { onDone(); return; }
+  isAnimating = true;
+  let roomIdx = 0, frac = 0;
+  const SPEED = 0.08;
+  function step() {
+    frac += SPEED;
+    if (frac >= 1) { frac = 0; roomIdx++; }
+    if (roomIdx >= path.length - 1) {
+      charAnimPos = { r: path[path.length-1].r, c: path[path.length-1].c };
+      scheduleDraw();
+      setTimeout(onDone, 60);
+      return;
+    }
+    const from = path[roomIdx], to = path[roomIdx + 1];
+    charAnimPos = { r: from.r + (to.r - from.r) * frac, c: from.c + (to.c - from.c) * frac };
+    scheduleDraw();
+    requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
 }
 
 function animateBack(backPath, onDone) {
@@ -662,10 +723,9 @@ function resetMaze(){
   healthyCount=0;wrongAttempts=0;
   tracing=false;isAnimating=false;errorShowing=false;
   pathError=false;
+  hintCell=null; hintWrongCount=0;
   sparkles=[];lastHoveredKey=null;
   speechSynthesis.cancel();
-  if (hintTimeout) { clearTimeout(hintTimeout); hintTimeout = null; }
-  hintCell = null;
   feedbackEl.classList.remove('show');
   updateFoodCount();scheduleDraw();
 }
