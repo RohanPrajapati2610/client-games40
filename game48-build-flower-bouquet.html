@@ -17,8 +17,8 @@
     #intro-logo.loaded{opacity:1}
     @keyframes logoBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
-    /* ── GAME SCREEN (matches game36/game42 exactly) ── */
-    #game-screen{display:none;flex-direction:column;width:100%;max-width:860px;height:100%;padding:14px 14px 70px;overflow-y:auto}
+    /* ── GAME SCREEN ── */
+    #game-screen{display:none;flex-direction:column;width:100%;max-width:860px;height:100%;padding:14px 14px calc(70px + env(safe-area-inset-bottom,0px));overflow:hidden}
 
     /* ── HEADER ── */
     .hdr{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:18px;padding:10px 18px;margin-bottom:12px;box-shadow:0 4px 14px rgba(0,0,0,0.1);flex-shrink:0}
@@ -110,7 +110,8 @@
       touch-action:none;-webkit-tap-highlight-color:transparent;
       min-height:88px;position:relative;
     }
-    .flower-card img{width:clamp(44px,10vw,56px);height:clamp(44px,10vw,56px);object-fit:contain;pointer-events:none;-webkit-user-drag:none;display:block}
+    .flower-card img{width:clamp(44px,10vw,56px);height:clamp(44px,10vw,56px);object-fit:contain;pointer-events:none;-webkit-user-drag:none;display:block;opacity:0;transition:opacity 0.25s}
+    .flower-card img.loaded{opacity:1}
     .flower-card .fc-name{font-size:clamp(0.6em,1.7vw,0.75em);font-weight:800;color:#444;text-align:center;line-height:1.2;pointer-events:none}
 
     /* Card states */
@@ -127,7 +128,7 @@
     #drag-clone .fc-name{font-size:0.75em;font-weight:800;color:#444}
 
     /* ── RESTART (exact same as games 1–40) ── */
-    .bottom-row{display:flex;justify-content:center;position:fixed;bottom:16px;left:0;right:0;z-index:50;pointer-events:none}
+    .bottom-row{display:flex;justify-content:center;position:fixed;bottom:max(16px,env(safe-area-inset-bottom,0px));left:0;right:0;z-index:50;pointer-events:none}
     .btn-restart{pointer-events:all;background:linear-gradient(135deg,#FF9800,#F57C00);color:white;border:none;padding:12px 32px;border-radius:40px;font-size:1em;font-family:inherit;font-weight:bold;cursor:pointer;box-shadow:0 5px 14px rgba(255,152,0,0.4);min-height:44px;touch-action:manipulation}
 
     /* ── END SCREEN ── */
@@ -146,15 +147,31 @@
     #toast{position:fixed;top:18%;left:50%;transform:translateX(-50%) scale(0.7);padding:12px 28px;border-radius:50px;font-size:1.4em;font-weight:bold;color:white;pointer-events:none;opacity:0;transition:opacity 0.2s,transform 0.2s;z-index:600;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
     #toast.show{opacity:1;transform:translateX(-50%) scale(1)}
 
+    /* ── BOUQUET ZONE flex ── */
+    #bouquet-zone{flex-shrink:0}
+    #flower-tray{flex-shrink:0}
+
     @media(max-height:700px){
       .slot{width:54px;height:54px}.slot-img{width:48px;height:48px}
-      .flower-card{min-height:76px}.flower-card img{width:38px;height:38px}
+      .flower-card{min-height:72px;padding:7px 5px 6px}.flower-card img{width:38px;height:38px}
       .bouquet-holder{height:62px}.bouquet-bow-wrap{width:60px;height:32px}
       .bow-loop-l,.bow-loop-r{width:28px;height:18px}.bow-knot{width:14px;height:14px}
-      #flower-display{padding:10px 10px 12px;gap:6px}
-      #flower-tray{padding:8px;gap:6px;margin-top:8px}
+      #flower-display{padding:10px 10px 12px;gap:6px;width:clamp(200px,50vw,260px)}
+      #flower-tray{padding:8px;gap:5px;margin-top:8px}
+      .hdr{padding:7px 12px;margin-bottom:8px}
+      .progress-row{margin-bottom:6px}
+      .question-txt{margin-bottom:6px;font-size:clamp(0.82em,2.8vw,1em)}
     }
-    @media(max-width:380px){.hdr-title{display:none}}
+    @media(max-height:580px){
+      .slot{width:46px;height:46px}.slot-img{width:40px;height:40px}
+      .flower-card{min-height:62px;padding:5px 4px 4px}.flower-card img{width:32px;height:32px}
+      #flower-display{gap:4px}
+      #flower-tray{gap:4px;padding:6px}
+    }
+    @media(max-width:380px){
+      .hdr-title{display:none}
+      #flower-tray{grid-template-columns:repeat(4,1fr);gap:5px}
+    }
   </style>
 </head>
 <body>
@@ -325,7 +342,12 @@ function loadLevel(idx){
     const f=FLOWERS[key];
     const card=document.createElement('div');
     card.className='flower-card';card.dataset.key=key;
-    const img=document.createElement('img');img.src=f.img;img.alt=f.name;
+    const img=document.createElement('img');
+    img.alt=f.name;img.draggable=false;
+    img.onload=()=>img.classList.add('loaded');
+    img.onerror=()=>{img.style.opacity='0.3';img.classList.add('loaded');};
+    img.src=f.img;
+    if(img.complete&&img.naturalWidth>0)img.classList.add('loaded');
     card.appendChild(img);
     const nm=document.createElement('div');nm.className='fc-name';nm.textContent=f.name;
     card.appendChild(nm);
@@ -358,8 +380,8 @@ function clearHints(){document.querySelectorAll('.flower-card.hint').forEach(c=>
 function startDrag(e,key,cardEl){
   const f=FLOWERS[key];
   const clone=document.getElementById('drag-clone');
-  document.getElementById('clone-img').src=f.img;
-  document.getElementById('clone-img').alt=f.name;
+  const cloneImg=document.getElementById('clone-img');
+  cloneImg.alt=f.name;cloneImg.src=f.img;
   document.getElementById('clone-name').textContent=f.name;
   moveClone(e,clone);clone.style.display='flex';
   cardEl.style.opacity='0.3';cardEl.classList.remove('hint');
@@ -409,7 +431,9 @@ function placeInSlot(key,cardEl){
   nextSlot++;placed.add(key);
   cardEl.classList.add('placed');cardEl.style.opacity='';
   const img=document.createElement('img');
-  img.src=FLOWERS[key].img;img.alt=FLOWERS[key].name;img.className='slot-img';
+  img.alt=FLOWERS[key].name;img.className='slot-img';img.draggable=false;
+  img.onerror=()=>{img.style.opacity='0.3';};
+  img.src=FLOWERS[key].img;
   slot.innerHTML='';slot.appendChild(img);slot.classList.add('filled');
   spawnSparkles(slot);
   speak('Great choice!');showToast('⭐ Great choice!','#4caf50');
