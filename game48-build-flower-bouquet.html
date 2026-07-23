@@ -460,11 +460,20 @@ function spawnSparkles(slotEl){
 // ── LEVEL COMPLETE ──
 function levelComplete(){
   autoPlacing=false;
-  launchConfetti();playClaps();
-  speakThen('Amazing! You built a beautiful bouquet!',()=>{
-    stopConfetti();currentLevel++;
-    if(currentLevel>=TOTAL)showEnd();else loadLevel(currentLevel);
-  });
+  currentLevel++;
+  const isLast=currentLevel>=TOTAL;
+  if(isLast){
+    // Last level: TTS first, then end screen (no confetti yet)
+    speakThen('Amazing! You built a beautiful bouquet!',()=>{
+      setTimeout(showEnd,300);
+    });
+  } else {
+    // Middle levels: confetti + claps + TTS, then next level
+    launchConfetti();playClaps();
+    speakThen('Amazing! You built a beautiful bouquet!',()=>{
+      stopConfetti();loadLevel(currentLevel);
+    });
+  }
 }
 
 // ── END SCREEN ──
@@ -472,8 +481,8 @@ function showEnd(){
   document.getElementById('end-score').textContent=totalScore;
   const pct=totalScore/24;
   document.getElementById('end-stars').textContent=pct>=1?'⭐⭐⭐':pct>=0.7?'⭐⭐':'⭐';
+  document.getElementById('end-screen').style.display='flex';
   speakThen('You have done a great job!',()=>{
-    document.getElementById('end-screen').style.display='flex';
     launchConfetti();
     playClaps();
   });
