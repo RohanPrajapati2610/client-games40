@@ -191,7 +191,32 @@ function playShortClap() {
   sndClaps.currentTime = 0; sndClaps.play().catch(()=>{});
   setTimeout(() => { sndClaps.pause(); sndClaps.currentTime = 0; }, 1200);
 }
-function toggleMute() { muted = !muted; document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊'; }
+function toggleMute() {
+  muted = !muted;
+  document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+  if (muted) { window.speechSynthesis?.cancel(); sndClaps.pause(); }
+}
+
+// ── TTS ──
+window.speechSynthesis?.getVoices();
+window.speechSynthesis?.addEventListener('voiceschanged', () => window.speechSynthesis.getVoices());
+function speak(text) {
+  sndClaps.pause(); sndClaps.currentTime = 0;
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  if (muted) return;
+  setTimeout(() => {
+    if (muted) return;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = 0.75; u.pitch = 1.0;
+    const voices = window.speechSynthesis.getVoices();
+    const enVoice = voices.find(v => v.lang.startsWith('en') && !v.name.includes('Google'))
+                 || voices.find(v => v.lang.startsWith('en'))
+                 || voices[0];
+    if (enVoice) u.voice = enVoice;
+    window.speechSynthesis.speak(u);
+  }, 150);
+}
 
 // ── SHUFFLE ──
 function shuffle(arr) {
@@ -219,6 +244,7 @@ function loadLevel(idx) {
   document.getElementById('score-val').textContent = score;
   document.getElementById('prog-bar').style.width = (idx / TOTAL * 100) + '%';
   document.getElementById('q-banner').textContent = lvl.banner;
+  speak(lvl.banner.replace(/^[^\w\s]+\s*/, '')); // strip leading emoji before speaking
 
   const shuffled = shuffle(lvl.options);
   const grid = document.getElementById('cards-grid');
@@ -278,6 +304,7 @@ function selectOption(card, opt, idx) {
     spawnSparkles(idx);
     score++;
     document.getElementById('score-val').textContent = score;
+    speak('Great job!');
     showToast('⭐ Correct!', '#4caf50');
 
     setTimeout(() => {
@@ -291,6 +318,7 @@ function selectOption(card, opt, idx) {
     card.classList.add('wrong', 'disabled');
     badge.textContent = '❌'; badge.classList.add('show');
     playSound(sndWrong);
+    speak('Try again!');
 
     if (attempts === 1) {
       // 1st wrong: shake, then show hint glow on correct card
