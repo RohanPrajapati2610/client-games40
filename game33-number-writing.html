@@ -170,15 +170,15 @@
 <div id="end-screen">
   <div class="end-trophy">🏆</div>
   <div class="end-title">You have done a great job!</div>
-  <div class="end-sub">You wrote all the numbers 1 to 10!</div>
+  <div class="end-sub">You wrote all the numbers 31 to 40!</div>
   <div class="end-score-box">Score: &nbsp;<span id="final-score">0</span> / 10</div>
   <div class="end-stars" id="end-stars"></div>
   <button class="btn-play-again" onclick="restartGame()">▶ &nbsp;Play Again</button>
 </div>
 
 <script>
-/* ── NUMBERS 1–10 ── */
-const NUMBERS = [1,2,3,4,5,6,7,8,9,10];
+/* ── NUMBERS 31–40 ── */
+const NUMBERS = [31,32,33,34,35,36,37,38,39,40];
 const TOTAL   = NUMBERS.length;
 
 /*
@@ -253,7 +253,7 @@ const offCtx = offCanvas.getContext('2d');
 const CW = 400, CH = 400; // canvas logical dimensions
 
 /* ── GUIDE RENDERING ── */
-function getFontSize(num) { return num === 10 ? 230 : 310; }
+function getFontSize(num) { return 200; }
 
 function drawGuide(num) {
   guideCtx.clearRect(0, 0, CW, CH);
